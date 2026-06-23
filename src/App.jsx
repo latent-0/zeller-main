@@ -9,6 +9,57 @@ import './index.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const DIFFERENTIATORS = [
+  {
+    num: '01',
+    label: 'Conceptual Storytelling',
+    title: 'A Fragment\nof the Cosmos',
+    body: 'We draw inspiration from the cosmos, offering products that are not just beautiful but tell a unique story. Each piece is designed to be a fragment of the cosmos — resonating with your fascination with the universe.',
+  },
+  {
+    num: '02',
+    label: 'Artisanal Craftsmanship',
+    title: 'Meticulously\nHandcrafted',
+    body: 'Every Zeller crystal is meticulously handcrafted by master artisans, ensuring each piece is a unique work of art. This focus on artisanal craftsmanship distinguishes us from mass-produced alternatives.',
+  },
+  {
+    num: '03',
+    label: 'Personalised Experiences',
+    title: 'Bespoke to\nYour Cosmos',
+    body: 'We offer bespoke creations and personalised experiences, making each purchase a unique journey. This personalised approach enhances the luxury appeal and creates a deeper connection with the cosmos within you.',
+  },
+  {
+    num: '04',
+    label: 'Cosmic Engagement',
+    title: 'Wonder &\nConnection',
+    body: 'By positioning our products as cosmic storytellers, we engage our customers on a deeper level — fostering a sense of wonder and connection that transcends mere ownership. Celebrate the universe within you.',
+  },
+]
+
+const PRODUCTS = [
+  {
+    n: '01',
+    label: 'Home',
+    title: 'Crystal Home Accessories',
+    desc: 'Celestial adornments for your living space. Each piece a cosmic companion that bejewels your reality and transforms the everyday into the extraordinary.',
+    img: '/room/glass_texture.jpg',
+  },
+  {
+    n: '02',
+    label: 'Jewellery',
+    title: 'Zeller Jewellery',
+    desc: 'Wearable crystal couture — carry a piece of the cosmos wherever you go. Turning every moment into a cosmic celebration of your unique essence.',
+    img: null,
+  },
+  {
+    n: '03',
+    label: 'Bespoke',
+    title: 'Custom Chandeliers',
+    desc: 'Each chandelier an epiphany of a shooting star — sculpted dreams rendered in crystalline light. Commission yours and illuminate your world with the cosmos.',
+    img: '/room/Leaves_chandelier_Dirt.jpg',
+  },
+]
+
 export default function App() {
   const sectionRef   = useRef(null)
   const wordmarkRef  = useRef(null)
@@ -17,17 +68,22 @@ export default function App() {
   const card1Ref     = useRef(null)
   const card2Ref     = useRef(null)
   const card3Ref     = useRef(null)
+  const framesRef    = useRef(null)
+  const frame1Ref    = useRef(null)
+  const frame2Ref    = useRef(null)
+  const frame3Ref    = useRef(null)
+  const hScrollRef   = useRef(null)
+  const hTrackRef    = useRef(null)
+
   const [sceneLoaded, setSceneLoaded] = useState(false)
   const [splashDone,  setSplashDone]  = useState(false)
   const sceneReady = sceneLoaded && splashDone
 
-  /* Hero + card animations — run once scene is loaded */
   useEffect(() => {
     if (!sceneReady) return
-
     const sec = sectionRef.current
 
-    // ── Hero wordmark: per-letter blur-in on scroll ──
+    // ── Hero wordmark letter blur ──
     const hwSpans = wordmarkRef.current?.querySelectorAll('.hw')
     if (hwSpans?.length) {
       gsap.fromTo(hwSpans,
@@ -35,159 +91,150 @@ export default function App() {
         {
           opacity: 1, filter: 'blur(0px)', y: 0,
           duration: 0.9, stagger: 0.07, ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sec,
-            start: 'top+=3% top',
-            end:   'top+=18% top',
-            scrub: 1.2,
-          },
+          scrollTrigger: { trigger: sec, start: 'top+=3% top', end: 'top+=18% top', scrub: 1.2 },
         }
       )
     }
 
-    // ── Tagline blur-in ──
     gsap.fromTo(taglineRef.current,
       { opacity: 0, filter: 'blur(10px)', y: 10 },
       {
         opacity: 1, filter: 'blur(0px)', y: 0,
-        duration: 0.8, ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sec,
-          start: 'top+=10% top',
-          end:   'top+=22% top',
-          scrub: 1,
-        },
+        scrollTrigger: { trigger: sec, start: 'top+=10% top', end: 'top+=22% top', scrub: 1 },
       }
     )
 
-    // ── Scroll cue ──
     gsap.to(scrollCueRef.current, { opacity: 1, duration: 1.4, delay: 0.6, ease: 'power2.out' })
     gsap.to(scrollCueRef.current, {
       opacity: 0,
       scrollTrigger: { trigger: sec, start: 'top+=4% top', end: 'top+=13% top', scrub: true },
     })
 
-    // ── Glassmorphism brand cards ──
-    // Section is 500vh; usable scroll = 400vh (500 - 100 for sticky)
-    // Cards appear / disappear at specific orbit phases
-    const cardAnims = [
-      {
-        ref: card1Ref,
-        inS:  'top+=14% top', inE:  'top+=22% top',
-        outS: 'top+=30% top', outE: 'top+=36% top',
-      },
-      {
-        ref: card2Ref,
-        inS:  'top+=38% top', inE:  'top+=46% top',
-        outS: 'top+=54% top', outE: 'top+=60% top',
-      },
-      {
-        ref: card3Ref,
-        inS:  'top+=58% top', inE:  'top+=66% top',
-        outS: 'top+=76% top', outE: 'top+=83% top',
-      },
-    ]
-
-    cardAnims.forEach(({ ref, inS, inE, outS, outE }) => {
-      const el = ref.current
-      if (!el) return
+    // ── Orbit glassmorphism cards ──
+    ;[
+      { ref: card1Ref, inS: 'top+=14% top', inE: 'top+=22% top', outS: 'top+=30% top', outE: 'top+=36% top' },
+      { ref: card2Ref, inS: 'top+=38% top', inE: 'top+=46% top', outS: 'top+=54% top', outE: 'top+=60% top' },
+      { ref: card3Ref, inS: 'top+=58% top', inE: 'top+=66% top', outS: 'top+=76% top', outE: 'top+=83% top' },
+    ].forEach(({ ref, inS, inE, outS, outE }) => {
+      const el = ref.current; if (!el) return
       gsap.fromTo(el,
         { opacity: 0, y: 28, filter: 'blur(12px)' },
-        { opacity: 1, y: 0,  filter: 'blur(0px)',
-          scrollTrigger: { trigger: sec, start: inS, end: inE, scrub: 1.5 } }
+        { opacity: 1, y: 0, filter: 'blur(0px)', scrollTrigger: { trigger: sec, start: inS, end: inE, scrub: 1.5 } }
       )
       gsap.fromTo(el,
         { opacity: 1, y: 0 },
-        { opacity: 0, y: -20,
-          scrollTrigger: { trigger: sec, start: outS, end: outE, scrub: 1.5 } }
+        { opacity: 0, y: -20, scrollTrigger: { trigger: sec, start: outS, end: outE, scrub: 1.5 } }
       )
+    })
+
+    // ── Diagonal frames — staggered parallax entry ──
+    if (framesRef.current) {
+      ;[frame1Ref, frame2Ref, frame3Ref].forEach((ref, i) => {
+        const el = ref.current; if (!el) return
+        // Fade in with staggered start
+        gsap.fromTo(el,
+          { opacity: 0, y: 70 + i * 25 },
+          {
+            opacity: 1, y: 0,
+            scrollTrigger: {
+              trigger: framesRef.current,
+              start: `top ${88 - i * 10}%`,
+              end:   `top ${52 - i * 8}%`,
+              scrub: 1.4,
+            },
+          }
+        )
+        // Parallax: each frame drifts at different rate while section scrolls
+        gsap.to(el, {
+          y: -35 - i * 20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: framesRef.current,
+            start: 'top bottom',
+            end:   'bottom top',
+            scrub: true,
+          },
+        })
+      })
+    }
+
+    // ── Horizontal scroll — differentiators ──
+    if (hScrollRef.current && hTrackRef.current) {
+      const track = hTrackRef.current
+      gsap.to(track, {
+        x: () => -(track.scrollWidth - window.innerWidth),
+        ease: 'none',
+        scrollTrigger: {
+          trigger:  hScrollRef.current,
+          start:    'top top',
+          end:      () => `+=${track.scrollWidth - window.innerWidth}`,
+          pin:      true,
+          scrub:    1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      })
+    }
+
+    // ── .reveal elements ──
+    gsap.utils.toArray('.reveal').forEach((el) => {
+      gsap.to(el, {
+        opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
+      })
     })
 
     return () => ScrollTrigger.getAll().forEach((t) => t.kill())
   }, [sceneReady])
 
-  /* Content reveal animations */
-  useEffect(() => {
-    if (!sceneReady) return
-    gsap.utils.toArray('.reveal').forEach((el) => {
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 85%',
-          toggleActions: 'play none none none',
-        },
-      })
-    })
-  }, [sceneReady])
-
   return (
     <>
-      {/* Navbar */}
+      {/* ── Navbar ── */}
       <nav>
         <a href="#" className="nav-logo">Zeller</a>
         <ul className="nav-links">
-          <li><a href="#about">About</a></li>
+          <li><a href="#story">Story</a></li>
           <li><a href="#collection">Collection</a></li>
-          <li><a href="#craft">Craft</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#alacarte">À La Carte</a></li>
+          <li><a href="#contact">Connect</a></li>
         </ul>
       </nav>
 
-      {/* Sparkle loading splash — shown until animation + scene both done */}
-      {!sceneReady && (
-        <LoadingScreen onComplete={() => setSplashDone(true)} />
-      )}
+      {!sceneReady && <LoadingScreen onComplete={() => setSplashDone(true)} />}
 
-      {/* ── Hero: Three.js room ── */}
+      {/* ── Hero — chandelier orbit ── */}
       <div className="video-scroll-section" ref={sectionRef}>
         <div className="video-sticky">
           <RoomScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
           <SideRays
-            speed={2.5}
-            rayColor1="#EAB308"
-            rayColor2="#96c8ff"
-            intensity={4.5}
-            spread={2.8}
-            origin="top-right"
-            tilt={0}
-            saturation={1.5}
-            blend={0.57}
-            falloff={1.2}
-            opacity={1.0}
+            speed={2.5} rayColor1="#EAB308" rayColor2="#96c8ff"
+            intensity={4.5} spread={2.8} origin="top-right"
+            tilt={0} saturation={1.5} blend={0.57} falloff={1.2} opacity={1.0}
           />
-
           <div className="vignette" />
 
-          {/* ── Brand story cards (orbit-synced) ── */}
+          {/* Orbit-synced glassmorphism cards */}
           <div ref={card1Ref} className="brand-card brand-card--tl">
-            <span className="brand-card__label">Heritage</span>
-            <div className="brand-card__title">Est. 1997</div>
-            <p className="brand-card__body">Three decades of precision crystal craftsmanship. Each piece carries the hallmarks of its maker.</p>
+            <span className="brand-card__label">India's First</span>
+            <div className="brand-card__title">Crystal Couture</div>
+            <p className="brand-card__body">India's first & only Crystal Couture Entourage — crafting fragments of the cosmos since our inception.</p>
           </div>
-
           <div ref={card2Ref} className="brand-card brand-card--tr">
-            <span className="brand-card__label">Craft</span>
-            <div className="brand-card__title">Handcast Crystal</div>
-            <p className="brand-card__body">Every leaf individually formed, polished and assembled by hand. No two chandeliers identical.</p>
+            <span className="brand-card__label">The Artisan's Hand</span>
+            <div className="brand-card__title">Meticulously Crafted</div>
+            <p className="brand-card__body">Every crystal handcrafted by master artisans. Each facet a universe of its own — no two pieces identical.</p>
           </div>
-
           <div ref={card3Ref} className="brand-card brand-card--bl">
-            <span className="brand-card__label">Origin</span>
-            <div className="brand-card__title">Zürich Atelier</div>
-            <p className="brand-card__body">Conceived in Switzerland. Finished by twelve pairs of hands. Compromised by none.</p>
+            <span className="brand-card__label">Our Raison d'être</span>
+            <div className="brand-card__title">Accessorize Your Cosmos</div>
+            <p className="brand-card__body">We exist to be a cosmic companion — bejewelling your reality and intertwining the cosmos with your lifestyle.</p>
           </div>
 
           <div className="hero-overlay">
             <h1 ref={wordmarkRef} className="hero-wordmark">
-              {'ZELLER'.split('').map((ch, i) => (
-                <span key={i} className="hw">{ch}</span>
-              ))}
+              {'ZELLER'.split('').map((ch, i) => <span key={i} className="hw">{ch}</span>)}
             </h1>
-            <p ref={taglineRef} className="hero-tagline">Designed for the Discerning</p>
+            <p ref={taglineRef} className="hero-tagline">Celebrate You</p>
           </div>
 
           <div ref={scrollCueRef} className="scroll-cue">
@@ -197,27 +244,35 @@ export default function App() {
         </div>
       </div>
 
-      {/* ── About ── */}
-      <section id="about" className="paper-section">
-        <div className="section">
-          <div className="section-intro">
-            <div>
-              <BlurText text="Our Philosophy" as="span" className="section-label" stagger={0.04} />
-              <h2><BlurText text="Crafted with Intent" wordLevel stagger={0.12} /></h2>
-              <div className="divider reveal" />
-            </div>
-            <div>
-              <p className="reveal">
-                At Zeller, every detail is considered. We source the finest materials
-                from artisan partners across three continents, ensuring that each piece
-                carries not just quality, but a story worth telling.
-              </p>
-              <br />
-              <p className="reveal">
-                Our process is slow by design. Precision cannot be rushed, and neither
-                can the relationship between maker and material.
-              </p>
-            </div>
+      {/* ── Fragment of the Cosmos — diagonal frames ── */}
+      <section id="story" className="fragment-section">
+        <div className="fragment-text">
+          <BlurText text="Who We Are" as="span" className="section-label" stagger={0.04} />
+          <h2>
+            <BlurText text="India's Crystal" wordLevel stagger={0.1} /><br />
+            <BlurText text="Couture Entourage" wordLevel stagger={0.1} />
+          </h2>
+          <div className="divider reveal" />
+          <p className="reveal">
+            A saga reminiscent of a glimpse of the ethereal beyond — sculpting dreams, cosmos &amp; everything in between. A poetic dance of stardust &amp; aspirations, unfurling into a souvenir of indulgent celebrations.
+          </p>
+          <p className="reveal" style={{ marginTop: '1.4rem' }}>
+            Each crystal is not just an adornment but a fragment of the cosmos. We emerge as an epiphany of a shooting star — whispering to celebrate the universe within you.
+          </p>
+          <p className="reveal cosmic-pull" style={{ marginTop: '2rem' }}>
+            &ldquo;Each facet — a universe of its own.&rdquo;
+          </p>
+        </div>
+
+        <div className="frames-gallery" ref={framesRef}>
+          <div ref={frame1Ref} className="frame frame--1">
+            <img src="/room/Leaves_chandelier_Dirt.jpg" alt="Crystal chandelier leaves" />
+          </div>
+          <div ref={frame2Ref} className="frame frame--2">
+            <img src="/room/glass_texture.jpg" alt="Crystal glass texture" />
+          </div>
+          <div ref={frame3Ref} className="frame frame--3">
+            <div className="frame-art" />
           </div>
         </div>
       </section>
@@ -225,37 +280,54 @@ export default function App() {
       {/* ── Stats ── */}
       <div className="stats-row">
         {[
-          { num: '28',  unit: '',   label: 'Years of Craft' },
-          { num: '14',  unit: 'k+', label: 'Pieces Made' },
-          { num: '03',  unit: '',   label: 'Continents Sourced' },
-          { num: '100', unit: '%',  label: 'Handfinished' },
+          { num: '1st',  unit: '',   label: 'In India' },
+          { num: '100',  unit: '%',  label: 'Handcrafted' },
+          { num: '03',   unit: '',   label: 'Product Lines' },
+          { num: '∞',    unit: '',   label: 'Cosmic Stories' },
         ].map(({ num, unit, label }) => (
           <div key={label} className="stat-item">
-            <span className="stat-number reveal">
-              {num}<span className="stat-unit">{unit}</span>
-            </span>
+            <span className="stat-number reveal">{num}<span className="stat-unit">{unit}</span></span>
             <span className="stat-label reveal">{label}</span>
           </div>
         ))}
       </div>
 
-      {/* ── Collection ── */}
+      {/* ── Horizontal scroll — what sets us apart ── */}
+      <div className="h-scroll-wrapper" ref={hScrollRef}>
+        <div className="h-scroll-track" ref={hTrackRef}>
+          {DIFFERENTIATORS.map((d) => (
+            <div className="h-panel" key={d.num}>
+              <span className="h-panel__bg-num">{d.num}</span>
+              <span className="h-panel__label">{d.label}</span>
+              <h3 className="h-panel__title">
+                {d.title.split('\n').map((line, i) => <span key={i} style={{ display: 'block' }}>{line}</span>)}
+              </h3>
+              <p className="h-panel__body">{d.body}</p>
+            </div>
+          ))}
+        </div>
+        <div className="h-scroll-progress">
+          <span className="h-scroll-label">What Sets Us Apart — Drag to Explore</span>
+        </div>
+      </div>
+
+      {/* ── Product Range ── */}
       <section id="collection">
         <div className="section">
-          <BlurText text="The Collection" as="span" className="section-label" stagger={0.04} />
-          <h2 style={{ marginBottom: '3rem' }}><BlurText text="Current Season" wordLevel stagger={0.12} /></h2>
+          <BlurText text="Product Range" as="span" className="section-label" stagger={0.04} />
+          <h2 style={{ marginBottom: '3rem' }}>
+            <BlurText text="Our Offerings" wordLevel stagger={0.12} />
+          </h2>
         </div>
-        <div className="product-grid">
-          {[
-            { n: '01', title: 'The Meridian',  desc: 'A study in architectural restraint. Full-grain leather, hand-stitched welt construction.' },
-            { n: '02', title: 'The Solstice',  desc: 'Named for the longest day. Open-weave linen, natural dye process, unlined.' },
-            { n: '03', title: 'The Nordvik',   desc: 'Scandinavian heritage meets contemporary cut. Boiled wool, mother-of-pearl closure.' },
-            { n: '04', title: 'The Crest',     desc: 'A structured silhouette for the considered wardrobe. Japanese selvedge, stone-washed.' },
-            { n: '05', title: 'The Atelier',   desc: 'Bespoke program. Each piece made to measure. Lead time: 8–12 weeks.' },
-            { n: '06', title: 'The Archive',   desc: 'Past season favourites, reissued in limited numbers. First come, first served.' },
-          ].map(({ n, title, desc }) => (
-            <div key={n} className="product-card">
-              <span className="product-number reveal">{n}</span>
+        <div className="product-grid product-grid--3">
+          {PRODUCTS.map(({ n, label, title, desc, img }) => (
+            <div key={n} className="product-card product-card--rich">
+              <div className="product-card__frame">
+                {img
+                  ? <img src={img} alt={title} />
+                  : <div className="product-card__art" />}
+              </div>
+              <span className="product-number reveal">{n} — {label}</span>
               <h3 className="reveal">{title}</h3>
               <p className="reveal">{desc}</p>
             </div>
@@ -263,38 +335,37 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── Quote ── */}
+      {/* ── Cosmic quote ── */}
       <div className="quote-section">
         <blockquote className="reveal">
-          &ldquo;The best things in life are made once, made well, and kept for a lifetime.&rdquo;
+          &ldquo;Indulge in Crystal Couture. Celebrate the universe within you.&rdquo;
         </blockquote>
-        <cite className="reveal">— Zeller Atelier, Est. 1997</cite>
+        <cite className="reveal">— Zeller Brand Ethos</cite>
       </div>
 
-      {/* ── Craft ── */}
-      <section id="craft">
+      {/* ── À La Carte services ── */}
+      <section id="alacarte">
         <div className="section">
           <div className="section-intro">
             <div>
-              <BlurText text="Our Craft" as="span" className="section-label" stagger={0.04} />
-              <h2><BlurText text="The Making of Things" wordLevel stagger={0.12} /></h2>
+              <BlurText text="À La Carte" as="span" className="section-label" stagger={0.04} />
+              <h2><BlurText text="Bespoke Services" wordLevel stagger={0.12} /></h2>
               <div className="divider reveal" />
               <p className="reveal">
-                Each Zeller piece passes through twelve pairs of hands before it reaches
-                yours. We believe the journey matters as much as the destination.
+                With artisanal craftsmanship as our celestial wand, we immerse you in the avant-garde experience of Crystal Couture — paving way for a new revelation in India.
               </p>
             </div>
-            <div>
-              <p className="reveal">
-                Our atelier in the Swiss countryside operates on a single principle:
-                never compromise. The moment a concession is made to speed or cost,
-                the integrity of the work is lost.
-              </p>
-              <br />
-              <p className="reveal">
-                We invite you to visit us. See the looms, meet the makers, understand
-                the process behind what you wear.
-              </p>
+            <div className="alacarte-cards">
+              <div className="alacarte-card reveal">
+                <span className="alacarte-card__num">01</span>
+                <h3>Customisation &amp; Consultation</h3>
+                <p>From a single crystal to a bespoke chandelier — every piece conceived around you. Your cosmos, your creation.</p>
+              </div>
+              <div className="alacarte-card reveal">
+                <span className="alacarte-card__num">02</span>
+                <h3>Corporate &amp; Wedding Gifting</h3>
+                <p>Gift a fragment of the cosmos. Curated crystal collections for milestones, celebrations, and the moments that matter.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -303,12 +374,17 @@ export default function App() {
       {/* ── Footer ── */}
       <footer id="contact">
         <div>
-          <p className="footer-brand">Zeller Atelier</p>
-          <p style={{ fontSize: '0.65rem', color: '#3a3a3a', marginTop: '0.5rem', letterSpacing: '0.1em' }}>
-            Zürich · London · Tokyo
+          <p className="footer-brand">Zeller Crystals</p>
+          <p style={{ fontSize: '0.62rem', color: 'var(--clr-muted)', marginTop: '0.5rem', letterSpacing: '0.12em' }}>
+            www.zellercrystals.com
           </p>
         </div>
-        <p className="footer-copy">© {new Date().getFullYear()} Zeller. All rights reserved.</p>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '0.68rem', color: 'var(--clr-accent)', letterSpacing: '0.38em', textTransform: 'uppercase', fontFamily: 'var(--font-display)' }}>
+            Celebrate You
+          </p>
+        </div>
+        <p className="footer-copy">© {new Date().getFullYear()} Zeller. support@zellercrystals.com</p>
       </footer>
     </>
   )

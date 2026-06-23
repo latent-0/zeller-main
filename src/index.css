@@ -430,6 +430,267 @@ footer {
   color: var(--clr-accent);
 }
 
+/* ── Fragment of the Cosmos section ── */
+.fragment-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6vw;
+  align-items: center;
+  min-height: 95vh;
+  padding: 10vh 6vw 12vh;
+  overflow: hidden;
+}
+
+.fragment-text .section-label { margin-bottom: 1.2rem; }
+.fragment-text h2 { margin-bottom: 2rem; }
+.fragment-text p  { max-width: 480px; }
+
+.cosmic-pull {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  color: var(--clr-accent);
+  letter-spacing: 0.06em;
+}
+
+/* ── Diagonal frames gallery ── */
+.frames-gallery {
+  position: relative;
+  height: 68vh;
+}
+
+.frame {
+  position: absolute;
+  overflow: hidden;
+  border: 1.5px solid rgba(196, 174, 224, 0.32);
+  will-change: transform, opacity;
+}
+
+.frame::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(196, 174, 224, 0.14);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.75) brightness(0.85);
+  transition: filter 0.6s ease;
+}
+.frame:hover img { filter: saturate(1) brightness(1); }
+
+.frame-art {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 28% 35%, rgba(196, 174, 224, 0.55) 0%, transparent 55%),
+    radial-gradient(ellipse at 72% 65%, rgba(234, 179, 8, 0.28) 0%, transparent 48%),
+    radial-gradient(ellipse at 50% 50%, rgba(150, 200, 255, 0.18) 0%, transparent 60%),
+    linear-gradient(145deg, #1e1535 0%, #0f0b1a 100%);
+}
+
+.frame--1 {
+  width: 44%;
+  aspect-ratio: 3/4;
+  top: 0;
+  left: 4%;
+  transform: rotate(-6.5deg);
+}
+
+.frame--2 {
+  width: 50%;
+  aspect-ratio: 2/3;
+  top: 12%;
+  right: 0;
+  transform: rotate(4deg);
+}
+
+.frame--3 {
+  width: 36%;
+  aspect-ratio: 3/4;
+  bottom: 2%;
+  left: 28%;
+  transform: rotate(-2.8deg);
+}
+
+/* ── Horizontal scroll — differentiators ── */
+.h-scroll-wrapper {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+}
+
+.h-scroll-track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+}
+
+.h-panel {
+  min-width: 100vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 10vw;
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid rgba(196, 174, 224, 0.1);
+}
+
+/* Alternating subtle bg tint per panel */
+.h-panel:nth-child(even) { background: rgba(196, 174, 224, 0.03); }
+
+.h-panel__bg-num {
+  position: absolute;
+  right: 7vw;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: clamp(7rem, 18vw, 14rem);
+  font-weight: 100;
+  color: rgba(196, 174, 224, 0.07);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  pointer-events: none;
+  user-select: none;
+}
+
+.h-panel__label {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--clr-accent);
+  margin-bottom: 1.4rem;
+}
+
+.h-panel__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.5vw, 4rem);
+  font-weight: 200;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--clr-text);
+  margin-bottom: 2rem;
+  max-width: 580px;
+  line-height: 1.15;
+}
+
+.h-panel__body {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.3vw, 1rem);
+  line-height: 1.85;
+  color: var(--clr-muted);
+  max-width: 520px;
+}
+
+.h-scroll-progress {
+  position: absolute;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.h-scroll-label {
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(196, 174, 224, 0.45);
+}
+
+/* ── Product grid — 3-column rich cards ── */
+.product-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.product-card--rich {
+  padding: 0;
+  overflow: hidden;
+}
+
+.product-card__frame {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-card__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.7) brightness(0.8);
+  transition: transform 0.7s ease, filter 0.5s ease;
+}
+
+.product-card--rich:hover .product-card__frame img {
+  transform: scale(1.05);
+  filter: saturate(1) brightness(0.95);
+}
+
+.product-card__art {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 40% 40%, rgba(234, 179, 8, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 70%, rgba(196, 174, 224, 0.4) 0%, transparent 50%),
+    linear-gradient(145deg, #1e1535 0%, #0d0814 100%);
+}
+
+.product-card--rich .product-number,
+.product-card--rich h3,
+.product-card--rich p {
+  padding: 0 2.2rem;
+}
+
+.product-card--rich .product-number { padding-top: 1.8rem; }
+.product-card--rich p               { padding-bottom: 2.2rem; }
+
+/* ── À La Carte ── */
+.alacarte-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.alacarte-card {
+  padding: 2rem 2.2rem;
+  border: 1px solid rgba(196, 174, 224, 0.15);
+  position: relative;
+  transition: border-color 0.4s;
+}
+.alacarte-card:hover { border-color: rgba(196, 174, 224, 0.4); }
+
+.alacarte-card__num {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  color: var(--clr-accent);
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.alacarte-card h3 {
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  color: var(--clr-text);
+  margin-bottom: 0.7rem;
+}
+
+.alacarte-card p {
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
 /* ── Paper texture section ── */
 .paper-section {
   position: relative;
@@ -549,8 +810,12 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .section-intro { grid-template-columns: 1fr; }
-  .product-grid { grid-template-columns: 1fr; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .nav-links { display: none; }
+  .fragment-section   { grid-template-columns: 1fr; }
+  .section-intro      { grid-template-columns: 1fr; }
+  .product-grid       { grid-template-columns: 1fr; }
+  .product-grid--3    { grid-template-columns: 1fr; }
+  .stats-row          { grid-template-columns: repeat(2, 1fr); }
+  .nav-links          { display: none; }
+  .frames-gallery     { height: 50vh; margin-top: 4vh; }
+  .h-panel__title     { font-size: clamp(1.8rem, 8vw, 2.8rem); }
 }
