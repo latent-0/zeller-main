@@ -118,8 +118,7 @@ p {
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--clr-text);
-  opacity: 0;
-  transform: translateY(30px);
+  /* spans start hidden — GSAP blurs them in */
 }
 
 .hero-tagline {
@@ -131,7 +130,7 @@ p {
   color: var(--clr-accent);
   margin-top: 0.75rem;
   opacity: 0;
-  transform: translateY(20px);
+  filter: blur(6px);
 }
 
 /* Scroll cue */
@@ -471,6 +470,76 @@ footer {
 
 .paper-section .divider {
   background: #7a5c3a;
+}
+
+/* ── BlurText animation ── */
+.bl {
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateY(9px);
+  will-change: filter, opacity, transform;
+}
+.bl--go {
+  animation: blurIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes blurIn {
+  to { opacity: 1; filter: blur(0px); transform: translateY(0); }
+}
+
+/* ── Glassmorphism brand cards ── */
+.brand-card {
+  position: absolute;
+  z-index: 4;
+  width: clamp(200px, 22vw, 280px);
+  padding: 1.6rem 1.8rem;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 3px;
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform, filter;
+}
+
+.brand-card__label {
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--clr-accent);
+  margin-bottom: 0.7rem;
+  display: block;
+}
+
+.brand-card__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 200;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--clr-text);
+  margin-bottom: 0.65rem;
+  line-height: 1.2;
+}
+
+.brand-card__body {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: rgba(237, 232, 245, 0.65);
+  font-weight: 300;
+}
+
+/* Top-left, top-right, bottom-centre positions */
+.brand-card--tl { top: 12vh;  left: 4vw; }
+.brand-card--tr { top: 18vh;  right: 4vw; }
+.brand-card--bl { bottom: 14vh; left: 5vw; }
+
+/* Hero wordmark letter spans — start hidden, GSAP blurs them in */
+.hw {
+  display: inline-block;
+  opacity: 0;
 }
 
 /* ── Reveal utility ── */
