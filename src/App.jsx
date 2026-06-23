@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import RoomScene from './RoomScene'
-import SideRays from './SideRays'
+// import RoomScene from './RoomScene'          // ← old chandelier hero (preserved in RoomScene.jsx)
+// import SideRays from './SideRays'            // ← old side rays (preserved in SideRays.jsx)
+import LuxuryRoomScene from './LuxuryRoomScene'
 import LoadingScreen from './LoadingScreen'
 import BlurText from './BlurText'
 import './index.css'
@@ -202,18 +203,13 @@ export default function App() {
 
       {!sceneReady && <LoadingScreen onComplete={() => setSplashDone(true)} />}
 
-      {/* ── Hero — chandelier orbit ── */}
+      {/* ── Hero — luxury room 3D walk-through ── */}
       <div className="video-scroll-section" ref={sectionRef}>
         <div className="video-sticky">
-          <RoomScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
-          <SideRays
-            speed={2.5} rayColor1="#EAB308" rayColor2="#96c8ff"
-            intensity={4.5} spread={2.8} origin="top-right"
-            tilt={0} saturation={1.5} blend={0.57} falloff={1.2} opacity={1.0}
-          />
+          <LuxuryRoomScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
           <div className="vignette" />
 
-          {/* Orbit-synced glassmorphism cards */}
+          {/* Glassmorphism brand cards (scroll-synced via GSAP) */}
           <div ref={card1Ref} className="brand-card brand-card--tl">
             <span className="brand-card__label">India's First</span>
             <div className="brand-card__title">Crystal Couture</div>
@@ -243,6 +239,34 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {/*
+        ── OLD HERO — chandelier orbit (preserved below, uncomment to restore) ──
+        <div className="video-scroll-section" ref={sectionRef}>
+          <div className="video-sticky">
+            <RoomScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
+            <SideRays
+              speed={2.5} rayColor1="#EAB308" rayColor2="#96c8ff"
+              intensity={4.5} spread={2.8} origin="top-right"
+              tilt={0} saturation={1.5} blend={0.57} falloff={1.2} opacity={1.0}
+            />
+            <div className="vignette" />
+            <div ref={card1Ref} className="brand-card brand-card--tl">...</div>
+            <div ref={card2Ref} className="brand-card brand-card--tr">...</div>
+            <div ref={card3Ref} className="brand-card brand-card--bl">...</div>
+            <div className="hero-overlay">
+              <h1 ref={wordmarkRef} className="hero-wordmark">
+                {'ZELLER'.split('').map((ch, i) => <span key={i} className="hw">{ch}</span>)}
+              </h1>
+              <p ref={taglineRef} className="hero-tagline">Celebrate You</p>
+            </div>
+            <div ref={scrollCueRef} className="scroll-cue">
+              <span className="scroll-cue-label">Scroll</span>
+              <div className="scroll-cue-line" />
+            </div>
+          </div>
+        </div>
+      */}
 
       {/* ── Fragment of the Cosmos — diagonal frames ── */}
       <section id="story" className="fragment-section">
