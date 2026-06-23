@@ -5,12 +5,16 @@
 }
 
 :root {
-  --clr-bg: #0a0a0a;
-  --clr-surface: #111111;
-  --clr-accent: #c8a96e;
-  --clr-accent-light: #e5d4b0;
-  --clr-text: #f0ece4;
-  --clr-muted: #7a7570;
+  --clr-bg:           #0f0b1a;
+  --clr-surface:      #17112a;
+  --clr-accent:       #c4aee0;
+  --clr-accent-light: #ddd0f0;
+  --clr-text:         #ede8f5;
+  --clr-muted:        #8a7fa8;
+
+  --font-display: 'Josefin Sans', sans-serif;
+  --font-serif:   'Cormorant Garamond', serif;
+  --font-body:    'Libre Franklin', sans-serif;
 }
 
 html {
@@ -18,26 +22,38 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   color: var(--clr-text);
   background: var(--clr-bg);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Headlines: Josefin Sans caps + Cormorant Garamond italic for emphasis words */
 h1, h2, h3 {
-  font-weight: 300;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-weight: 200;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 h1 { font-size: clamp(2.5rem, 6vw, 6rem); line-height: 1.05; }
 h2 { font-size: clamp(1.8rem, 4vw, 3.5rem); line-height: 1.1; }
-h3 { font-size: clamp(1rem, 2vw, 1.4rem); }
+h3 { font-size: clamp(1rem, 2vw, 1.4rem); letter-spacing: 0.18em; }
+
+/* Serif italic — used for decorative inline emphasis */
+em, .serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
 
 p {
-  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
-  line-height: 1.75;
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  line-height: 1.8;
   color: var(--clr-muted);
   font-weight: 300;
 }
@@ -96,9 +112,10 @@ p {
 }
 
 .hero-wordmark {
+  font-family: var(--font-display);
   font-size: clamp(3rem, 10vw, 9rem);
-  font-weight: 200;
-  letter-spacing: 0.3em;
+  font-weight: 100;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--clr-text);
   opacity: 0;
@@ -106,9 +123,11 @@ p {
 }
 
 .hero-tagline {
-  font-size: clamp(0.7rem, 1.5vw, 0.95rem);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+  letter-spacing: 0.18em;
+  text-transform: none;
   color: var(--clr-accent);
   margin-top: 0.75rem;
   opacity: 0;
@@ -130,8 +149,9 @@ p {
 }
 
 .scroll-cue-label {
-  font-size: 0.62rem;
-  letter-spacing: 0.35em;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--clr-accent);
 }
@@ -164,9 +184,10 @@ nav {
 }
 
 .nav-logo {
+  font-family: var(--font-display);
   font-size: 1rem;
-  font-weight: 300;
-  letter-spacing: 0.38em;
+  font-weight: 200;
+  letter-spacing: 0.42em;
   text-transform: uppercase;
   color: var(--clr-text);
   text-decoration: none;
@@ -179,8 +200,9 @@ nav {
 }
 
 .nav-links a {
-  font-size: 0.7rem;
-  letter-spacing: 0.25em;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--clr-muted);
   text-decoration: none;
@@ -204,6 +226,7 @@ nav {
 }
 
 .section-label {
+  font-family: var(--font-display);
   font-size: 0.65rem;
   letter-spacing: 0.42em;
   text-transform: uppercase;
@@ -224,7 +247,7 @@ nav {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
-  background: #1a1a1a;
+  background: #2a1f40;
 }
 
 .product-card {
@@ -271,15 +294,17 @@ nav {
 .quote-section {
   padding: clamp(5rem, 15vh, 12rem) 6vw;
   text-align: center;
-  border-top: 1px solid #1e1e1e;
-  border-bottom: 1px solid #1e1e1e;
+  border-top: 1px solid #2a1f40;
+  border-bottom: 1px solid #2a1f40;
 }
 
 .quote-section blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
   font-size: clamp(1.4rem, 3.5vw, 2.8rem);
-  font-weight: 200;
-  letter-spacing: 0.04em;
-  line-height: 1.45;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
   color: var(--clr-text);
   max-width: 900px;
   margin: 0 auto;
@@ -300,7 +325,7 @@ nav {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2px;
-  background: #1a1a1a;
+  background: #2a1f40;
 }
 
 .stat-item {
@@ -310,10 +335,11 @@ nav {
 }
 
 .stat-number {
+  font-family: var(--font-display);
   font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 200;
+  font-weight: 100;
   color: var(--clr-text);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.04em;
   display: block;
   line-height: 1;
 }
@@ -321,8 +347,9 @@ nav {
 .stat-unit { color: var(--clr-accent); }
 
 .stat-label {
-  font-size: 0.65rem;
-  letter-spacing: 0.3em;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--clr-muted);
   margin-top: 0.8rem;
@@ -332,7 +359,7 @@ nav {
 /* ── Footer ── */
 footer {
   padding: 4rem 6vw 2.5rem;
-  border-top: 1px solid #1e1e1e;
+  border-top: 1px solid #2a1f40;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -376,9 +403,10 @@ footer {
 }
 
 .loading-wordmark {
+  font-family: var(--font-display);
   font-size: clamp(2rem, 8vw, 5rem);
-  font-weight: 200;
-  letter-spacing: 0.4em;
+  font-weight: 100;
+  letter-spacing: 0.45em;
   color: var(--clr-text);
 }
 
@@ -401,6 +429,48 @@ footer {
   font-size: 0.68rem;
   letter-spacing: 0.3em;
   color: var(--clr-accent);
+}
+
+/* ── Paper texture section ── */
+.paper-section {
+  position: relative;
+  background-color: #d9d3c7;
+  /* SVG feTurbulence grain — layered over the base colour */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23grain)' opacity='0.18'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.35' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n2)' opacity='0.09'/%3E%3C/svg%3E");
+  background-size: 300px 300px, 200px 200px;
+  background-repeat: repeat;
+}
+
+/* Subtle warm vignette at edges */
+.paper-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(180,165,140,0.22) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.paper-section > * { position: relative; z-index: 1; }
+
+/* Override text colours inside paper sections */
+.paper-section h2,
+.paper-section h3 {
+  color: #1a1410;
+}
+
+.paper-section .section-label {
+  color: #7a5c3a;
+}
+
+.paper-section p {
+  color: #4a3f35;
+}
+
+.paper-section .divider {
+  background: #7a5c3a;
 }
 
 /* ── Reveal utility ── */

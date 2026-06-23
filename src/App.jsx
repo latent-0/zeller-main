@@ -121,7 +121,7 @@ export default function App() {
       </div>
 
       {/* ── About ── */}
-      <section id="about">
+      <section id="about" className="paper-section">
         <div className="section">
           <div className="section-intro">
             <div>
