@@ -77,7 +77,7 @@ export default function RoomScene({ sectionRef, onReady }) {
     renderer.toneMappingExposure = 1.2
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.shadowMap.enabled = false
-    renderer.setClearColor(0x05080f, 1)
+    renderer.setClearColor(0x1a0d2e, 1)
 
     /* ── Scene ── */
     const scene = new THREE.Scene()
@@ -106,17 +106,25 @@ export default function RoomScene({ sectionRef, onReady }) {
     const pmrem  = new THREE.PMREMGenerator(renderer)
     const envMap = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
     scene.environment          = envMap
-    scene.environmentIntensity = 0.35
+    scene.environmentIntensity = 0.8
 
     /* ── Camera ── */
     const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 20000)
     camera.position.set(0, 200, 1800)
     camera.lookAt(0, 0, 0)
 
-    const camStart = new THREE.Vector3()
-    const camEnd   = new THREE.Vector3()
-    const tgtStart = new THREE.Vector3()
-    const tgtEnd   = new THREE.Vector3()
+    // CatmullRom spline camera — filled after FBX loads
+    let posSpline = null  // THREE.CatmullRomCurve3 for camera position
+    let tgtSpline = null  // THREE.CatmullRomCurve3 for look-at target
+
+    const tmpPos = new THREE.Vector3()
+    const tmpTgt = new THREE.Vector3()
+
+    function evalCam(t) {
+      if (!posSpline) return
+      posSpline.getPoint(t, tmpPos)
+      tgtSpline.getPoint(t, tmpTgt)
+    }
 
     /* ── Post-processing ── */
     const composer = new EffectComposer(renderer)
@@ -133,42 +141,38 @@ export default function RoomScene({ sectionRef, onReady }) {
 
     /* ── Glass material — amber translucent ── */
     const glassMat = new THREE.MeshPhysicalMaterial({
-      color:               0xffffff,
+      color:               0xfff0d0,
       metalness:           0,
-      roughness:           0.018,
+      roughness:           0.02,
       transmission:        1,
-      transparent:         false,
-      ior:                 1.62,
-      thickness:           2.8,
-      dispersion:          0.32,
+      transparent:         true,
+      ior:                 1.55,
+      thickness:           3.5,
       attenuationColor:    new THREE.Color(0xff8820),
-      attenuationDistance: 5,
-      clearcoat:           0.5,
-      clearcoatRoughness:  0.04,
-      envMapIntensity:     0.3,
-      side:                THREE.FrontSide,
+      attenuationDistance: 3,
+      clearcoat:           0.8,
+      clearcoatRoughness:  0.02,
+      envMapIntensity:     1.2,
+      side:                THREE.DoubleSide,
       flatShading:         true,
-      depthWrite:          true,
     })
 
     /* ── Crystal material — clear glass ── */
     const crystalMat = new THREE.MeshPhysicalMaterial({
       color:               0xffffff,
       metalness:           0,
-      roughness:           0.018,
+      roughness:           0.02,
       transmission:        1,
-      transparent:         false,
-      ior:                 1.62,
-      thickness:           1.8,
-      dispersion:          0.32,
-      attenuationColor:    new THREE.Color(0xf5f9ff),
-      attenuationDistance: 5,
-      clearcoat:           0.5,
-      clearcoatRoughness:  0.04,
-      envMapIntensity:     0.3,
-      side:                THREE.FrontSide,
+      transparent:         true,
+      ior:                 1.55,
+      thickness:           2.0,
+      attenuationColor:    new THREE.Color(0xf0f5ff),
+      attenuationDistance: 4,
+      clearcoat:           0.8,
+      clearcoatRoughness:  0.02,
+      envMapIntensity:     1.2,
+      side:                THREE.DoubleSide,
       flatShading:         true,
-      depthWrite:          true,
     })
 
     /* ── Lights ── */
@@ -181,6 +185,16 @@ export default function RoomScene({ sectionRef, onReady }) {
     scene.add(fillLight)
 
     scene.add(new THREE.AmbientLight(0xfff0d8, 0.35))
+
+    // Backlight to illuminate glass from behind — makes transmission visible
+    const backLight = new THREE.PointLight(0xffe8c0, 2.5, 3000)
+    backLight.position.set(0, 600, -800)
+    scene.add(backLight)
+
+    // Top rim light — catches the chains and top glass
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.6)
+    rimLight.position.set(0, 1, -0.8)
+    scene.add(rimLight)
 
     /* ── Load FBX — no filtering, no clipping; show full chandelier ── */
     const fbxLoader = new FBXLoader()
@@ -229,18 +243,56 @@ export default function RoomScene({ sectionRef, onReady }) {
 
       scene.add(fbx)
 
-      /* ── Camera: look at lower glass body; chains hang off the top ── */
-      const dist = finalSize.y * 1.5
-      // Look at 32% from bottom — glass body center, chains go off top
-      const lookY = finalBox.min.y + finalSize.y * 0.32
+      /* ── CatmullRom spline camera ── */
+      const cx = finalCentre.x
+      const cy = finalCentre.y
+      const cz = finalCentre.z
+      const R  = finalSize.x * 0.5   // chandelier half-width
+      const H  = finalSize.y
 
-      camStart.set(finalCentre.x + finalSize.x * 0.05, lookY + finalSize.y * 0.04, finalCentre.z + dist)
-      camEnd.set  (finalCentre.x - finalSize.x * 0.08, lookY - finalSize.y * 0.10, finalCentre.z + dist * 0.35)
-      tgtStart.set(finalCentre.x, lookY, finalCentre.z)
-      tgtEnd.set  (finalCentre.x, lookY + finalSize.y * 0.04, finalCentre.z)
+      // Glass body focus height — middle of the glass leaves
+      const gy = finalBox.min.y + H * 0.38
 
-      camera.position.copy(camStart)
-      camera.lookAt(tgtStart)
+      // Orbit helper: cylindrical coords (angle in radians, radius, height offset)
+      const orb = (ang, rad, dy) => new THREE.Vector3(
+        cx + Math.sin(ang) * rad,
+        gy + dy,
+        cz + Math.cos(ang) * rad
+      )
+
+      // ── Position spline: macro close → orbit 270° around → pull back ──
+      // Angles: 0 = front, positive = clockwise when viewed from above
+      const posPts = [
+        orb(0.00,  R * 1.1,   H * 0.05),  // 0  macro front — almost touching glass
+        orb(0.45,  R * 1.6,   H * 0.12),  // 1  ease out right, rising
+        orb(1.05,  R * 2.2,   H * 0.08),  // 2  right flank, medium distance
+        orb(1.65,  R * 2.8,  -H * 0.05),  // 3  sweeping right-back, drop low
+        orb(2.30,  R * 2.4,  -H * 0.14),  // 4  behind, low angle looking up
+        orb(3.00,  R * 2.0,  -H * 0.08),  // 5  left flank
+        orb(3.70,  R * 1.8,   H * 0.04),  // 6  front-left, easing back in
+        orb(4.20,  R * 1.5,   H * 0.18),  // 7  elevated front — grand reveal
+      ]
+
+      // ── Target spline: always near glass body centre, drifts subtly ──
+      const tgtPts = [
+        new THREE.Vector3(cx,            gy + H*0.06,  cz),  // 0 centre
+        new THREE.Vector3(cx + R*0.15,   gy + H*0.04,  cz),  // 1 slight right
+        new THREE.Vector3(cx + R*0.10,   gy,           cz),  // 2
+        new THREE.Vector3(cx,            gy - H*0.08,  cz),  // 3 dip — under-belly
+        new THREE.Vector3(cx - R*0.08,   gy - H*0.10,  cz),  // 4 low rear target
+        new THREE.Vector3(cx - R*0.12,   gy,           cz),  // 5
+        new THREE.Vector3(cx - R*0.05,   gy + H*0.04,  cz),  // 6
+        new THREE.Vector3(cx,            gy + H*0.10,  cz),  // 7 elevated finish
+      ]
+
+      posSpline = new THREE.CatmullRomCurve3(posPts, false, 'catmullrom', 0.5)
+      tgtSpline = new THREE.CatmullRomCurve3(tgtPts, false, 'catmullrom', 0.5)
+
+      // Initialise camera at t=0
+      posSpline.getPoint(0, tmpPos)
+      tgtSpline.getPoint(0, tmpTgt)
+      camera.position.copy(tmpPos)
+      camera.lookAt(tmpTgt)
 
       onReady?.()
 
@@ -257,22 +309,23 @@ export default function RoomScene({ sectionRef, onReady }) {
     window.addEventListener('scroll', onScroll, { passive: true })
 
     /* ── Render loop ── */
-    const tmpPos = new THREE.Vector3(), tmpTgt = new THREE.Vector3()
     let time = 0, rafId
 
     const animate = () => {
       rafId = requestAnimationFrame(animate)
       time += 0.005
-      smoothProgress += (rawProgress - smoothProgress) * 0.04
+      smoothProgress += (rawProgress - smoothProgress) * 0.028  // slower smoothing = more cinematic
 
       // auroraUniforms.uTime.value = time
 
-      tmpPos.lerpVectors(camStart, camEnd, smoothProgress)
-      tmpTgt.lerpVectors(tgtStart, tgtEnd, smoothProgress)
+      if (posSpline) {
+        evalCam(smoothProgress)
 
-      const drift = (1 - smoothProgress) * 7
-      tmpPos.x += Math.sin(time * 0.52) * drift
-      tmpPos.y += Math.cos(time * 0.39) * drift * 0.25
+        // Subtle organic drift at the start (fades as user scrolls in)
+        const drift = Math.max(0, 1 - smoothProgress * 4) * 3
+        tmpPos.x += Math.sin(time * 0.41) * drift
+        tmpPos.y += Math.cos(time * 0.27) * drift * 0.3
+      }
 
       camera.position.copy(tmpPos)
       camera.lookAt(tmpTgt)

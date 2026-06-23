@@ -3,6 +3,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import RoomScene from './RoomScene'
 import SideRays from './SideRays'
+import LoadingScreen from './LoadingScreen'
 import './index.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -12,7 +13,9 @@ export default function App() {
   const wordmarkRef  = useRef(null)
   const taglineRef   = useRef(null)
   const scrollCueRef = useRef(null)
-  const [sceneReady, setSceneReady] = useState(false)
+  const [sceneLoaded, setSceneLoaded] = useState(false)
+  const [splashDone,  setSplashDone]  = useState(false)
+  const sceneReady = sceneLoaded && splashDone
 
   /* Wordmark + scroll-cue animations — run once scene is loaded */
   useEffect(() => {
@@ -80,20 +83,15 @@ export default function App() {
         </ul>
       </nav>
 
-      {/* Loading overlay — fades out when Three.js scene is ready */}
+      {/* Sparkle loading splash — shown until animation + scene both done */}
       {!sceneReady && (
-        <div className="loading-screen">
-          <div className="loading-wordmark">ZELLER</div>
-          <div className="loading-bar">
-            <div className="loading-fill" style={{ width: sceneReady ? '100%' : '60%', transition: 'width 2s ease' }} />
-          </div>
-        </div>
+        <LoadingScreen onComplete={() => setSplashDone(true)} />
       )}
 
       {/* ── Hero: Three.js room ── */}
       <div className="video-scroll-section" ref={sectionRef}>
         <div className="video-sticky">
-          <RoomScene sectionRef={sectionRef} onReady={() => setSceneReady(true)} />
+          <RoomScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
           <SideRays
             speed={2.5}
             rayColor1="#EAB308"
