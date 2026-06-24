@@ -176,33 +176,35 @@ export default function InteriorScene({ sectionRef, onReady }) {
         scene.add(fillLight)
 
         /* ── Camera: room reveal → chandelier orbit ── */
-        const roomEye = pH * 0.27          // standing eye level
-        // Orbit is wide + low so camera NEVER enters the chandelier globes
-        const orbitR  = Math.min(pSize.x, pSize.z) * 0.44  // wide enough to clear globe arms
-        const orbitH  = pH * 0.36          // clearly below the globes (chandelier at ~pH*0.78)
-        const lookH   = pH * 0.76          // look upward at chandelier
+        const roomEye = pH * 0.27
+
+        // Orbit: floor-level height looking steeply up — guaranteed to never
+        // enter the chandelier globes regardless of arm length
+        const orbitR = Math.max(pSize.x, pSize.z) * 0.52  // very wide — clear of any arm
+        const orbitH = pH * 0.22                           // floor-level (~knee height)
+        const lookH  = pH * 0.78                           // aim at chandelier
 
         const posPts = [
-          // — Room reveal phase (t 0→0.40) —
-          new THREE.Vector3(cx + pSize.x*0.28, roomEye,      placed.max.z * 0.70),
-          new THREE.Vector3(cx + pSize.x*0.10, roomEye*1.05, cz + pSize.z*0.18),
-          new THREE.Vector3(cx - pSize.x*0.04, roomEye*1.2,  cz + pSize.z*0.04),
-          // — Chandelier orbit phase (t 0.40→1): wide radius, low height, looking up —
-          new THREE.Vector3(cx + Math.sin(0.0)          * orbitR, orbitH,       cz + Math.cos(0.0)          * orbitR),
-          new THREE.Vector3(cx + Math.sin(Math.PI*0.50) * orbitR, orbitH*1.02,  cz + Math.cos(Math.PI*0.50) * orbitR),
-          new THREE.Vector3(cx + Math.sin(Math.PI*1.00) * orbitR, orbitH*1.04,  cz + Math.cos(Math.PI*1.00) * orbitR),
-          new THREE.Vector3(cx + Math.sin(Math.PI*1.45) * orbitR, orbitH*1.01,  cz + Math.cos(Math.PI*1.45) * orbitR),
+          // — Room reveal (t 0 → 0.38) — camera walks through the room —
+          new THREE.Vector3(cx + pSize.x*0.30, roomEye,       placed.max.z * 0.68),
+          new THREE.Vector3(cx + pSize.x*0.12, roomEye*1.04,  cz + pSize.z*0.15),
+          new THREE.Vector3(cx,                roomEye,        cz + pSize.z*0.02),
+          // — Chandelier orbit (t 0.38 → 1) — wide, floor-level, looking up —
+          new THREE.Vector3(cx + Math.sin(0.0)           * orbitR, orbitH,      cz + Math.cos(0.0)           * orbitR),
+          new THREE.Vector3(cx + Math.sin(Math.PI * 0.5) * orbitR, orbitH*1.02, cz + Math.cos(Math.PI * 0.5) * orbitR),
+          new THREE.Vector3(cx + Math.sin(Math.PI * 1.0) * orbitR, orbitH*1.04, cz + Math.cos(Math.PI * 1.0) * orbitR),
+          new THREE.Vector3(cx + Math.sin(Math.PI * 1.5) * orbitR, orbitH*1.01, cz + Math.cos(Math.PI * 1.5) * orbitR),
         ]
         const tgtPts = [
-          // Room phase — look into the interior (sofa / gallery area)
-          new THREE.Vector3(cx - pSize.x*0.12, roomEye*0.70, cz - pSize.z*0.18),
-          new THREE.Vector3(cx - pSize.x*0.06, roomEye*0.75, cz - pSize.z*0.10),
-          new THREE.Vector3(cx,                lookH*0.50,   cz - pSize.z*0.05),
-          // Orbit phase — always toward chandelier, tiny drift keeps it organic
-          new THREE.Vector3(cx + pSize.x*0.010, lookH,      cz - pSize.z*0.010),
-          new THREE.Vector3(cx - pSize.x*0.008, lookH*0.98, cz + pSize.z*0.008),
-          new THREE.Vector3(cx + pSize.x*0.006, lookH*1.01, cz - pSize.z*0.006),
-          new THREE.Vector3(cx,                 lookH,       cz),
+          // Room phase — look into the interior
+          new THREE.Vector3(cx - pSize.x*0.14, roomEye*0.68, cz - pSize.z*0.20),
+          new THREE.Vector3(cx - pSize.x*0.06, roomEye*0.72, cz - pSize.z*0.10),
+          new THREE.Vector3(cx,                lookH * 0.45, cz - pSize.z*0.04),
+          // Orbit phase — chandelier as focal point, organic micro-drift
+          new THREE.Vector3(cx + pSize.x*0.012, lookH,       cz - pSize.z*0.012),
+          new THREE.Vector3(cx - pSize.x*0.010, lookH*0.97,  cz + pSize.z*0.010),
+          new THREE.Vector3(cx + pSize.x*0.008, lookH*1.02,  cz - pSize.z*0.008),
+          new THREE.Vector3(cx,                 lookH,        cz),
         ]
 
         posSpline = new THREE.CatmullRomCurve3(posPts, false, 'catmullrom', 0.5)
