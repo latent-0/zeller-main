@@ -4,7 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 // import RoomScene from './RoomScene'          // ← old chandelier hero (preserved in RoomScene.jsx)
 // import SideRays from './SideRays'            // ← old side rays (preserved in SideRays.jsx)
 // import LuxuryRoomScene from './LuxuryRoomScene'  // ← procedural room backup
-import InteriorScene from './InteriorScene'
+// import InteriorScene from './InteriorScene'       // ← interior scene backup
+import CrystalHero from './CrystalHero'
 import LoadingScreen from './LoadingScreen'
 import BlurText from './BlurText'
 import './index.css'
@@ -188,7 +189,7 @@ export default function App() {
       {/* ── Hero — luxury room 3D walk-through ── */}
       <div className="video-scroll-section" ref={sectionRef}>
         <div className="video-sticky">
-          <InteriorScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
+          <CrystalHero sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
           <div className="vignette" />
 
           <div className="hero-overlay">
