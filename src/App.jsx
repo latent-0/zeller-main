@@ -3,7 +3,8 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 // import RoomScene from './RoomScene'          // ← old chandelier hero (preserved in RoomScene.jsx)
 // import SideRays from './SideRays'            // ← old side rays (preserved in SideRays.jsx)
-import LuxuryRoomScene from './LuxuryRoomScene'
+// import LuxuryRoomScene from './LuxuryRoomScene'  // ← procedural room backup
+import InteriorScene from './InteriorScene'
 import LoadingScreen from './LoadingScreen'
 import BlurText from './BlurText'
 import './index.css'
@@ -66,9 +67,6 @@ export default function App() {
   const wordmarkRef  = useRef(null)
   const taglineRef   = useRef(null)
   const scrollCueRef = useRef(null)
-  const card1Ref     = useRef(null)
-  const card2Ref     = useRef(null)
-  const card3Ref     = useRef(null)
   const framesRef    = useRef(null)
   const frame1Ref    = useRef(null)
   const frame2Ref    = useRef(null)
@@ -111,22 +109,6 @@ export default function App() {
       scrollTrigger: { trigger: sec, start: 'top+=4% top', end: 'top+=13% top', scrub: true },
     })
 
-    // ── Orbit glassmorphism cards ──
-    ;[
-      { ref: card1Ref, inS: 'top+=14% top', inE: 'top+=22% top', outS: 'top+=30% top', outE: 'top+=36% top' },
-      { ref: card2Ref, inS: 'top+=38% top', inE: 'top+=46% top', outS: 'top+=54% top', outE: 'top+=60% top' },
-      { ref: card3Ref, inS: 'top+=58% top', inE: 'top+=66% top', outS: 'top+=76% top', outE: 'top+=83% top' },
-    ].forEach(({ ref, inS, inE, outS, outE }) => {
-      const el = ref.current; if (!el) return
-      gsap.fromTo(el,
-        { opacity: 0, y: 28, filter: 'blur(12px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', scrollTrigger: { trigger: sec, start: inS, end: inE, scrub: 1.5 } }
-      )
-      gsap.fromTo(el,
-        { opacity: 1, y: 0 },
-        { opacity: 0, y: -20, scrollTrigger: { trigger: sec, start: outS, end: outE, scrub: 1.5 } }
-      )
-    })
 
     // ── Diagonal frames — staggered parallax entry ──
     if (framesRef.current) {
@@ -206,25 +188,8 @@ export default function App() {
       {/* ── Hero — luxury room 3D walk-through ── */}
       <div className="video-scroll-section" ref={sectionRef}>
         <div className="video-sticky">
-          <LuxuryRoomScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
+          <InteriorScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
           <div className="vignette" />
-
-          {/* Glassmorphism brand cards (scroll-synced via GSAP) */}
-          <div ref={card1Ref} className="brand-card brand-card--tl">
-            <span className="brand-card__label">India's First</span>
-            <div className="brand-card__title">Crystal Couture</div>
-            <p className="brand-card__body">India's first & only Crystal Couture Entourage — crafting fragments of the cosmos since our inception.</p>
-          </div>
-          <div ref={card2Ref} className="brand-card brand-card--tr">
-            <span className="brand-card__label">The Artisan's Hand</span>
-            <div className="brand-card__title">Meticulously Crafted</div>
-            <p className="brand-card__body">Every crystal handcrafted by master artisans. Each facet a universe of its own — no two pieces identical.</p>
-          </div>
-          <div ref={card3Ref} className="brand-card brand-card--bl">
-            <span className="brand-card__label">Our Raison d'être</span>
-            <div className="brand-card__title">Accessorize Your Cosmos</div>
-            <p className="brand-card__body">We exist to be a cosmic companion — bejewelling your reality and intertwining the cosmos with your lifestyle.</p>
-          </div>
 
           <div className="hero-overlay">
             <h1 ref={wordmarkRef} className="hero-wordmark">
