@@ -236,11 +236,8 @@ export default function App() {
       {/* ── Fragment of the Cosmos — diagonal frames ── */}
       <section id="story" className="fragment-section">
         <div className="fragment-text">
-          <BlurText text="Who We Are" as="span" className="section-label" stagger={0.04} />
-          <h2>
-            <BlurText text="India's Crystal" wordLevel stagger={0.1} /><br />
-            <BlurText text="Couture Entourage" wordLevel stagger={0.1} />
-          </h2>
+          <BlurText text="Who We Are" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
+          <BlurText text="India's Crystal Couture Entourage" as="h2" animateBy="words" delay={100} stepDuration={0.45} />
           <div className="divider reveal" />
           <p className="reveal">
             A saga reminiscent of a glimpse of the ethereal beyond — sculpting dreams, cosmos &amp; everything in between. A poetic dance of stardust &amp; aspirations, unfurling into a souvenir of indulgent celebrations.
@@ -303,10 +300,8 @@ export default function App() {
       {/* ── Product Range ── */}
       <section id="collection">
         <div className="section">
-          <BlurText text="Product Range" as="span" className="section-label" stagger={0.04} />
-          <h2 style={{ marginBottom: '3rem' }}>
-            <BlurText text="Our Offerings" wordLevel stagger={0.12} />
-          </h2>
+          <BlurText text="Product Range" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
+          <BlurText text="Our Offerings" as="h2" animateBy="words" delay={110} stepDuration={0.45} style={{ marginBottom: '3rem' }} />
         </div>
         <div className="product-grid product-grid--3">
           {PRODUCTS.map(({ n, label, title, desc, img }) => (

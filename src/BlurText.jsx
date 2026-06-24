@@ -1,57 +1,100 @@
-import { useEffect, useRef } from 'react'
+import { motion } from 'motion/react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 
-/**
- * Splits text into per-character spans that blur-in with a stagger
- * once the element enters the viewport.
- *
- * Props:
- *  text       — string to animate
- *  as         — wrapper tag (default 'span')
- *  className  — forwarded to the wrapper
- *  stagger    — delay between each character in seconds (default 0.038)
- *  duration   — animation duration per char (default 0.65s, set via CSS var)
- *  wordLevel  — if true, animate whole words instead of chars
- */
-export default function BlurText({
-  text,
-  as: Tag = 'span',
+const buildKeyframes = (from, steps) => {
+  const keys = new Set([...Object.keys(from), ...steps.flatMap(s => Object.keys(s))]);
+  const keyframes = {};
+  keys.forEach(k => {
+    keyframes[k] = [from[k], ...steps.map(s => s[k])];
+  });
+  return keyframes;
+};
+
+const BlurText = ({
+  text = '',
+  as: Tag = 'p',
+  delay = 200,
   className = '',
-  stagger = 0.038,
-  wordLevel = false,
-}) {
-  const ref = useRef(null)
+  animateBy = 'words',
+  direction = 'top',
+  threshold = 0.1,
+  rootMargin = '0px',
+  animationFrom,
+  animationTo,
+  easing = t => t,
+  onAnimationComplete,
+  stepDuration = 0.35,
+}) => {
+  const elements = animateBy === 'words' ? text.split(' ') : text.split('');
+  const [inView, setInView] = useState(false);
+  const ref = useRef(null);
 
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
-
+    if (!ref.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) return
-        el.querySelectorAll('.bl').forEach((span, i) => {
-          span.style.animationDelay = `${i * stagger}s`
-          span.classList.add('bl--go')
-        })
-        observer.disconnect()
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.unobserve(ref.current);
+        }
       },
-      { threshold: 0.15 }
-    )
+      { threshold, rootMargin }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [threshold, rootMargin]);
 
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [text, stagger])
+  const defaultFrom = useMemo(
+    () =>
+      direction === 'top'
+        ? { filter: 'blur(10px)', opacity: 0, y: -50 }
+        : { filter: 'blur(10px)', opacity: 0, y: 50 },
+    [direction]
+  );
 
-  const units = wordLevel
-    ? text.split(' ').map((word, i, arr) => (
-        <span key={i} className="bl" style={{ display: 'inline-block', whiteSpace: 'pre' }}>
-          {word}{i < arr.length - 1 ? ' ' : ''}
-        </span>
-      ))
-    : text.split('').map((ch, i) => (
-        <span key={i} className="bl" style={{ display: 'inline-block' }}>
-          {ch === ' ' ? ' ' : ch}
-        </span>
-      ))
+  const defaultTo = useMemo(
+    () => [
+      { filter: 'blur(5px)', opacity: 0.5, y: direction === 'top' ? 5 : -5 },
+      { filter: 'blur(0px)', opacity: 1, y: 0 },
+    ],
+    [direction]
+  );
 
-  return <Tag ref={ref} className={className}>{units}</Tag>
-}
+  const fromSnapshot = animationFrom ?? defaultFrom;
+  const toSnapshots = animationTo ?? defaultTo;
+
+  const stepCount = toSnapshots.length + 1;
+  const totalDuration = stepDuration * (stepCount - 1);
+  const times = Array.from({ length: stepCount }, (_, i) =>
+    stepCount === 1 ? 0 : i / (stepCount - 1)
+  );
+
+  return (
+    <Tag ref={ref} className={className} style={{ display: 'flex', flexWrap: 'wrap' }}>
+      {elements.map((segment, index) => {
+        const animateKeyframes = buildKeyframes(fromSnapshot, toSnapshots);
+        const spanTransition = {
+          duration: totalDuration,
+          times,
+          delay: (index * delay) / 1000,
+          ease: easing,
+        };
+        return (
+          <motion.span
+            className="inline-block will-change-[transform,filter,opacity]"
+            key={index}
+            initial={fromSnapshot}
+            animate={inView ? animateKeyframes : fromSnapshot}
+            transition={spanTransition}
+            onAnimationComplete={index === elements.length - 1 ? onAnimationComplete : undefined}
+          >
+            {segment === ' ' ? ' ' : segment}
+            {animateBy === 'words' && index < elements.length - 1 && ' '}
+          </motion.span>
+        );
+      })}
+    </Tag>
+  );
+};
+
+export default BlurText;
