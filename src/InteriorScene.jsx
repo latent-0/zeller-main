@@ -146,11 +146,18 @@ export default function InteriorScene({ sectionRef, onReady }) {
               // Clamp physical-lux exports
               if (mat.emissiveIntensity > 1.0) mat.emissiveIntensity = 0.8
               // Remap red/dominant emissives → warm amber chandelier glow
-              if (mat.emissive.r > 0.3) {
+              // (skip floor lamp shade — handled separately below)
+              if (mat.emissive.r > 0.3 && nm !== 'polysurface13') {
                 mat.emissive.set(0xffb347)
                 mat.emissiveIntensity = 0.9
               }
             }
+
+          // Floor lamp shade — soft warm yellow glow (applied last so it wins)
+          if (nm === 'polysurface13') {
+            mat.emissive?.set(0xffe090)
+            mat.emissiveIntensity = 0.42
+          }
             // Kill any glass/frosted transmission materials so camera doesn't clip through panels
             if (mat.transmission > 0) {
               mat.transmission = 0
