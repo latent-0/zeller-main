@@ -39,8 +39,8 @@ export default function InteriorScene({ sectionRef, onReady }) {
 
     /* ── Scene ── */
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color(0xc8c0b8)
-    scene.fog = new THREE.FogExp2(0xc8c0b8, 0.00006)
+    scene.background = new THREE.Color(0xf0e6d8)
+    scene.fog = new THREE.FogExp2(0xf0e6d8, 0.00006)
 
     /* ── Environment (IBL) ── */
     const pmrem  = new THREE.PMREMGenerator(renderer)
@@ -113,6 +113,14 @@ export default function InteriorScene({ sectionRef, onReady }) {
             mat.transmission = 0
             mat.transparent = false
             mat.opacity = 1.0
+          }
+
+          // Walls + ceiling — light warm beige
+          if (nm.includes('house1') || nm.includes('roof')) {
+            mat.color?.set(0xf5ede0)
+            if (mat.roughness !== undefined) mat.roughness = Math.max(mat.roughness, 0.85)
+            mat.emissive?.set(0x1a1208)
+            mat.emissiveIntensity = 0.08
           }
 
           // Sofa / mattress — warm greige, not pure white
