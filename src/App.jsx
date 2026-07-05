@@ -4,8 +4,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 // import RoomScene from './RoomScene'          // ← old chandelier hero (preserved in RoomScene.jsx)
 // import SideRays from './SideRays'            // ← old side rays (preserved in SideRays.jsx)
 // import LuxuryRoomScene from './LuxuryRoomScene'  // ← procedural room backup
-import InteriorScene from './InteriorScene'
-import LoadingScreen from './LoadingScreen'
+// import InteriorScene from './InteriorScene'  // ← old 3D room hero (preserved in InteriorScene.jsx)
+import FilmSection from './FilmSection'
+import Configurator from './Configurator'
 import BlurText from './BlurText'
 import './index.css'
 
@@ -63,10 +64,6 @@ const PRODUCTS = [
 ]
 
 export default function App() {
-  const sectionRef   = useRef(null)
-  const wordmarkRef  = useRef(null)
-  const taglineRef   = useRef(null)
-  const scrollCueRef = useRef(null)
   const framesRef    = useRef(null)
   const frame1Ref    = useRef(null)
   const frame2Ref    = useRef(null)
@@ -74,42 +71,17 @@ export default function App() {
   const hScrollRef   = useRef(null)
   const hTrackRef    = useRef(null)
 
-  const [sceneLoaded, setSceneLoaded] = useState(false)
-  const [splashDone,  setSplashDone]  = useState(false)
-  const sceneReady = sceneLoaded && splashDone
+  const [isAtelier, setIsAtelier] = useState(() => window.location.hash === '#atelier')
+  useEffect(() => {
+    const onHash = () => setIsAtelier(window.location.hash === '#atelier')
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
   useEffect(() => {
-    if (!sceneReady) return
-    const sec = sectionRef.current
+    if (isAtelier) return
 
-    // ── Hero wordmark letter blur ──
-    const hwSpans = wordmarkRef.current?.querySelectorAll('.hw')
-    if (hwSpans?.length) {
-      gsap.fromTo(hwSpans,
-        { opacity: 0, filter: 'blur(22px)', y: 16 },
-        {
-          opacity: 1, filter: 'blur(0px)', y: 0,
-          duration: 0.9, stagger: 0.07, ease: 'power3.out',
-          scrollTrigger: { trigger: sec, start: 'top+=3% top', end: 'top+=18% top', scrub: 1.2 },
-        }
-      )
-    }
-
-    gsap.fromTo(taglineRef.current,
-      { opacity: 0, filter: 'blur(10px)', y: 10 },
-      {
-        opacity: 1, filter: 'blur(0px)', y: 0,
-        scrollTrigger: { trigger: sec, start: 'top+=10% top', end: 'top+=22% top', scrub: 1 },
-      }
-    )
-
-    gsap.to(scrollCueRef.current, { opacity: 1, duration: 1.4, delay: 0.6, ease: 'power2.out' })
-    gsap.to(scrollCueRef.current, {
-      opacity: 0,
-      scrollTrigger: { trigger: sec, start: 'top+=4% top', end: 'top+=13% top', scrub: true },
-    })
-
-
+    const ctx = gsap.context(() => {
     // ── Diagonal frames — staggered parallax entry ──
     if (framesRef.current) {
       ;[frame1Ref, frame2Ref, frame3Ref].forEach((ref, i) => {
@@ -167,8 +139,12 @@ export default function App() {
       })
     })
 
-    return () => ScrollTrigger.getAll().forEach((t) => t.kill())
-  }, [sceneReady])
+    })
+
+    return () => ctx.revert()
+  }, [isAtelier])
+
+  if (isAtelier) return <Configurator />
 
   return (
     <>
@@ -179,31 +155,13 @@ export default function App() {
           <li><a href="#story">Story</a></li>
           <li><a href="#collection">Collection</a></li>
           <li><a href="#alacarte">À La Carte</a></li>
+          <li><a href="#atelier">Atelier</a></li>
           <li><a href="#contact">Connect</a></li>
         </ul>
       </nav>
 
-      {!sceneReady && <LoadingScreen onComplete={() => setSplashDone(true)} />}
-
-      {/* ── Hero — luxury room 3D walk-through ── */}
-      <div className="video-scroll-section" ref={sectionRef}>
-        <div className="video-sticky">
-          <InteriorScene sectionRef={sectionRef} onReady={() => setSceneLoaded(true)} />
-          <div className="vignette" />
-
-          <div className="hero-overlay">
-            <h1 ref={wordmarkRef} className="hero-wordmark">
-              {'ZELLER'.split('').map((ch, i) => <span key={i} className="hw">{ch}</span>)}
-            </h1>
-            <p ref={taglineRef} className="hero-tagline">Celebrate You</p>
-          </div>
-
-          <div ref={scrollCueRef} className="scroll-cue">
-            <span className="scroll-cue-label">Scroll</span>
-            <div className="scroll-cue-line" />
-          </div>
-        </div>
-      </div>
+      {/* ── Hero — scroll-scrubbed film ── */}
+      <FilmSection />
 
       {/*
         ── OLD HERO — chandelier orbit (preserved below, uncomment to restore) ──
@@ -252,13 +210,13 @@ export default function App() {
 
         <div className="frames-gallery" ref={framesRef}>
           <div ref={frame1Ref} className="frame frame--1">
-            <img src="/room/Leaves_chandelier_Dirt.jpg" alt="Crystal chandelier leaves" />
+            <img src="/gallery/chandelier-cubes.jpg" alt="Geometric cube chandelier glowing in the dark" />
           </div>
           <div ref={frame2Ref} className="frame frame--2">
-            <img src="/room/glass_texture.jpg" alt="Crystal glass texture" />
+            <img src="/gallery/chandelier-dome.jpg" alt="Crystal dome chandelier beneath an ornate ceiling" />
           </div>
           <div ref={frame3Ref} className="frame frame--3">
-            <div className="frame-art" />
+            <img src="/gallery/chandelier-glasswork.jpg" alt="Twisted glasswork chandelier arms in warm light" />
           </div>
         </div>
       </section>
