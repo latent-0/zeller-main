@@ -67,7 +67,16 @@ export default function App() {
 
   const [isAtelier, setIsAtelier] = useState(() => window.location.hash === '#atelier')
   useEffect(() => {
-    const onHash = () => setIsAtelier(window.location.hash === '#atelier')
+    const onHash = () => {
+      const atelier = window.location.hash === '#atelier'
+      // un-pin before React unmounts — a pinned section lives inside a
+      // ScrollTrigger pin-spacer div, and removing it mid-pin crashes the commit
+      if (atelier) {
+        ScrollTrigger.getAll().forEach((t) => t.kill())
+        window.scrollTo(0, 0)
+      }
+      setIsAtelier(atelier)
+    }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
