@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 // import SideRays from './SideRays'            // ← old side rays (preserved in SideRays.jsx)
 // import LuxuryRoomScene from './LuxuryRoomScene'  // ← procedural room backup
 // import InteriorScene from './InteriorScene'  // ← old 3D room hero (preserved in InteriorScene.jsx)
+// import CrystalHero from './CrystalHero'      // ← crystal hero variant (preserved in CrystalHero.jsx)
 import FilmSection from './FilmSection'
 import Configurator from './Configurator'
 import BlurText from './BlurText'
@@ -45,21 +46,14 @@ const PRODUCTS = [
     label: 'Home',
     title: 'Crystal Home Accessories',
     desc: 'Celestial adornments for your living space. Each piece a cosmic companion that bejewels your reality and transforms the everyday into the extraordinary.',
-    img: '/room/glass_texture.jpg',
+    img: '/gallery/chandelier-glasswork.jpg',
   },
   {
     n: '02',
-    label: 'Jewellery',
-    title: 'Zeller Jewellery',
-    desc: 'Wearable crystal couture — carry a piece of the cosmos wherever you go. Turning every moment into a cosmic celebration of your unique essence.',
-    img: null,
-  },
-  {
-    n: '03',
     label: 'Bespoke',
     title: 'Custom Chandeliers',
     desc: 'Each chandelier an epiphany of a shooting star — sculpted dreams rendered in crystalline light. Commission yours and illuminate your world with the cosmos.',
-    img: '/room/Leaves_chandelier_Dirt.jpg',
+    img: '/gallery/chandelier-dome.jpg',
   },
 ]
 
@@ -116,7 +110,7 @@ export default function App() {
     // ── Horizontal scroll — differentiators ──
     if (hScrollRef.current && hTrackRef.current) {
       const track = hTrackRef.current
-      gsap.to(track, {
+      const hTween = gsap.to(track, {
         x: () => -(track.scrollWidth - window.innerWidth),
         ease: 'none',
         scrollTrigger: {
@@ -129,9 +123,89 @@ export default function App() {
           invalidateOnRefresh: true,
         },
       })
+
+      // background numerals drift slower than their panels
+      gsap.utils.toArray('.h-panel').forEach((panel) => {
+        const num = panel.querySelector('.h-panel__bg-num')
+        if (!num) return
+        gsap.fromTo(num,
+          { xPercent: 16 },
+          {
+            xPercent: -16, ease: 'none',
+            scrollTrigger: {
+              trigger: panel,
+              containerAnimation: hTween,
+              start: 'left right',
+              end:   'right left',
+              scrub: true,
+            },
+          }
+        )
+      })
     }
 
-    // ── .reveal elements ──
+    // ── Stats — staggered blur rise ──
+    gsap.fromTo('.stat-item',
+      { opacity: 0, y: 44, filter: 'blur(8px)' },
+      {
+        opacity: 1, y: 0, filter: 'blur(0px)',
+        duration: 0.9, stagger: 0.12, ease: 'power3.out',
+        scrollTrigger: { trigger: '.stats-row', start: 'top 82%' },
+      }
+    )
+
+    // ── Dividers grow from the left ──
+    gsap.utils.toArray('.divider').forEach((d) => {
+      gsap.fromTo(d,
+        { scaleX: 0, transformOrigin: 'left center' },
+        { scaleX: 1, duration: 1.1, ease: 'power3.inOut',
+          scrollTrigger: { trigger: d, start: 'top 88%' } }
+      )
+    })
+
+    // ── Product cards — staggered rise, images settle from a zoom ──
+    const cards = gsap.utils.toArray('.product-card')
+    if (cards.length) {
+      gsap.fromTo(cards,
+        { opacity: 0, y: 70 },
+        {
+          opacity: 1, y: 0, duration: 1, stagger: 0.16, ease: 'power3.out',
+          clearProps: 'transform',
+          scrollTrigger: { trigger: '.product-grid', start: 'top 80%' },
+        }
+      )
+      cards.forEach((card) => {
+        const img = card.querySelector('.product-card__frame img')
+        if (!img) return
+        gsap.fromTo(img,
+          { scale: 1.22 },
+          { scale: 1, duration: 1.5, ease: 'power2.out', clearProps: 'transform',
+            scrollTrigger: { trigger: card, start: 'top 80%' } }
+        )
+      })
+    }
+
+    // ── Quote — soft blur reveal ──
+    gsap.fromTo('.quote-section blockquote, .quote-section cite',
+      { opacity: 0, y: 28, filter: 'blur(10px)' },
+      {
+        opacity: 1, y: 0, filter: 'blur(0px)',
+        duration: 1.1, stagger: 0.25, ease: 'power3.out',
+        scrollTrigger: { trigger: '.quote-section', start: 'top 75%' },
+      }
+    )
+
+    // ── À la carte cards — rise with a settling tilt ──
+    gsap.utils.toArray('.alacarte-card').forEach((card, i) => {
+      gsap.fromTo(card,
+        { opacity: 0, y: 60, rotate: i % 2 ? 2 : -2 },
+        { opacity: 1, y: 0, rotate: 0, duration: 1, ease: 'power3.out',
+          clearProps: 'transform',
+          scrollTrigger: { trigger: card, start: 'top 85%' } }
+      )
+    })
+
+    // ── remaining .reveal elements ──
     gsap.utils.toArray('.reveal').forEach((el) => {
       gsap.to(el, {
         opacity: 1, y: 0, duration: 1, ease: 'power3.out',
@@ -196,7 +270,7 @@ export default function App() {
         <div className="fragment-text">
           <BlurText text="Who We Are" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
           <BlurText text="India's Crystal Couture Entourage" as="h2" animateBy="words" delay={100} stepDuration={0.45} />
-          <div className="divider reveal" />
+          <div className="divider" />
           <p className="reveal">
             A saga reminiscent of a glimpse of the ethereal beyond — sculpting dreams, cosmos &amp; everything in between. A poetic dance of stardust &amp; aspirations, unfurling into a souvenir of indulgent celebrations.
           </p>
@@ -226,12 +300,12 @@ export default function App() {
         {[
           { num: '1st',  unit: '',   label: 'In India' },
           { num: '100',  unit: '%',  label: 'Handcrafted' },
-          { num: '03',   unit: '',   label: 'Product Lines' },
+          { num: '02',   unit: '',   label: 'Product Lines' },
           { num: '∞',    unit: '',   label: 'Cosmic Stories' },
         ].map(({ num, unit, label }) => (
           <div key={label} className="stat-item">
-            <span className="stat-number reveal">{num}<span className="stat-unit">{unit}</span></span>
-            <span className="stat-label reveal">{label}</span>
+            <span className="stat-number">{num}<span className="stat-unit">{unit}</span></span>
+            <span className="stat-label">{label}</span>
           </div>
         ))}
       </div>
@@ -261,17 +335,15 @@ export default function App() {
           <BlurText text="Product Range" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
           <BlurText text="Our Offerings" as="h2" animateBy="words" delay={110} stepDuration={0.45} style={{ marginBottom: '3rem' }} />
         </div>
-        <div className="product-grid product-grid--3">
+        <div className="product-grid product-grid--2">
           {PRODUCTS.map(({ n, label, title, desc, img }) => (
             <div key={n} className="product-card product-card--rich">
               <div className="product-card__frame">
-                {img
-                  ? <img src={img} alt={title} />
-                  : <div className="product-card__art" />}
+                <img src={img} alt={title} />
               </div>
-              <span className="product-number reveal">{n} — {label}</span>
-              <h3 className="reveal">{title}</h3>
-              <p className="reveal">{desc}</p>
+              <span className="product-number">{n} — {label}</span>
+              <h3>{title}</h3>
+              <p>{desc}</p>
             </div>
           ))}
         </div>
@@ -279,10 +351,10 @@ export default function App() {
 
       {/* ── Cosmic quote ── */}
       <div className="quote-section">
-        <blockquote className="reveal">
+        <blockquote>
           &ldquo;Indulge in Crystal Couture. Celebrate the universe within you.&rdquo;
         </blockquote>
-        <cite className="reveal">— Zeller Brand Ethos</cite>
+        <cite>— Zeller Brand Ethos</cite>
       </div>
 
       {/* ── À La Carte services ── */}
@@ -292,18 +364,18 @@ export default function App() {
             <div>
               <BlurText text="À La Carte" as="span" className="section-label" stagger={0.04} />
               <h2><BlurText text="Bespoke Services" wordLevel stagger={0.12} /></h2>
-              <div className="divider reveal" />
+              <div className="divider" />
               <p className="reveal">
                 With artisanal craftsmanship as our celestial wand, we immerse you in the avant-garde experience of Crystal Couture — paving way for a new revelation in India.
               </p>
             </div>
             <div className="alacarte-cards">
-              <div className="alacarte-card reveal">
+              <div className="alacarte-card">
                 <span className="alacarte-card__num">01</span>
                 <h3>Customisation &amp; Consultation</h3>
                 <p>From a single crystal to a bespoke chandelier — every piece conceived around you. Your cosmos, your creation.</p>
               </div>
-              <div className="alacarte-card reveal">
+              <div className="alacarte-card">
                 <span className="alacarte-card__num">02</span>
                 <h3>Corporate &amp; Wedding Gifting</h3>
                 <p>Gift a fragment of the cosmos. Curated crystal collections for milestones, celebrations, and the moments that matter.</p>

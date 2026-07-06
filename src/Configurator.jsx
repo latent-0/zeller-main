@@ -33,9 +33,19 @@ const PRESETS = [
   { id: 'sky',      name: 'Sky',      statue: '#eef1f5', lotus: '#a9ddef' },
 ]
 const FINISH_PROPS = {
-  polished: { roughness: 0.05, transmission: 0.92, iridescence: 0 },
-  frosted:  { roughness: 0.42, transmission: 0.58, iridescence: 0 },
-  aurora:   { roughness: 0.08, transmission: 0.85, iridescence: 1 },
+  polished: { roughness: 0.02, transmission: 1,    iridescence: 0 },
+  frosted:  { roughness: 0.45, transmission: 0.65, iridescence: 0 },
+  aurora:   { roughness: 0.04, transmission: 0.95, iridescence: 1 },
+}
+
+// glass reads transparent when the surface stays near-white and the hue
+// comes from absorption; deeper colors need shorter absorption distance
+const applyCrystalColor = (mat, hex) => {
+  const c = new THREE.Color(hex)
+  mat.color.copy(c).lerp(new THREE.Color('#ffffff'), 0.8)
+  mat.attenuationColor.copy(c)
+  const { l } = c.getHSL({})
+  mat.attenuationDistance = 0.35 + l * 2.4
 }
 
 const swatchStyle = (hex) => ({
@@ -47,15 +57,18 @@ const swatchStyle = (hex) => ({
 
 // ── Procedural faceted-crystal showpiece ──
 function buildShowpiece() {
-  const mkCrystal = (hex) => new THREE.MeshPhysicalMaterial({
-    // near-white surface, tint carried by absorption — reads as glass, not plastic
-    color: new THREE.Color(hex).lerp(new THREE.Color("#ffffff"), 0.25),
-    metalness: 0, roughness: 0.05,
-    transmission: 0.92, thickness: 0.7, ior: 1.52,
-    clearcoat: 1, clearcoatRoughness: 0.08,
-    attenuationColor: hex, attenuationDistance: 1.2,
-    iridescenceIOR: 1.7, flatShading: true,
-  })
+  const mkCrystal = (hex) => {
+    const mat = new THREE.MeshPhysicalMaterial({
+      metalness: 0, roughness: 0.04,
+      transmission: 1, thickness: 1.3, ior: 1.55,
+      dispersion: 0.3,                    // chromatic fire at facet edges
+      clearcoat: 1, clearcoatRoughness: 0.04,
+      specularIntensity: 1.4, envMapIntensity: 2.2,
+      iridescenceIOR: 1.7, flatShading: true,
+    })
+    applyCrystalColor(mat, hex)
+    return mat
+  }
   const statueMat = mkCrystal('#eef1f5')
   const lotusMat  = mkCrystal('#f4c6d7')
 
@@ -153,15 +166,16 @@ export default function Configurator() {
     mount.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color('#d6d6d8')
+    scene.background = new THREE.Color('#1c1c21')
+    scene.fog = new THREE.Fog('#1c1c21', 9, 22)
 
     const camera = new THREE.PerspectiveCamera(32, mount.clientWidth / mount.clientHeight, 0.1, 60)
-    camera.position.set(3.3, 2.6, 5.6)
+    camera.position.set(3.2, 2.0, 6.0)
 
     const pmrem = new THREE.PMREMGenerator(renderer)
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
 
-    const key = new THREE.DirectionalLight('#ffffff', 1.6)
+    const key = new THREE.DirectionalLight('#ffffff', 2.2)
     key.position.set(3, 6, 4)
     key.castShadow = true
     key.shadow.mapSize.set(1024, 1024)
@@ -169,12 +183,21 @@ export default function Configurator() {
     key.shadow.camera.top = 3;   key.shadow.camera.bottom = -3
     key.shadow.radius = 8
     scene.add(key)
-    scene.add(new THREE.AmbientLight('#ffffff', 0.35))
+    scene.add(new THREE.AmbientLight('#ffffff', 0.25))
+    // rim sparkle — cool and warm accents behind the piece
+    const rimA = new THREE.PointLight('#bcd4ff', 45, 25)
+    rimA.position.set(-4, 3, -3)
+    scene.add(rimA)
+    const rimB = new THREE.PointLight('#ffe1b8', 30, 25)
+    rimB.position.set(4, 1.5, -2.5)
+    scene.add(rimB)
 
+    // dark velvet stage — crystal edges need contrast to read
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(40, 40),
-      new THREE.ShadowMaterial({ opacity: 0.16 })
+      new THREE.MeshStandardMaterial({ color: '#1a1a1e', roughness: 0.95 })
     )
+    ground.material.envMapIntensity = 0.12
     ground.rotation.x = -Math.PI / 2
     ground.receiveShadow = true
     scene.add(ground)
@@ -192,7 +215,7 @@ export default function Configurator() {
     applyViewOffset()
 
     const controls = new OrbitControls(camera, renderer.domElement)
-    controls.target.set(0, 0.85, 0)
+    controls.target.set(0, 0.95, 0)
     controls.enableDamping = true
     controls.dampingFactor = 0.06
     controls.minDistance = 2.4
@@ -235,8 +258,7 @@ export default function Configurator() {
     const t = threeRef.current
     if (!t) return
     const apply = (mat, { color, finish }) => {
-      mat.color.set(color).lerp(new THREE.Color("#ffffff"), 0.25)
-      mat.attenuationColor.set(color)
+      applyCrystalColor(mat, color)
       Object.assign(mat, FINISH_PROPS[finish])
     }
     apply(t.statueMat, config.statue)
