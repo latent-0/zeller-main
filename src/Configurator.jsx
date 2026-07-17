@@ -42,11 +42,11 @@ const PEARL_COLORS = [
   { name: 'Rose',      hex: '#e8c4bc' },
   { name: 'Silver',    hex: '#d4d8dc' },
 ]
-const GANESHA_SIZES = [
-  { id: 'S', label: 'S', name: 'Small',  file: '/models/C2_Fixed.fbx' },
-  { id: 'M', label: 'M', name: 'Medium', file: '/models/C3_Lotus_Fixed.fbx' },
-  { id: 'L', label: 'L', name: 'Large',  file: '/models/C4_Lotus_w_Ganesh_Fixed1.fbx' },
-]
+// Maps each Ganesha part tab to its FBX file
+const GANESHA_FILE = {
+  statue: '/models/C2_Fixed.fbx',
+  lotus:  '/models/C3_Lotus_Fixed.fbx',
+}
 
 // ── Material helpers ──────────────────────────────────────────────────────────
 const applyCrystalColor = (mat, hex) => {
@@ -181,9 +181,9 @@ export default function Configurator() {
   const [product,       setProduct]       = useState('ganesha')
   const [part,          setPart]          = useState('statue')
   const [mode,          setMode]          = useState('crystal')
-  const [ganeshSize,    setGaneshSize]    = useState('L')
   const [sceneReady,    setSceneReady]    = useState(false)
   const [ganeshLoading, setGaneshLoading] = useState(false)
+  const fbxCacheRef = useRef({})
   const [config,  setConfig]  = useState({
     ganesha: {
       statue: { color: '#eef1f5', finish: 'polished' },
@@ -306,69 +306,68 @@ export default function Configurator() {
     }
   }, [])
 
-  // ── Load FBX when size changes ────────────────────────────────────────────
+  // ── Load FBX when Ganesha part tab changes (statue→C2, lotus→C3) ─────────
   useEffect(() => {
-    if (!sceneReady) return
+    if (!sceneReady || product !== 'ganesha') return
     const t = threeRef.current
     if (!t) return
 
+    const filePath   = GANESHA_FILE[part] ?? GANESHA_FILE.statue
+    const ganeshGroup = t.ganesha.group
+    const cache       = fbxCacheRef.current
+
+    // Hide all cached wrappers
+    Object.values(cache).forEach(w => { w.visible = false })
+
+    // Already loaded — just show it
+    if (cache[filePath]) {
+      cache[filePath].visible = true
+      return
+    }
+
+    // Load fresh
     let cancelled = false
     setGaneshLoading(true)
 
-    const sizeInfo = GANESHA_SIZES.find(s => s.id === ganeshSize)
-    const ganeshGroup = t.ganesha.group
-
-    // Clear previous model
-    const toRemove = [...ganeshGroup.children]
-    toRemove.forEach(child => ganeshGroup.remove(child))
-
     const loader = new FBXLoader()
-    loader.load(
-      sizeInfo.file,
-      (obj) => {
-        if (cancelled) return
+    loader.load(filePath, (obj) => {
+      if (cancelled) return
 
-        // Auto-normalise: fit inside a ~3-unit cube, sit at y=0, centre x/z
-        const box = new THREE.Box3().setFromObject(obj)
-        const size = box.getSize(new THREE.Vector3())
-        const center = box.getCenter(new THREE.Vector3())
-        const maxDim = Math.max(size.x, size.y, size.z)
-        const scale  = 3.0 / maxDim
+      // The FBX may contain multiple instances in a row — keep only the first child
+      const extra = obj.children.slice(1)
+      extra.forEach(c => obj.remove(c))
 
-        const wrapper = new THREE.Group()
-        wrapper.add(obj)
-        wrapper.scale.setScalar(scale)
-        wrapper.position.set(
-          -center.x * scale,
-          -box.min.y * scale,
-          -center.z * scale,
-        )
+      // Auto-normalise: fit inside a ~3-unit cube, sit at y=0, centre x/z
+      const box = new THREE.Box3().setFromObject(obj)
+      const size = box.getSize(new THREE.Vector3())
+      const center = box.getCenter(new THREE.Vector3())
+      const maxDim = Math.max(size.x, size.y, size.z)
+      const scale  = 3.0 / maxDim
 
-        // Split meshes by height: lower half → lotusMat, upper half → statueMat
-        const midY = (box.min.y + box.max.y) / 2
-        obj.traverse(child => {
-          if (!child.isMesh) return
-          child.castShadow = true
-          child.receiveShadow = true
-          const mb = new THREE.Box3().setFromObject(child)
-          const meshMidY = (mb.min.y + mb.max.y) / 2
-          child.material = meshMidY < midY ? t.ganesha.lotusMat : t.ganesha.statueMat
-        })
+      const wrapper = new THREE.Group()
+      wrapper.add(obj)
+      wrapper.scale.setScalar(scale)
+      wrapper.position.set(-center.x * scale, -box.min.y * scale, -center.z * scale)
 
-        ganeshGroup.add(wrapper)
-        setGaneshLoading(false)
-      },
-      undefined,
-      (err) => {
-        if (!cancelled) {
-          console.error('FBX load error:', err)
-          setGaneshLoading(false)
-        }
-      }
-    )
+      // Assign crystal material: lotus file → lotusMat on all; statue file → statueMat on all
+      // (single-part files have no split needed)
+      const mat = part === 'lotus' ? t.ganesha.lotusMat : t.ganesha.statueMat
+      obj.traverse(child => {
+        if (!child.isMesh) return
+        child.castShadow = true
+        child.receiveShadow = true
+        child.material = mat
+      })
+
+      cache[filePath] = wrapper
+      ganeshGroup.add(wrapper)
+      setGaneshLoading(false)
+    }, undefined, err => {
+      if (!cancelled) { console.error('FBX error:', err); setGaneshLoading(false) }
+    })
 
     return () => { cancelled = true }
-  }, [sceneReady, ganeshSize])
+  }, [sceneReady, product, part])
 
   // ── Switch product ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -507,25 +506,6 @@ export default function Configurator() {
             </button>
           ))}
         </div>
-
-        {/* Size selector — Ganesha only */}
-        {product === 'ganesha' && (
-          <div className="config-sizes">
-            <span className="config-sizes__label">Size</span>
-            <div className="config-sizes__btns">
-              {GANESHA_SIZES.map(s => (
-                <button
-                  key={s.id}
-                  className={`config-size-btn ${ganeshSize === s.id ? 'is-active' : ''}`}
-                  onClick={() => setGaneshSize(s.id)}
-                  title={s.name}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="config-panel__tabs">
           {activeParts.map(({ id, label }) => (
