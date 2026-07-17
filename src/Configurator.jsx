@@ -32,9 +32,10 @@ const FINISH_PROPS = {
   aurora:   { roughness: 0.04, transmission: 0.95, iridescence: 1 },
 }
 const PRODUCTS = [
-  { id: 'ganesha', name: 'Ganesha Lotus',  subtitle: 'Sacred crystal figurine' },
-  { id: 'bloom',   name: 'Crystal Bloom',  subtitle: 'Faceted crystal flower'   },
-  { id: 'oyster',  name: 'Pearl Oyster',   subtitle: 'Crystal clam with pearl'  },
+  { id: 'ganesha', name: 'Ganesha Lotus',    subtitle: 'Sacred crystal figurine'   },
+  { id: 'bloom',   name: 'Crystal Bloom',    subtitle: 'Lotus with Ganesha crystal' },
+  { id: 'hanging', name: 'Hanging Crystals', subtitle: 'Delicate crystal drops'     },
+  { id: 'oyster',  name: 'Pearl Oyster',     subtitle: 'Crystal clam with pearl'    },
 ]
 const PEARL_COLORS = [
   { name: 'Ivory',     hex: '#f0e8d5' },
@@ -42,10 +43,15 @@ const PEARL_COLORS = [
   { name: 'Rose',      hex: '#e8c4bc' },
   { name: 'Silver',    hex: '#d4d8dc' },
 ]
-// Maps each Ganesha part tab to its FBX file
+
+// FBX file mappings
 const GANESHA_FILE = {
   statue: '/models/C2_Fixed.fbx',
   lotus:  '/models/C3_Lotus_Fixed.fbx',
+}
+const PRODUCT_FILE = {
+  bloom:   '/models/C4_Lotus_w_Ganesh_Fixed1.fbx',
+  hanging: '/models/C2_Fixed.fbx',
 }
 
 // ── Material helpers ──────────────────────────────────────────────────────────
@@ -86,7 +92,6 @@ const swatchStyle = (hex) => ({
     color-mix(in srgb, ${hex} 72%, black) 100%)`,
 })
 
-// mesh helper used inside all builders
 function makeAdder(group) {
   return function add(geo, mat, { p = [0,0,0], r = [0,0,0], s = [1,1,1], parent = group } = {}) {
     const m = new THREE.Mesh(geo, mat)
@@ -97,77 +102,22 @@ function makeAdder(group) {
   }
 }
 
-// ── CRYSTAL BLOOM ─────────────────────────────────────────────────────────────
-function buildBloom() {
-  const bloomMat  = mkCrystal('#f4c6d7')
-  const centerMat = mkCrystal('#eef1f5')
-
-  const group = new THREE.Group()
-  const add   = makeAdder(group)
-
-  // Thin base disc
-  add(new THREE.CylinderGeometry(0.62, 0.68, 0.08, 12), bloomMat, { p: [0, 0.04, 0] })
-
-  // Outer petals — 6 large rounded faceted drops
-  for (let i = 0; i < 6; i++) {
-    const a = (i / 6) * Math.PI * 2
-    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
-    add(new THREE.IcosahedronGeometry(0.8, 2), bloomMat, {
-      p: [0.60, 0.28, 0], r: [0, 0, -1.35], s: [0.72, 0.115, 0.46], parent: g
-    })
-  }
-
-  // Inner accent petals — 6 smaller, upright
-  for (let i = 0; i < 6; i++) {
-    const a = (i / 6) * Math.PI * 2 + (Math.PI / 6)
-    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
-    add(new THREE.IcosahedronGeometry(0.55, 2), bloomMat, {
-      p: [0.36, 0.42, 0], r: [0, 0, -0.70], s: [0.52, 0.10, 0.32], parent: g
-    })
-  }
-
-  // Faceted centre orb (the clear crystal bead at the heart)
-  add(new THREE.IcosahedronGeometry(0.32, 3), centerMat, { p: [0, 0.38, 0] })
-
-  return { group, bloomMat, centerMat }
-}
-
-// ── PEARL OYSTER ──────────────────────────────────────────────────────────────
+// ── PEARL OYSTER (still procedural) ───────────────────────────────────────────
 function buildOyster() {
   const shellMat = mkCrystal('#eef1f5')
   const pearlMat = mkPearl('#f0e8d5')
-
   const group = new THREE.Group()
   const add   = makeAdder(group)
 
-  // Low display base
   add(new THREE.CylinderGeometry(0.36, 0.40, 0.06, 14), shellMat, { p: [0, 0.03, 0] })
-
-  // ── Lower shell — wide, flat, faceted ──
-  add(new THREE.IcosahedronGeometry(1.10, 3), shellMat, {
-    p: [0, 0.24, 0.04], s: [1.28, 0.30, 1.05]
-  })
-  add(new THREE.IcosahedronGeometry(1.0, 2), shellMat, {
-    p: [0, 0.14, 0.10], s: [1.20, 0.115, 0.96]
-  })
-  add(new THREE.IcosahedronGeometry(0.35, 1), shellMat, {
-    p: [0, 0.20, -0.72], s: [0.9, 0.40, 0.40]
-  })
+  add(new THREE.IcosahedronGeometry(1.10, 3), shellMat, { p: [0, 0.24, 0.04], s: [1.28, 0.30, 1.05] })
+  add(new THREE.IcosahedronGeometry(1.0, 2),  shellMat, { p: [0, 0.14, 0.10], s: [1.20, 0.115, 0.96] })
+  add(new THREE.IcosahedronGeometry(0.35, 1), shellMat, { p: [0, 0.20, -0.72], s: [0.9, 0.40, 0.40] })
   for (let i = -1; i <= 1; i++) {
-    add(new THREE.IcosahedronGeometry(0.8, 2), shellMat, {
-      p: [i * 0.38, 0.20, 0.08], s: [0.18, 0.22, 0.90]
-    })
+    add(new THREE.IcosahedronGeometry(0.8, 2), shellMat, { p: [i * 0.38, 0.20, 0.08], s: [0.18, 0.22, 0.90] })
   }
-
-  // ── Upper shell — smaller, angled back (open clam position) ──
-  add(new THREE.IcosahedronGeometry(0.90, 3), shellMat, {
-    p: [0, 0.42, -0.52], r: [-0.90, 0, 0], s: [1.12, 0.24, 0.88]
-  })
-  add(new THREE.IcosahedronGeometry(0.82, 2), shellMat, {
-    p: [0, 0.36, -0.30], r: [-0.90, 0, 0], s: [1.00, 0.10, 0.80]
-  })
-
-  // ── Pearl — sits nestled in the lower shell ──
+  add(new THREE.IcosahedronGeometry(0.90, 3), shellMat, { p: [0, 0.42, -0.52], r: [-0.90, 0, 0], s: [1.12, 0.24, 0.88] })
+  add(new THREE.IcosahedronGeometry(0.82, 2), shellMat, { p: [0, 0.36, -0.30], r: [-0.90, 0, 0], s: [1.00, 0.10, 0.80] })
   add(new THREE.SphereGeometry(0.26, 36, 28), pearlMat, { p: [0, 0.44, 0.16] })
 
   return { group, shellMat, pearlMat }
@@ -177,14 +127,14 @@ function buildOyster() {
 export default function Configurator() {
   const mountRef  = useRef(null)
   const threeRef  = useRef(null)
-
-  const [product,       setProduct]       = useState('ganesha')
-  const [part,          setPart]          = useState('statue')
-  const [mode,          setMode]          = useState('crystal')
-  const [sceneReady,    setSceneReady]    = useState(false)
-  const [ganeshLoading, setGaneshLoading] = useState(false)
   const fbxCacheRef = useRef({})
-  const [config,  setConfig]  = useState({
+
+  const [product,      setProduct]      = useState('ganesha')
+  const [part,         setPart]         = useState('statue')
+  const [mode,         setMode]         = useState('crystal')
+  const [sceneReady,   setSceneReady]   = useState(false)
+  const [modelLoading, setModelLoading] = useState(false)
+  const [config, setConfig] = useState({
     ganesha: {
       statue: { color: '#eef1f5', finish: 'polished' },
       lotus:  { color: '#f4c6d7', finish: 'polished' },
@@ -192,6 +142,9 @@ export default function Configurator() {
     bloom: {
       bloom:  { color: '#f4c6d7', finish: 'polished' },
       center: { color: '#eef1f5', finish: 'polished' },
+    },
+    hanging: {
+      crystal: { color: '#eef1f5', finish: 'polished' },
     },
     oyster: {
       shell: { color: '#eef1f5', finish: 'polished' },
@@ -232,14 +185,10 @@ export default function Configurator() {
     key.shadow.radius = 10
     scene.add(key)
     scene.add(new THREE.AmbientLight('#ffffff', 0.3))
-    const rimA = new THREE.PointLight('#bcd4ff', 50, 25)
-    rimA.position.set(-4, 3, -3); scene.add(rimA)
-    const rimB = new THREE.PointLight('#ffe1b8', 35, 25)
-    rimB.position.set(4, 1.5, -2.5); scene.add(rimB)
-    const top = new THREE.PointLight('#ffffff', 18, 20)
-    top.position.set(0, 8, 0); scene.add(top)
-    const front = new THREE.PointLight('#e8f0ff', 28, 18)
-    front.position.set(0, 3, 8); scene.add(front)
+    const rimA = new THREE.PointLight('#bcd4ff', 50, 25); rimA.position.set(-4, 3, -3); scene.add(rimA)
+    const rimB = new THREE.PointLight('#ffe1b8', 35, 25); rimB.position.set(4, 1.5, -2.5); scene.add(rimB)
+    const top  = new THREE.PointLight('#ffffff', 18, 20);  top.position.set(0, 8, 0); scene.add(top)
+    const front = new THREE.PointLight('#e8f0ff', 28, 18); front.position.set(0, 3, 8); scene.add(front)
 
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(40, 40),
@@ -249,17 +198,28 @@ export default function Configurator() {
     ground.receiveShadow = true
     scene.add(ground)
 
-    // Ganesha: empty group + shared crystal materials (FBX loaded separately)
-    const ganeshGroup  = new THREE.Group()
+    // Ganesha — FBX loaded per tab
+    const ganeshGroup      = new THREE.Group()
     const ganeshaStatueMat = mkCrystal('#eef1f5')
     const ganeshaLotusMat  = mkCrystal('#f4c6d7')
     scene.add(ganeshGroup)
 
-    const bloom  = buildBloom()
+    // Crystal Bloom — FBX (C4)
+    const bloomGroup  = new THREE.Group()
+    const bloomMat    = mkCrystal('#f4c6d7')
+    const centerMat   = mkCrystal('#eef1f5')
+    bloomGroup.visible = false
+    scene.add(bloomGroup)
+
+    // Hanging Crystals — FBX (C2)
+    const hangingGroup  = new THREE.Group()
+    const hangingMat    = mkCrystal('#eef1f5')
+    hangingGroup.visible = false
+    scene.add(hangingGroup)
+
+    // Pearl Oyster — procedural
     const oyster = buildOyster()
-    bloom.group.visible  = false
     oyster.group.visible = false
-    scene.add(bloom.group)
     scene.add(oyster.group)
 
     const applyViewOffset = () => {
@@ -293,7 +253,9 @@ export default function Configurator() {
     threeRef.current = {
       renderer, scene, camera, controls, pmrem,
       ganesha: { group: ganeshGroup, statueMat: ganeshaStatueMat, lotusMat: ganeshaLotusMat },
-      bloom, oyster,
+      bloom:   { group: bloomGroup, bloomMat, centerMat },
+      hanging: { group: hangingGroup, crystalMat: hangingMat },
+      oyster,
     }
     setSceneReady(true)
 
@@ -306,64 +268,80 @@ export default function Configurator() {
     }
   }, [])
 
-  // ── Load FBX when Ganesha part tab changes (statue→C2, lotus→C3) ─────────
+  // ── Load FBX for all FBX-based products ──────────────────────────────────
   useEffect(() => {
-    if (!sceneReady || product !== 'ganesha') return
+    if (!sceneReady) return
     const t = threeRef.current
     if (!t) return
 
-    const filePath   = GANESHA_FILE[part] ?? GANESHA_FILE.statue
-    const ganeshGroup = t.ganesha.group
-    const cache       = fbxCacheRef.current
+    // Determine file, target group, and material assignment per product
+    let filePath, targetGroup, assignMat
 
-    // Hide all cached wrappers
-    Object.values(cache).forEach(w => { w.visible = false })
+    if (product === 'ganesha') {
+      filePath    = GANESHA_FILE[part] ?? GANESHA_FILE.statue
+      targetGroup = t.ganesha.group
+      const mat   = part === 'lotus' ? t.ganesha.lotusMat : t.ganesha.statueMat
+      assignMat   = () => mat
+    } else if (product === 'bloom') {
+      filePath    = PRODUCT_FILE.bloom
+      targetGroup = t.bloom.group
+      assignMat   = (meshMidY, midY) => meshMidY < midY ? t.bloom.centerMat : t.bloom.bloomMat
+    } else if (product === 'hanging') {
+      filePath    = PRODUCT_FILE.hanging
+      targetGroup = t.hanging.group
+      assignMat   = () => t.hanging.crystalMat
+    } else {
+      return  // oyster is procedural, no FBX needed
+    }
 
-    // Already loaded — just show it
-    if (cache[filePath]) {
-      cache[filePath].visible = true
+    const cacheKey = `${product}::${filePath}`
+    const cache    = fbxCacheRef.current
+
+    // Hide all wrappers in this product's group
+    targetGroup.children.forEach(w => { w.visible = false })
+
+    // Serve from cache if available
+    if (cache[cacheKey]) {
+      cache[cacheKey].visible = true
       return
     }
 
-    // Load fresh
     let cancelled = false
-    setGaneshLoading(true)
+    setModelLoading(true)
 
     const loader = new FBXLoader()
     loader.load(filePath, (obj) => {
       if (cancelled) return
 
-      // The FBX may contain multiple instances in a row — keep only the first child
-      const extra = obj.children.slice(1)
-      extra.forEach(c => obj.remove(c))
+      // Keep only the first child — FBX files may contain multiple catalog instances
+      obj.children.slice(1).forEach(c => obj.remove(c))
 
-      // Auto-normalise: fit inside a ~3-unit cube, sit at y=0, centre x/z
-      const box = new THREE.Box3().setFromObject(obj)
-      const size = box.getSize(new THREE.Vector3())
+      // Auto-normalise: fit into ~3 units, sit at y=0, centre x/z
+      const box    = new THREE.Box3().setFromObject(obj)
+      const size   = box.getSize(new THREE.Vector3())
       const center = box.getCenter(new THREE.Vector3())
       const maxDim = Math.max(size.x, size.y, size.z)
       const scale  = 3.0 / maxDim
+      const midY   = (box.min.y + box.max.y) / 2
 
       const wrapper = new THREE.Group()
       wrapper.add(obj)
       wrapper.scale.setScalar(scale)
       wrapper.position.set(-center.x * scale, -box.min.y * scale, -center.z * scale)
 
-      // Assign crystal material: lotus file → lotusMat on all; statue file → statueMat on all
-      // (single-part files have no split needed)
-      const mat = part === 'lotus' ? t.ganesha.lotusMat : t.ganesha.statueMat
       obj.traverse(child => {
         if (!child.isMesh) return
         child.castShadow = true
         child.receiveShadow = true
-        child.material = mat
+        const mb = new THREE.Box3().setFromObject(child)
+        child.material = assignMat((mb.min.y + mb.max.y) / 2, midY)
       })
 
-      cache[filePath] = wrapper
-      ganeshGroup.add(wrapper)
-      setGaneshLoading(false)
+      cache[cacheKey] = wrapper
+      targetGroup.add(wrapper)
+      setModelLoading(false)
     }, undefined, err => {
-      if (!cancelled) { console.error('FBX error:', err); setGaneshLoading(false) }
+      if (!cancelled) { console.error('FBX error:', err); setModelLoading(false) }
     })
 
     return () => { cancelled = true }
@@ -373,12 +351,13 @@ export default function Configurator() {
   useEffect(() => {
     const t = threeRef.current
     if (!t) return
-    t.ganesha.group.visible = product === 'ganesha'
-    t.bloom.group.visible   = product === 'bloom'
-    t.oyster.group.visible  = product === 'oyster'
+    t.ganesha.group.visible  = product === 'ganesha'
+    t.bloom.group.visible    = product === 'bloom'
+    t.hanging.group.visible  = product === 'hanging'
+    t.oyster.group.visible   = product === 'oyster'
 
-    const targets   = { ganesha: [0, 1.5, 0],  bloom: [0, 0.32, 0], oyster: [0, 0.36, 0] }
-    const positions = { ganesha: [3.5, 2.4, 7.5], bloom: [1.8, 1.0, 4.0], oyster: [2.4, 1.2, 5.0] }
+    const targets   = { ganesha: [0, 1.5, 0], bloom: [0, 1.5, 0], hanging: [0, 1.5, 0], oyster: [0, 0.36, 0] }
+    const positions = { ganesha: [3.5, 2.4, 7.5], bloom: [3.5, 2.4, 7.5], hanging: [3.5, 2.4, 7.5], oyster: [2.4, 1.2, 5.0] }
     t.controls.target.set(...targets[product])
     t.camera.position.set(...positions[product])
     t.controls.update()
@@ -403,6 +382,9 @@ export default function Configurator() {
       applyMat(t.bloom.bloomMat,  config.bloom.bloom)
       applyMat(t.bloom.centerMat, config.bloom.center)
     }
+    if (product === 'hanging') {
+      applyMat(t.hanging.crystalMat, config.hanging.crystal)
+    }
     if (product === 'oyster') {
       applyMat(t.oyster.shellMat, config.oyster.shell)
       const c = new THREE.Color(config.oyster.pearl.color)
@@ -424,18 +406,19 @@ export default function Configurator() {
     a.download = `zeller-${product}.png`; a.click()
   }
 
-  // Parts available per product
   const PARTS = {
-    ganesha: [{ id: 'statue', label: 'Statue' }, { id: 'lotus',  label: 'Lotus'  }],
-    bloom:   [{ id: 'bloom',  label: 'Bloom'  }, { id: 'center', label: 'Centre' }],
-    oyster:  [{ id: 'shell',  label: 'Shell'  }, { id: 'pearl',  label: 'Pearl'  }],
+    ganesha: [{ id: 'statue',   label: 'Statue'   }, { id: 'lotus',   label: 'Lotus'   }],
+    bloom:   [{ id: 'bloom',    label: 'Crystal'  }, { id: 'center',  label: 'Base'    }],
+    hanging: [{ id: 'crystal',  label: 'Crystal'  }],
+    oyster:  [{ id: 'shell',    label: 'Shell'    }, { id: 'pearl',   label: 'Pearl'   }],
   }
 
-  const activeParts   = PARTS[product]
-  const activeConfig  = config[product][part] ?? config[product][activeParts[0].id]
-  const activePart    = activeParts.find(p => p.id === part) ? part : activeParts[0].id
+  const activeParts  = PARTS[product]
+  const activeConfig = config[product][part] ?? config[product][activeParts[0].id]
+  const activePart   = activeParts.find(p => p.id === part) ? part : activeParts[0].id
 
   const isOysterPearl = product === 'oyster' && activePart === 'pearl'
+  const isFbxProduct  = ['ganesha', 'bloom', 'hanging'].includes(product)
 
   const SwatchGroup = ({ title, colors }) => (
     <div className="config-group">
@@ -460,7 +443,7 @@ export default function Configurator() {
   return (
     <div className="config-page">
       <div className="config-viewport" ref={mountRef}>
-        {ganeshLoading && product === 'ganesha' && (
+        {modelLoading && isFbxProduct && (
           <div className="config-loading">
             <div className="config-loading__ring" />
             <p>Loading model…</p>
@@ -468,7 +451,6 @@ export default function Configurator() {
         )}
       </div>
 
-      {/* left chrome */}
       <a className="config-brand" href="#">
         <span className="config-brand__mark">ZELLER</span>
         <span className="config-brand__model">{currentProduct.name}</span>
@@ -490,10 +472,7 @@ export default function Configurator() {
         </a>
       </div>
 
-      {/* right panel */}
       <aside className="config-panel">
-
-        {/* Product selector */}
         <div className="config-panel__products">
           {PRODUCTS.map(p => (
             <button
