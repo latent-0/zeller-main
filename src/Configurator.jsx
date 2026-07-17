@@ -33,7 +33,7 @@ const FINISH_PROPS = {
 }
 const PRODUCTS = [
   { id: 'ganesha', name: 'Ganesha Lotus',    subtitle: 'Sacred crystal figurine'   },
-  { id: 'bloom',   name: 'Crystal Bloom',    subtitle: 'Lotus with Ganesha crystal' },
+  { id: 'bloom',   name: 'Crystal Bloom',    subtitle: 'Faceted crystal lotus'       },
   { id: 'hanging', name: 'Hanging Crystals', subtitle: 'Delicate crystal drops'     },
   { id: 'oyster',  name: 'Pearl Oyster',     subtitle: 'Crystal clam with pearl'    },
 ]
@@ -44,10 +44,10 @@ const PEARL_COLORS = [
   { name: 'Silver',    hex: '#d4d8dc' },
 ]
 
-// FBX file mappings
+// FBX file mappings — both Ganesha tabs use the full lotus+figure model
 const GANESHA_FILE = {
-  statue: '/models/C2_Fixed.fbx',
-  lotus:  '/models/C3_Lotus_Fixed.fbx',
+  statue: '/models/C4_Lotus_w_Ganesh_Fixed1.fbx',
+  lotus:  '/models/C4_Lotus_w_Ganesh_Fixed1.fbx',
 }
 const PRODUCT_FILE = {
   bloom:   '/models/C4_Lotus_w_Ganesh_Fixed1.fbx',
