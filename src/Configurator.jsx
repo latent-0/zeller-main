@@ -313,8 +313,11 @@ export default function Configurator() {
     loader.load(filePath, (obj) => {
       if (cancelled) return
 
-      // Keep only the first child — FBX files may contain multiple catalog instances
-      obj.children.slice(1).forEach(c => obj.remove(c))
+      // C4 contains multiple parts (lotus + Ganesha figure) — keep all children.
+      // C2/C3 may be catalog-layout files with duplicate instances — keep only the first.
+      if (!filePath.includes('C4')) {
+        obj.children.slice(1).forEach(c => obj.remove(c))
+      }
 
       // Auto-normalise: fit into ~3 units, sit at y=0, centre x/z
       const box    = new THREE.Box3().setFromObject(obj)
