@@ -9,6 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import FilmSection from './FilmSection'
 import Configurator from './Configurator'
 import BlurText from './BlurText'
+import DomeGallery from './DomeGallery'
 import './index.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -365,6 +366,27 @@ export default function App() {
         </blockquote>
         <cite>— Zeller Brand Ethos</cite>
       </div>
+
+      {/* ── Dome Gallery — chandelier collection ── */}
+      <section id="gallery" className="dome-gallery-section">
+        <div className="section dome-gallery-header">
+          <BlurText text="The Collection" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
+          <BlurText text="Chandeliers in Every Facet" as="h2" animateBy="words" delay={110} stepDuration={0.45} />
+          <p className="reveal dome-gallery-hint">Drag to explore — tap any piece to illuminate it.</p>
+        </div>
+        <div className="dome-gallery-canvas">
+          <DomeGallery
+            overlayBlurColor="#0f0b1a"
+            grayscale={false}
+            imageBorderRadius="20px"
+            openedImageBorderRadius="24px"
+            openedImageWidth="360px"
+            openedImageHeight="480px"
+            fit={0.52}
+            dragDampening={1.6}
+          />
+        </div>
+      </section>
 
       {/* ── À La Carte services ── */}
       <section id="alacarte">

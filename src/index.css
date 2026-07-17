@@ -1148,3 +1148,28 @@ footer {
   .frames-gallery     { height: 50vh; margin-top: 4vh; }
   .h-panel__title     { font-size: clamp(1.8rem, 8vw, 2.8rem); }
 }
+
+/* ── Dome Gallery section ── */
+.dome-gallery-section {
+  padding-block: clamp(4rem, 10vh, 7rem) 0;
+}
+
+.dome-gallery-header {
+  padding-bottom: clamp(1.5rem, 3vh, 2.5rem);
+}
+
+.dome-gallery-hint {
+  font-family: var(--font-display);
+  font-size: clamp(0.52rem, 0.85vw, 0.62rem);
+  font-weight: 300;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: var(--clr-muted);
+  margin-top: 1.4rem;
+}
+
+.dome-gallery-canvas {
+  position: relative;
+  width: 100%;
+  height: clamp(460px, 72vh, 720px);
+}

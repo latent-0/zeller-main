@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@use-gesture/react": "^10.3.1",
     "gsap": "^3.15.0",
     "motion": "^12.41.0",
     "ogl": "^1.0.11",
