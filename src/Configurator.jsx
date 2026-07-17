@@ -105,28 +105,30 @@ function buildGanesha() {
 
   const pGeo = new THREE.IcosahedronGeometry(1, 1)
 
-  // Outer petals — 16, spread wide, lifted so they read as a distinct bottom tier
+  // Positive Z-rotation → outer petal tip curves UP (like a blooming lotus).
+  // Negative Z-rotation (old) → tips droop DOWN = wrong skirt shape.
+  // Outer petals — 16, mostly flat but curving gently upward at the tip
   for (let i = 0; i < 16; i++) {
     const h = new THREE.Group(); h.rotation.y = (i / 16) * Math.PI * 2; group.add(h)
-    add(pGeo, lotusMat, { p: [1.46, 0.22, 0], r: [0, 0, -0.36], s: [1.05, 0.072, 0.58], parent: h })
+    add(pGeo, lotusMat, { p: [1.50, 0.14, 0], r: [0, 0, 0.12], s: [1.05, 0.068, 0.58], parent: h })
   }
-  // Middle petals — 12, noticeably higher and more angled than outer
+  // Middle petals — 12, steeper upward angle, visibly higher than outer tier
   for (let i = 0; i < 12; i++) {
     const h = new THREE.Group(); h.rotation.y = (i / 12) * Math.PI * 2 + Math.PI / 12; group.add(h)
-    add(pGeo, lotusMat, { p: [0.96, 0.46, 0], r: [0, 0, -0.66], s: [0.82, 0.076, 0.46], parent: h })
+    add(pGeo, lotusMat, { p: [0.98, 0.28, 0], r: [0, 0, 0.42], s: [0.82, 0.072, 0.46], parent: h })
   }
-  // Inner petals — 8, highest tier, nearly vertical, cupping around the orb
+  // Inner petals — 8, nearly upright, cupping around the central orb
   for (let i = 0; i < 8; i++) {
     const h = new THREE.Group(); h.rotation.y = (i / 8) * Math.PI * 2 + Math.PI / 8; group.add(h)
-    add(pGeo, lotusMat, { p: [0.62, 0.66, 0], r: [0, 0, -0.94], s: [0.60, 0.080, 0.32], parent: h })
+    add(pGeo, lotusMat, { p: [0.62, 0.48, 0], r: [0, 0, 0.72], s: [0.60, 0.080, 0.32], parent: h })
   }
 
-  // Large central faceted orb — Ganesha's seat (raised to sit above lifted petals)
-  add(new THREE.IcosahedronGeometry(0.56, 2), lotusMat, { p: [0, 0.90, 0] })
+  // Large central faceted orb — Ganesha's seat
+  add(new THREE.IcosahedronGeometry(0.56, 2), lotusMat, { p: [0, 0.82, 0] })
 
   // ── Ganesha statue ──
   const statue = new THREE.Group()
-  statue.position.y = 1.46   // top of orb: 0.90 + 0.56
+  statue.position.y = 1.38   // top of orb: 0.82 + 0.56
   group.add(statue)
 
   // Cross-legged lap base
