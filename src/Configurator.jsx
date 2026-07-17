@@ -129,53 +129,54 @@ function buildGanesha() {
   statue.position.y = 1.28   // top of orb: 0.72 + 0.56
   group.add(statue)
 
-  // Cross-legged lap / base
-  add(new THREE.IcosahedronGeometry(0.40, 1), statueMat, { p: [0, -0.06, 0.06], s: [1.5, 0.42, 1.1], parent: statue })
-  // Body — round pot-belly
-  add(new THREE.IcosahedronGeometry(0.50, 2), statueMat, { p: [0, 0.30, 0], s: [1.05, 0.98, 0.90], parent: statue })
+  // Cross-legged lap base
+  add(new THREE.IcosahedronGeometry(0.44, 1), statueMat, { p: [0, -0.04, 0.06], s: [1.55, 0.40, 1.15], parent: statue })
+  // Body — round pot-belly, detail 1 keeps faces large enough to transmit light
+  add(new THREE.IcosahedronGeometry(0.50, 1), statueMat, { p: [0, 0.32, 0], s: [1.05, 1.0, 0.90], parent: statue })
   // Belly protrusion forward
-  add(new THREE.IcosahedronGeometry(0.30, 1), statueMat, { p: [0, 0.22, 0.36], s: [1.0, 0.85, 0.62], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.28, 1), statueMat, { p: [0, 0.22, 0.38], s: [0.95, 0.80, 0.55], parent: statue })
 
-  // Upper arms — spread wide
-  add(new THREE.IcosahedronGeometry(0.17, 1), statueMat, { p: [-0.55, 0.46, 0], s: [0.70, 0.55, 0.58], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.17, 1), statueMat, { p: [0.55, 0.46, 0],  s: [0.70, 0.55, 0.58], parent: statue })
-  // Lower arms
-  add(new THREE.IcosahedronGeometry(0.14, 1), statueMat, { p: [-0.50, 0.18, 0.18], s: [0.85, 0.5, 0.65], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.14, 1), statueMat, { p: [0.50, 0.18, 0.18],  s: [0.85, 0.5, 0.65], parent: statue })
+  // 4 arms — detail 0 = fewer, brighter faces
+  add(new THREE.IcosahedronGeometry(0.17, 0), statueMat, { p: [-0.52, 0.46, 0.02], s: [0.80, 0.55, 0.60], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.17, 0), statueMat, { p: [0.52, 0.46, 0.02],  s: [0.80, 0.55, 0.60], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.12, 0), statueMat, { p: [-0.48, 0.18, 0.22], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.12, 0), statueMat, { p: [0.48, 0.18, 0.22],  parent: statue })
 
   // Neck
-  add(new THREE.IcosahedronGeometry(0.17, 1), statueMat, { p: [0, 0.64, 0.02], s: [0.70, 0.65, 0.60], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.16, 0), statueMat, { p: [0, 0.65, 0.02], s: [0.70, 0.60, 0.58], parent: statue })
 
-  // Head — large elephant head
-  add(new THREE.IcosahedronGeometry(0.36, 2), statueMat, { p: [0, 0.88, 0], s: [1.10, 1.05, 0.95], parent: statue })
-  // Elephant muzzle / snout — projects forward
-  add(new THREE.IcosahedronGeometry(0.22, 1), statueMat, { p: [0, 0.80, 0.28], s: [0.85, 0.75, 0.70], parent: statue })
-  // Forehead dome
-  add(new THREE.IcosahedronGeometry(0.18, 1), statueMat, { p: [0, 1.05, 0.10], s: [1.0, 0.75, 0.72], parent: statue })
+  // Head — large domed elephant skull, detail 1
+  add(new THREE.IcosahedronGeometry(0.36, 1), statueMat, { p: [0, 0.90, 0], s: [1.10, 1.05, 0.95], parent: statue })
+  // Elephant muzzle — projects prominently forward from lower face
+  add(new THREE.IcosahedronGeometry(0.26, 1), statueMat, { p: [0, 0.80, 0.34], s: [0.88, 0.80, 0.78], parent: statue })
 
-  // Ears — very large flat fans, extending wide from head
-  add(new THREE.IcosahedronGeometry(0.40, 2), statueMat, { p: [-0.66, 0.92, -0.06], r: [0.15, 0.25, 0.08], s: [0.70, 1.02, 0.10], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.40, 2), statueMat, { p: [0.66, 0.92, -0.06],  r: [0.15, -0.25, -0.08], s: [0.70, 1.02, 0.10], parent: statue })
+  // EARS — CylinderGeometry disc rotated so flat cap faces face the viewer.
+  // Thin IcosahedronGeometry ears (prev approach) had 162 edge-on micro-faces → all dark.
+  // A cylinder with r:[π/2,0,0] puts its 10 cap triangles facing ±Z (toward camera) → bright.
+  // s:[0.90, 1.0, 1.22] stretches Y (world-Y after rotation) to make a taller oval ear.
+  const earGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.10, 10)
+  add(earGeo, statueMat, { p: [-0.62, 0.92, 0.06], r: [Math.PI / 2, 0,  0.08], s: [0.90, 1.0, 1.22], parent: statue })
+  add(earGeo, statueMat, { p: [0.62, 0.92, 0.06],  r: [Math.PI / 2, 0, -0.08], s: [0.90, 1.0, 1.22], parent: statue })
 
-  // Trunk — curves down from muzzle
+  // Trunk — drops from muzzle tip and curls
   const trunkCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.00, 0.80, 0.44),
-    new THREE.Vector3(0.02, 0.68, 0.52),
-    new THREE.Vector3(0.08, 0.54, 0.50),
-    new THREE.Vector3(0.14, 0.40, 0.40),
-    new THREE.Vector3(0.16, 0.26, 0.24),
+    new THREE.Vector3(0.00, 0.80, 0.52),
+    new THREE.Vector3(0.02, 0.66, 0.60),
+    new THREE.Vector3(0.08, 0.52, 0.56),
+    new THREE.Vector3(0.14, 0.38, 0.44),
+    new THREE.Vector3(0.16, 0.24, 0.28),
   ])
-  add(new THREE.TubeGeometry(trunkCurve, 14, 0.08, 7, false), statueMat, { parent: statue })
+  add(new THREE.TubeGeometry(trunkCurve, 14, 0.09, 7, false), statueMat, { parent: statue })
 
-  // Crown — tiered mukut (stacked shrinking rings)
-  add(new THREE.CylinderGeometry(0.23, 0.27, 0.11, 12), statueMat, { p: [0, 1.22, 0], parent: statue })
-  add(new THREE.CylinderGeometry(0.17, 0.21, 0.10, 10), statueMat, { p: [0, 1.33, 0], parent: statue })
-  add(new THREE.CylinderGeometry(0.11, 0.15, 0.09,  8), statueMat, { p: [0, 1.43, 0], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.08, 1),            statueMat, { p: [0, 1.54, 0], parent: statue })
+  // Crown — tiered mukut: stacked frustum rings shrinking toward top
+  add(new THREE.CylinderGeometry(0.22, 0.26, 0.10, 10), statueMat, { p: [0, 1.26, 0], parent: statue })
+  add(new THREE.CylinderGeometry(0.16, 0.20, 0.09,  9), statueMat, { p: [0, 1.36, 0], parent: statue })
+  add(new THREE.CylinderGeometry(0.10, 0.14, 0.08,  8), statueMat, { p: [0, 1.45, 0], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.07, 0),            statueMat, { p: [0, 1.55, 0], parent: statue })
 
   // Bindi
   const bindiMat = new THREE.MeshStandardMaterial({ color: '#c01f2e', roughness: 0.35 })
-  add(new THREE.SphereGeometry(0.038, 12, 12), bindiMat, { p: [0, 0.96, 0.36], parent: statue })
+  add(new THREE.SphereGeometry(0.04, 12, 12), bindiMat, { p: [0, 0.97, 0.40], parent: statue })
 
   return { group, statueMat, lotusMat }
 }
@@ -324,6 +325,9 @@ export default function Configurator() {
     // Top sparkle
     const top = new THREE.PointLight('#ffffff', 18, 20)
     top.position.set(0, 8, 0); scene.add(top)
+    // Front fill — illuminates crystal from camera side so transmission reads as clarity, not dark
+    const front = new THREE.PointLight('#e8f0ff', 28, 18)
+    front.position.set(0, 3, 8); scene.add(front)
 
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(40, 40),
