@@ -105,36 +105,37 @@ function buildGanesha() {
 
   const pGeo = new THREE.IcosahedronGeometry(1, 1)
 
-  // Outer petals — 16, wide & flat, fanning out horizontally
+  // Outer petals — 16, spread wide, lifted so they read as a distinct bottom tier
   for (let i = 0; i < 16; i++) {
     const h = new THREE.Group(); h.rotation.y = (i / 16) * Math.PI * 2; group.add(h)
-    add(pGeo, lotusMat, { p: [1.52, 0.10, 0], r: [0, 0, -0.12], s: [1.05, 0.068, 0.58], parent: h })
+    add(pGeo, lotusMat, { p: [1.46, 0.22, 0], r: [0, 0, -0.36], s: [1.05, 0.072, 0.58], parent: h })
   }
-  // Middle petals — 12, more upright
+  // Middle petals — 12, noticeably higher and more angled than outer
   for (let i = 0; i < 12; i++) {
     const h = new THREE.Group(); h.rotation.y = (i / 12) * Math.PI * 2 + Math.PI / 12; group.add(h)
-    add(pGeo, lotusMat, { p: [1.00, 0.26, 0], r: [0, 0, -0.44], s: [0.82, 0.072, 0.46], parent: h })
+    add(pGeo, lotusMat, { p: [0.96, 0.46, 0], r: [0, 0, -0.66], s: [0.82, 0.076, 0.46], parent: h })
   }
-  // Inner petals — 8, cupping upward
+  // Inner petals — 8, highest tier, nearly vertical, cupping around the orb
   for (let i = 0; i < 8; i++) {
     const h = new THREE.Group(); h.rotation.y = (i / 8) * Math.PI * 2 + Math.PI / 8; group.add(h)
-    add(pGeo, lotusMat, { p: [0.64, 0.44, 0], r: [0, 0, -0.80], s: [0.60, 0.076, 0.32], parent: h })
+    add(pGeo, lotusMat, { p: [0.62, 0.66, 0], r: [0, 0, -0.94], s: [0.60, 0.080, 0.32], parent: h })
   }
 
-  // Large central faceted orb — Ganesha's seat
-  add(new THREE.IcosahedronGeometry(0.56, 2), lotusMat, { p: [0, 0.72, 0] })
+  // Large central faceted orb — Ganesha's seat (raised to sit above lifted petals)
+  add(new THREE.IcosahedronGeometry(0.56, 2), lotusMat, { p: [0, 0.90, 0] })
 
   // ── Ganesha statue ──
   const statue = new THREE.Group()
-  statue.position.y = 1.28   // top of orb: 0.72 + 0.56
+  statue.position.y = 1.46   // top of orb: 0.90 + 0.56
   group.add(statue)
 
   // Cross-legged lap base
   add(new THREE.IcosahedronGeometry(0.44, 1), statueMat, { p: [0, -0.04, 0.06], s: [1.55, 0.40, 1.15], parent: statue })
-  // Body — round pot-belly, detail 1 keeps faces large enough to transmit light
+  // Body — round torso
   add(new THREE.IcosahedronGeometry(0.50, 1), statueMat, { p: [0, 0.32, 0], s: [1.05, 1.0, 0.90], parent: statue })
-  // Belly protrusion forward
-  add(new THREE.IcosahedronGeometry(0.28, 1), statueMat, { p: [0, 0.22, 0.38], s: [0.95, 0.80, 0.55], parent: statue })
+  // Belly — same y-centre as body so it merges flush into the torso rather than floating
+  // The back half of this sphere sits inside the body; only the front dome projects forward
+  add(new THREE.IcosahedronGeometry(0.32, 1), statueMat, { p: [0, 0.32, 0.35], s: [1.0, 0.88, 0.72], parent: statue })
 
   // 4 arms — detail 0 = fewer, brighter faces
   add(new THREE.IcosahedronGeometry(0.17, 0), statueMat, { p: [-0.52, 0.46, 0.02], s: [0.80, 0.55, 0.60], parent: statue })
@@ -356,7 +357,7 @@ export default function Configurator() {
     applyViewOffset()
 
     const controls = new OrbitControls(camera, renderer.domElement)
-    controls.target.set(0, 1.20, 0)
+    controls.target.set(0, 1.35, 0)
     controls.enableDamping = true
     controls.dampingFactor = 0.06
     controls.minDistance = 2.4
@@ -396,7 +397,7 @@ export default function Configurator() {
     t.oyster.group.visible  = product === 'oyster'
 
     // Adjust camera target & position per product
-    const targets   = { ganesha: [0, 1.20, 0], bloom: [0, 0.32, 0], oyster: [0, 0.36, 0] }
+    const targets   = { ganesha: [0, 1.35, 0], bloom: [0, 0.32, 0], oyster: [0, 0.36, 0] }
     const positions = { ganesha: [3.5, 2.4, 7.5], bloom: [1.8, 1.0, 4.0], oyster: [2.4, 1.2, 5.0] }
     t.controls.target.set(...targets[product])
     t.camera.position.set(...positions[product])
