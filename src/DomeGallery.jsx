@@ -3,14 +3,12 @@ import { useGesture } from '@use-gesture/react';
 import './DomeGallery.css';
 
 const DEFAULT_IMAGES = [
-  { src: '/gallery/chan-classical.svg', alt: 'Classical tiered crystal chandelier with cascading arms' },
-  { src: '/gallery/chan-prism.svg',     alt: 'Modern prism array chandelier with geometric pendants' },
-  { src: '/gallery/chan-baroque.svg',   alt: 'Baroque swirl chandelier with ornate golden arms' },
-  { src: '/gallery/chan-sputnik.svg',   alt: 'Sputnik starburst chandelier with radiating spokes' },
-  { src: '/gallery/chan-cascade.svg',   alt: 'Cascading teardrop chandelier in amber glass' },
-  { src: '/gallery/chan-ring.svg',      alt: 'Contemporary ring chandelier with concentric circles' },
-  { src: '/gallery/chan-cluster.svg',   alt: 'Crystal cluster chandelier with asymmetric arrangement' },
-  { src: '/gallery/chan-deco.svg',      alt: 'Art Deco fan chandelier with geometric symmetry' },
+  { src: '/gallery/chandelier-rings.webp',    alt: 'Modern ring chandelier over stone staircase' },
+  { src: '/gallery/chandelier-butterfly.jpg', alt: 'Butterfly staircase chandelier cascading from ceiling' },
+  { src: '/gallery/chandelier-spiral.webp',   alt: 'Crystal spiral chandelier in grand foyer' },
+  { src: '/gallery/chandelier-crystal.jpg',   alt: 'Crystal glow chandelier with warm amber light' },
+  { src: '/gallery/chandelier-tulip.webp',    alt: 'Beaded tulip chandelier in elegant interior' },
+  { src: '/gallery/chandelier-rose.jpg',      alt: 'Rose ROSE 2026 chandelier in acrylic glass' },
 ];
 
 const DEFAULTS = {
