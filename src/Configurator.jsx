@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js'
 
 // ── Palettes ──────────────────────────────────────────────────────────────────
 const PASTELS = [
@@ -40,6 +41,11 @@ const PEARL_COLORS = [
   { name: 'Champagne', hex: '#d4b896' },
   { name: 'Rose',      hex: '#e8c4bc' },
   { name: 'Silver',    hex: '#d4d8dc' },
+]
+const GANESHA_SIZES = [
+  { id: 'S', label: 'S', name: 'Small',  file: '/models/C2_Fixed.fbx' },
+  { id: 'M', label: 'M', name: 'Medium', file: '/models/C3_Lotus_Fixed.fbx' },
+  { id: 'L', label: 'L', name: 'Large',  file: '/models/C4_Lotus_w_Ganesh_Fixed1.fbx' },
 ]
 
 // ── Material helpers ──────────────────────────────────────────────────────────
@@ -91,99 +97,6 @@ function makeAdder(group) {
   }
 }
 
-// ── GANESHA LOTUS ─────────────────────────────────────────────────────────────
-function buildGanesha() {
-  const statueMat = mkCrystal('#eef1f5')
-  const lotusMat  = mkCrystal('#f4c6d7')
-
-  const group = new THREE.Group()
-  const add   = makeAdder(group)
-
-  // ── Lotus base ──
-  add(new THREE.CylinderGeometry(1.90, 2.00, 0.08, 24), lotusMat, { p: [0, 0.04, 0] })
-  add(new THREE.CylinderGeometry(0.88, 0.98, 0.10, 18), lotusMat, { p: [0, 0.09, 0] })
-
-  const pGeo = new THREE.IcosahedronGeometry(1, 1)
-
-  // Positive Z-rotation → outer petal tip curves UP (like a blooming lotus).
-  // Negative Z-rotation (old) → tips droop DOWN = wrong skirt shape.
-  // Outer petals — 16, mostly flat but curving gently upward at the tip
-  for (let i = 0; i < 16; i++) {
-    const h = new THREE.Group(); h.rotation.y = (i / 16) * Math.PI * 2; group.add(h)
-    add(pGeo, lotusMat, { p: [1.50, 0.14, 0], r: [0, 0, 0.12], s: [1.05, 0.068, 0.58], parent: h })
-  }
-  // Middle petals — 12, steeper upward angle, visibly higher than outer tier
-  for (let i = 0; i < 12; i++) {
-    const h = new THREE.Group(); h.rotation.y = (i / 12) * Math.PI * 2 + Math.PI / 12; group.add(h)
-    add(pGeo, lotusMat, { p: [0.98, 0.28, 0], r: [0, 0, 0.42], s: [0.82, 0.072, 0.46], parent: h })
-  }
-  // Inner petals — 8, nearly upright, cupping around the central orb
-  for (let i = 0; i < 8; i++) {
-    const h = new THREE.Group(); h.rotation.y = (i / 8) * Math.PI * 2 + Math.PI / 8; group.add(h)
-    add(pGeo, lotusMat, { p: [0.62, 0.48, 0], r: [0, 0, 0.72], s: [0.60, 0.080, 0.32], parent: h })
-  }
-
-  // Large central faceted orb — Ganesha's seat
-  add(new THREE.IcosahedronGeometry(0.56, 2), lotusMat, { p: [0, 0.82, 0] })
-
-  // ── Ganesha statue ──
-  const statue = new THREE.Group()
-  statue.position.y = 1.38   // top of orb: 0.82 + 0.56
-  group.add(statue)
-
-  // Cross-legged lap base
-  add(new THREE.IcosahedronGeometry(0.44, 1), statueMat, { p: [0, -0.04, 0.06], s: [1.55, 0.40, 1.15], parent: statue })
-  // Body — round torso
-  add(new THREE.IcosahedronGeometry(0.50, 1), statueMat, { p: [0, 0.32, 0], s: [1.05, 1.0, 0.90], parent: statue })
-  // Belly — same y-centre as body so it merges flush into the torso rather than floating
-  // The back half of this sphere sits inside the body; only the front dome projects forward
-  add(new THREE.IcosahedronGeometry(0.32, 1), statueMat, { p: [0, 0.32, 0.35], s: [1.0, 0.88, 0.72], parent: statue })
-
-  // 4 arms — detail 0 = fewer, brighter faces
-  add(new THREE.IcosahedronGeometry(0.17, 0), statueMat, { p: [-0.52, 0.46, 0.02], s: [0.80, 0.55, 0.60], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.17, 0), statueMat, { p: [0.52, 0.46, 0.02],  s: [0.80, 0.55, 0.60], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.12, 0), statueMat, { p: [-0.48, 0.18, 0.22], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.12, 0), statueMat, { p: [0.48, 0.18, 0.22],  parent: statue })
-
-  // Neck
-  add(new THREE.IcosahedronGeometry(0.16, 0), statueMat, { p: [0, 0.65, 0.02], s: [0.70, 0.60, 0.58], parent: statue })
-
-  // Head — large domed elephant skull, detail 1
-  add(new THREE.IcosahedronGeometry(0.36, 1), statueMat, { p: [0, 0.90, 0], s: [1.10, 1.05, 0.95], parent: statue })
-  // Elephant muzzle — projects prominently forward from lower face
-  add(new THREE.IcosahedronGeometry(0.26, 1), statueMat, { p: [0, 0.80, 0.34], s: [0.88, 0.80, 0.78], parent: statue })
-
-  // EARS — CylinderGeometry disc rotated so flat cap faces face the viewer.
-  // Thin IcosahedronGeometry ears (prev approach) had 162 edge-on micro-faces → all dark.
-  // A cylinder with r:[π/2,0,0] puts its 10 cap triangles facing ±Z (toward camera) → bright.
-  // s:[0.90, 1.0, 1.22] stretches Y (world-Y after rotation) to make a taller oval ear.
-  const earGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.10, 10)
-  add(earGeo, statueMat, { p: [-0.62, 0.92, 0.06], r: [Math.PI / 2, 0,  0.08], s: [0.90, 1.0, 1.22], parent: statue })
-  add(earGeo, statueMat, { p: [0.62, 0.92, 0.06],  r: [Math.PI / 2, 0, -0.08], s: [0.90, 1.0, 1.22], parent: statue })
-
-  // Trunk — drops from muzzle tip and curls
-  const trunkCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.00, 0.80, 0.52),
-    new THREE.Vector3(0.02, 0.66, 0.60),
-    new THREE.Vector3(0.08, 0.52, 0.56),
-    new THREE.Vector3(0.14, 0.38, 0.44),
-    new THREE.Vector3(0.16, 0.24, 0.28),
-  ])
-  add(new THREE.TubeGeometry(trunkCurve, 14, 0.09, 7, false), statueMat, { parent: statue })
-
-  // Crown — tiered mukut: stacked frustum rings shrinking toward top
-  add(new THREE.CylinderGeometry(0.22, 0.26, 0.10, 10), statueMat, { p: [0, 1.26, 0], parent: statue })
-  add(new THREE.CylinderGeometry(0.16, 0.20, 0.09,  9), statueMat, { p: [0, 1.36, 0], parent: statue })
-  add(new THREE.CylinderGeometry(0.10, 0.14, 0.08,  8), statueMat, { p: [0, 1.45, 0], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.07, 0),            statueMat, { p: [0, 1.55, 0], parent: statue })
-
-  // Bindi
-  const bindiMat = new THREE.MeshStandardMaterial({ color: '#c01f2e', roughness: 0.35 })
-  add(new THREE.SphereGeometry(0.04, 12, 12), bindiMat, { p: [0, 0.97, 0.40], parent: statue })
-
-  return { group, statueMat, lotusMat }
-}
-
 // ── CRYSTAL BLOOM ─────────────────────────────────────────────────────────────
 function buildBloom() {
   const bloomMat  = mkCrystal('#f4c6d7')
@@ -231,19 +144,15 @@ function buildOyster() {
   add(new THREE.CylinderGeometry(0.36, 0.40, 0.06, 14), shellMat, { p: [0, 0.03, 0] })
 
   // ── Lower shell — wide, flat, faceted ──
-  // Main body of the lower shell
   add(new THREE.IcosahedronGeometry(1.10, 3), shellMat, {
     p: [0, 0.24, 0.04], s: [1.28, 0.30, 1.05]
   })
-  // Shell rim / lip (thicker at edge)
   add(new THREE.IcosahedronGeometry(1.0, 2), shellMat, {
     p: [0, 0.14, 0.10], s: [1.20, 0.115, 0.96]
   })
-  // Hinge ridge at back
   add(new THREE.IcosahedronGeometry(0.35, 1), shellMat, {
     p: [0, 0.20, -0.72], s: [0.9, 0.40, 0.40]
   })
-  // Shell ribbing — subtle ridges
   for (let i = -1; i <= 1; i++) {
     add(new THREE.IcosahedronGeometry(0.8, 2), shellMat, {
       p: [i * 0.38, 0.20, 0.08], s: [0.18, 0.22, 0.90]
@@ -254,7 +163,6 @@ function buildOyster() {
   add(new THREE.IcosahedronGeometry(0.90, 3), shellMat, {
     p: [0, 0.42, -0.52], r: [-0.90, 0, 0], s: [1.12, 0.24, 0.88]
   })
-  // Upper shell lip
   add(new THREE.IcosahedronGeometry(0.82, 2), shellMat, {
     p: [0, 0.36, -0.30], r: [-0.90, 0, 0], s: [1.00, 0.10, 0.80]
   })
@@ -270,9 +178,12 @@ export default function Configurator() {
   const mountRef  = useRef(null)
   const threeRef  = useRef(null)
 
-  const [product, setProduct] = useState('ganesha')
-  const [part,    setPart]    = useState('statue')   // per-product active part
-  const [mode,    setMode]    = useState('crystal')
+  const [product,       setProduct]       = useState('ganesha')
+  const [part,          setPart]          = useState('statue')
+  const [mode,          setMode]          = useState('crystal')
+  const [ganeshSize,    setGaneshSize]    = useState('L')
+  const [sceneReady,    setSceneReady]    = useState(false)
+  const [ganeshLoading, setGaneshLoading] = useState(false)
   const [config,  setConfig]  = useState({
     ganesha: {
       statue: { color: '#eef1f5', finish: 'polished' },
@@ -325,10 +236,8 @@ export default function Configurator() {
     rimA.position.set(-4, 3, -3); scene.add(rimA)
     const rimB = new THREE.PointLight('#ffe1b8', 35, 25)
     rimB.position.set(4, 1.5, -2.5); scene.add(rimB)
-    // Top sparkle
     const top = new THREE.PointLight('#ffffff', 18, 20)
     top.position.set(0, 8, 0); scene.add(top)
-    // Front fill — illuminates crystal from camera side so transmission reads as clarity, not dark
     const front = new THREE.PointLight('#e8f0ff', 28, 18)
     front.position.set(0, 3, 8); scene.add(front)
 
@@ -340,14 +249,16 @@ export default function Configurator() {
     ground.receiveShadow = true
     scene.add(ground)
 
-    const ganesha = buildGanesha()
-    const bloom   = buildBloom()
-    const oyster  = buildOyster()
+    // Ganesha: empty group + shared crystal materials (FBX loaded separately)
+    const ganeshGroup  = new THREE.Group()
+    const ganeshaStatueMat = mkCrystal('#eef1f5')
+    const ganeshaLotusMat  = mkCrystal('#f4c6d7')
+    scene.add(ganeshGroup)
 
+    const bloom  = buildBloom()
+    const oyster = buildOyster()
     bloom.group.visible  = false
     oyster.group.visible = false
-
-    scene.add(ganesha.group)
     scene.add(bloom.group)
     scene.add(oyster.group)
 
@@ -359,7 +270,7 @@ export default function Configurator() {
     applyViewOffset()
 
     const controls = new OrbitControls(camera, renderer.domElement)
-    controls.target.set(0, 1.35, 0)
+    controls.target.set(0, 1.5, 0)
     controls.enableDamping = true
     controls.dampingFactor = 0.06
     controls.minDistance = 2.4
@@ -379,7 +290,12 @@ export default function Configurator() {
     }
     window.addEventListener('resize', onResize)
 
-    threeRef.current = { renderer, scene, camera, controls, pmrem, ganesha, bloom, oyster }
+    threeRef.current = {
+      renderer, scene, camera, controls, pmrem,
+      ganesha: { group: ganeshGroup, statueMat: ganeshaStatueMat, lotusMat: ganeshaLotusMat },
+      bloom, oyster,
+    }
+    setSceneReady(true)
 
     return () => {
       cancelAnimationFrame(raf)
@@ -390,6 +306,70 @@ export default function Configurator() {
     }
   }, [])
 
+  // ── Load FBX when size changes ────────────────────────────────────────────
+  useEffect(() => {
+    if (!sceneReady) return
+    const t = threeRef.current
+    if (!t) return
+
+    let cancelled = false
+    setGaneshLoading(true)
+
+    const sizeInfo = GANESHA_SIZES.find(s => s.id === ganeshSize)
+    const ganeshGroup = t.ganesha.group
+
+    // Clear previous model
+    const toRemove = [...ganeshGroup.children]
+    toRemove.forEach(child => ganeshGroup.remove(child))
+
+    const loader = new FBXLoader()
+    loader.load(
+      sizeInfo.file,
+      (obj) => {
+        if (cancelled) return
+
+        // Auto-normalise: fit inside a ~3-unit cube, sit at y=0, centre x/z
+        const box = new THREE.Box3().setFromObject(obj)
+        const size = box.getSize(new THREE.Vector3())
+        const center = box.getCenter(new THREE.Vector3())
+        const maxDim = Math.max(size.x, size.y, size.z)
+        const scale  = 3.0 / maxDim
+
+        const wrapper = new THREE.Group()
+        wrapper.add(obj)
+        wrapper.scale.setScalar(scale)
+        wrapper.position.set(
+          -center.x * scale,
+          -box.min.y * scale,
+          -center.z * scale,
+        )
+
+        // Split meshes by height: lower half → lotusMat, upper half → statueMat
+        const midY = (box.min.y + box.max.y) / 2
+        obj.traverse(child => {
+          if (!child.isMesh) return
+          child.castShadow = true
+          child.receiveShadow = true
+          const mb = new THREE.Box3().setFromObject(child)
+          const meshMidY = (mb.min.y + mb.max.y) / 2
+          child.material = meshMidY < midY ? t.ganesha.lotusMat : t.ganesha.statueMat
+        })
+
+        ganeshGroup.add(wrapper)
+        setGaneshLoading(false)
+      },
+      undefined,
+      (err) => {
+        if (!cancelled) {
+          console.error('FBX load error:', err)
+          setGaneshLoading(false)
+        }
+      }
+    )
+
+    return () => { cancelled = true }
+  }, [sceneReady, ganeshSize])
+
   // ── Switch product ────────────────────────────────────────────────────────
   useEffect(() => {
     const t = threeRef.current
@@ -398,8 +378,7 @@ export default function Configurator() {
     t.bloom.group.visible   = product === 'bloom'
     t.oyster.group.visible  = product === 'oyster'
 
-    // Adjust camera target & position per product
-    const targets   = { ganesha: [0, 1.35, 0], bloom: [0, 0.32, 0], oyster: [0, 0.36, 0] }
+    const targets   = { ganesha: [0, 1.5, 0],  bloom: [0, 0.32, 0], oyster: [0, 0.36, 0] }
     const positions = { ganesha: [3.5, 2.4, 7.5], bloom: [1.8, 1.0, 4.0], oyster: [2.4, 1.2, 5.0] }
     t.controls.target.set(...targets[product])
     t.camera.position.set(...positions[product])
@@ -427,7 +406,6 @@ export default function Configurator() {
     }
     if (product === 'oyster') {
       applyMat(t.oyster.shellMat, config.oyster.shell)
-      // Pearl uses a different material type — just recolor it
       const c = new THREE.Color(config.oyster.pearl.color)
       t.oyster.pearlMat.color.copy(c)
       t.oyster.pearlMat.needsUpdate = true
@@ -482,7 +460,14 @@ export default function Configurator() {
 
   return (
     <div className="config-page">
-      <div className="config-viewport" ref={mountRef} />
+      <div className="config-viewport" ref={mountRef}>
+        {ganeshLoading && product === 'ganesha' && (
+          <div className="config-loading">
+            <div className="config-loading__ring" />
+            <p>Loading model…</p>
+          </div>
+        )}
+      </div>
 
       {/* left chrome */}
       <a className="config-brand" href="#">
@@ -522,6 +507,25 @@ export default function Configurator() {
             </button>
           ))}
         </div>
+
+        {/* Size selector — Ganesha only */}
+        {product === 'ganesha' && (
+          <div className="config-sizes">
+            <span className="config-sizes__label">Size</span>
+            <div className="config-sizes__btns">
+              {GANESHA_SIZES.map(s => (
+                <button
+                  key={s.id}
+                  className={`config-size-btn ${ganeshSize === s.id ? 'is-active' : ''}`}
+                  onClick={() => setGaneshSize(s.id)}
+                  title={s.name}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="config-panel__tabs">
           {activeParts.map(({ id, label }) => (
