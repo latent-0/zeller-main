@@ -121,7 +121,7 @@ p {
   font-weight: 100;
   letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: var(--clr-text);
+  color: var(--clr-accent-light);
   /* spans start hidden — GSAP blurs them in */
 }
 
