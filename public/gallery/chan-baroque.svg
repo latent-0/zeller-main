@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="35%" r="65%">
+    <stop offset="0%" stop-color="#120d08"/>
+    <stop offset="100%" stop-color="#060402"/>
+  </radialGradient>
+  <radialGradient id="center-glow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#f0c840" stop-opacity="0.5"/>
+    <stop offset="100%" stop-color="#c07010" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="gf"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="800" height="1000" fill="url(#bg)"/>
+<ellipse cx="400" cy="380" rx="240" ry="60" fill="url(#center-glow)"/>
+<!-- Ornate S-curve arms -->
+<path d="M400,340 C480,320 600,340 660,360" fill="none" stroke="#c89030" stroke-width="4" opacity="0.8"/>
+  <path d="M400,340 C480,320 600,340 660,360" fill="none" stroke="#f0d060" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="660" cy="360" r="5" fill="#e8b820" filter="url(#gf)"/>
+  <!-- Crystal cluster at arm end -->
+  <line x1="660" y1="360" x2="648" y2="390" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="648" cy="394" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="660" y1="360" x2="654" y2="400" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="654" cy="404" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="660" y1="360" x2="660" y2="390" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="660" cy="394" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="660" y1="360" x2="666" y2="400" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="666" cy="404" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="660" y1="360" x2="672" y2="390" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="672" cy="394" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><path d="M400,340 C440,345.98076211353316 500,391.9615242270663 530,420.6217782649107" fill="none" stroke="#c89030" stroke-width="4" opacity="0.8"/>
+  <path d="M400,340 C440,345.98076211353316 500,391.9615242270663 530,420.6217782649107" fill="none" stroke="#f0d060" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="530" cy="420.6217782649107" r="5" fill="#e8b820" filter="url(#gf)"/>
+  <!-- Crystal cluster at arm end -->
+  <line x1="530" y1="420.6217782649107" x2="518" y2="450.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="518" cy="454.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="530" y1="420.6217782649107" x2="524" y2="460.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="524" cy="464.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="530" y1="420.6217782649107" x2="530" y2="450.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="530" cy="454.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="530" y1="420.6217782649107" x2="536" y2="460.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="536" cy="464.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="530" y1="420.6217782649107" x2="542" y2="450.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="542" cy="454.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><path d="M400,340 C360,345.98076211353316 300.00000000000006,391.9615242270663 270.00000000000006,420.6217782649107" fill="none" stroke="#c89030" stroke-width="4" opacity="0.8"/>
+  <path d="M400,340 C360,345.98076211353316 300.00000000000006,391.9615242270663 270.00000000000006,420.6217782649107" fill="none" stroke="#f0d060" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="270.00000000000006" cy="420.6217782649107" r="5" fill="#e8b820" filter="url(#gf)"/>
+  <!-- Crystal cluster at arm end -->
+  <line x1="270.00000000000006" y1="420.6217782649107" x2="258.00000000000006" y2="450.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="258.00000000000006" cy="454.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="270.00000000000006" y1="420.6217782649107" x2="264.00000000000006" y2="460.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="264.00000000000006" cy="464.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="270.00000000000006" y1="420.6217782649107" x2="270.00000000000006" y2="450.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="270.00000000000006" cy="454.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="270.00000000000006" y1="420.6217782649107" x2="276.00000000000006" y2="460.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="276.00000000000006" cy="464.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="270.00000000000006" y1="420.6217782649107" x2="282.00000000000006" y2="450.6217782649107" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="282.00000000000006" cy="454.6217782649107" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><path d="M400,340 C320,320 200,340 140,360" fill="none" stroke="#c89030" stroke-width="4" opacity="0.8"/>
+  <path d="M400,340 C320,320 200,340 140,360" fill="none" stroke="#f0d060" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="140" cy="360" r="5" fill="#e8b820" filter="url(#gf)"/>
+  <!-- Crystal cluster at arm end -->
+  <line x1="140" y1="360" x2="128" y2="390" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="128" cy="394" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="140" y1="360" x2="134" y2="400" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="134" cy="404" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="140" y1="360" x2="140" y2="390" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="140" cy="394" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="140" y1="360" x2="146" y2="400" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="146" cy="404" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="140" y1="360" x2="152" y2="390" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="152" cy="394" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><path d="M400,340 C359.99999999999994,294.01923788646684 299.9999999999999,288.0384757729337 269.9999999999999,299.3782217350893" fill="none" stroke="#c89030" stroke-width="4" opacity="0.8"/>
+  <path d="M400,340 C359.99999999999994,294.01923788646684 299.9999999999999,288.0384757729337 269.9999999999999,299.3782217350893" fill="none" stroke="#f0d060" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="269.9999999999999" cy="299.3782217350893" r="5" fill="#e8b820" filter="url(#gf)"/>
+  <!-- Crystal cluster at arm end -->
+  <line x1="269.9999999999999" y1="299.3782217350893" x2="257.9999999999999" y2="329.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="257.9999999999999" cy="333.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="269.9999999999999" y1="299.3782217350893" x2="263.9999999999999" y2="339.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="263.9999999999999" cy="343.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="269.9999999999999" y1="299.3782217350893" x2="269.9999999999999" y2="329.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="269.9999999999999" cy="333.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="269.9999999999999" y1="299.3782217350893" x2="275.9999999999999" y2="339.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="275.9999999999999" cy="343.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="269.9999999999999" y1="299.3782217350893" x2="281.9999999999999" y2="329.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="281.9999999999999" cy="333.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><path d="M400,340 C440,294.01923788646684 500,288.0384757729337 530,299.3782217350893" fill="none" stroke="#c89030" stroke-width="4" opacity="0.8"/>
+  <path d="M400,340 C440,294.01923788646684 500,288.0384757729337 530,299.3782217350893" fill="none" stroke="#f0d060" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="530" cy="299.3782217350893" r="5" fill="#e8b820" filter="url(#gf)"/>
+  <!-- Crystal cluster at arm end -->
+  <line x1="530" y1="299.3782217350893" x2="518" y2="329.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="518" cy="333.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="530" y1="299.3782217350893" x2="524" y2="339.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="524" cy="343.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="530" y1="299.3782217350893" x2="530" y2="329.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="530" cy="333.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="530" y1="299.3782217350893" x2="536" y2="339.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="536" cy="343.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/><line x1="530" y1="299.3782217350893" x2="542" y2="329.3782217350893" stroke="#e0d090" stroke-width="0.8" opacity="0.7"/>
+    <ellipse cx="542" cy="333.3782217350893" rx="2" ry="3" fill="#f8f0c0" opacity="0.9"/>
+<!-- Center column -->
+<rect x="396" y="160" width="8" height="180" fill="#b87820" opacity="0.9"/>
+<ellipse cx="400" cy="335" rx="25" ry="12" fill="#c89030"/>
+<ellipse cx="400" cy="340" rx="15" ry="8" fill="#e8b820" opacity="0.8"/>
+<!-- Hanging centre crystal -->
+<line x1="400" y1="352" x2="400" y2="430" stroke="#d0b850" stroke-width="1.5" opacity="0.7"/>
+<polygon points="400,430 388,455 400,480 412,455" fill="#f0d870" opacity="0.9" filter="url(#gf)"/>
+<!-- Smaller hanging crystals -->
+<line x1="530" y1="360" x2="530" y2="385" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="530" cy="389" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="512.5833024919771" y1="382.5" x2="512.5833024919771" y2="407.5" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="512.5833024919771" cy="411.5" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="465" y1="398.97114317029974" x2="465" y2="423.97114317029974" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="465" cy="427.97114317029974" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="400" y1="405" x2="400" y2="430" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="400" cy="434" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="335" y1="398.97114317029974" x2="335" y2="423.97114317029974" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="335" cy="427.97114317029974" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="287.41669750802293" y1="382.5" x2="287.41669750802293" y2="407.5" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="287.41669750802293" cy="411.5" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="270" y1="360" x2="270" y2="385" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="270" cy="389" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="287.416697508023" y1="337.5" x2="287.416697508023" y2="362.5" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="287.416697508023" cy="366.5" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="334.99999999999994" y1="321.02885682970026" x2="334.99999999999994" y2="346.02885682970026" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="334.99999999999994" cy="350.02885682970026" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="400" y1="315" x2="400" y2="340" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="400" cy="344" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="465" y1="321.02885682970026" x2="465" y2="346.02885682970026" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="465" cy="350.02885682970026" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/><line x1="512.583302491977" y1="337.5" x2="512.583302491977" y2="362.5" stroke="#d0b040" stroke-width="0.8" opacity="0.6"/>
+  <ellipse cx="512.583302491977" cy="366.5" rx="2.5" ry="4" fill="#f0e090" opacity="0.85"/>
+</svg>

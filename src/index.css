@@ -1155,12 +1155,12 @@ footer {
   padding-block: 0;
 }
 
-/* Cream → dark gradient transition at top */
+/* Cream → dark hard cut at top */
 .dome-gallery-section::before {
   content: '';
   display: block;
-  height: clamp(3rem, 6vh, 5rem);
-  background: linear-gradient(to bottom, #f5f0e8, #0f0b1a);
+  height: 20px;
+  background: linear-gradient(to bottom, #f5f0e8 0%, #f5f0e8 30%, #0f0b1a 100%);
 }
 
 .dome-gallery-header {
@@ -1190,10 +1190,10 @@ footer {
   opacity: 0.82;
 }
 
-/* Dark → cream gradient at dome section bottom */
+/* Dark → cream hard cut at bottom */
 .dome-gallery-section::after {
   content: '';
   display: block;
-  height: clamp(2.5rem, 5vh, 4rem);
-  background: linear-gradient(to bottom, #0f0b1a, #f5f0e8);
+  height: 20px;
+  background: linear-gradient(to bottom, #0f0b1a 0%, #0f0b1a 30%, #f5f0e8 100%);
 }

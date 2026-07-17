@@ -3,11 +3,14 @@ import { useGesture } from '@use-gesture/react';
 import './DomeGallery.css';
 
 const DEFAULT_IMAGES = [
-  { src: '/gallery/chandelier-cubes.jpg',    alt: 'Geometric cube chandelier glowing in the dark' },
-  { src: '/gallery/chandelier-dome.jpg',     alt: 'Crystal dome chandelier beneath an ornate ceiling' },
-  { src: '/gallery/chandelier-glasswork.jpg',alt: 'Twisted glasswork chandelier arms in warm amber light' },
-  { src: '/room/Leaves_chandelier_Dirt.jpg', alt: 'Crystal leaves chandelier detail' },
-  { src: '/room/glass_texture.jpg',          alt: 'Amber glass crystal surface' },
+  { src: '/gallery/chan-classical.svg', alt: 'Classical tiered crystal chandelier with cascading arms' },
+  { src: '/gallery/chan-prism.svg',     alt: 'Modern prism array chandelier with geometric pendants' },
+  { src: '/gallery/chan-baroque.svg',   alt: 'Baroque swirl chandelier with ornate golden arms' },
+  { src: '/gallery/chan-sputnik.svg',   alt: 'Sputnik starburst chandelier with radiating spokes' },
+  { src: '/gallery/chan-cascade.svg',   alt: 'Cascading teardrop chandelier in amber glass' },
+  { src: '/gallery/chan-ring.svg',      alt: 'Contemporary ring chandelier with concentric circles' },
+  { src: '/gallery/chan-cluster.svg',   alt: 'Crystal cluster chandelier with asymmetric arrangement' },
+  { src: '/gallery/chan-deco.svg',      alt: 'Art Deco fan chandelier with geometric symmetry' },
 ];
 
 const DEFAULTS = {
