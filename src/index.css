@@ -121,7 +121,7 @@ p {
   font-weight: 100;
   letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: var(--clr-accent-light);
+  color: #f5f0e8;
   /* spans start hidden — GSAP blurs them in */
 }
 
@@ -853,6 +853,16 @@ footer {
   pointer-events: none;
   will-change: transform;
 }
+
+/* Covers the video at scroll=0 to hide the green yuv420p blank keyframe */
+.film-video-cover {
+  position: absolute;
+  inset: 0;
+  background: #0a0714;
+  z-index: 1;
+  pointer-events: none;
+  will-change: opacity;
+}
 .film-bar--top    { top: 0; }
 .film-bar--bottom { bottom: 0; }
 
@@ -892,7 +902,7 @@ footer {
   font-weight: 300;
   font-style: italic;
   line-height: 1.15;
-  color: var(--clr-text);
+  color: #f5f0e8;
   text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55);
 }
 

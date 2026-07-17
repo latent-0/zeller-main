@@ -16,6 +16,7 @@ export default function FilmSection() {
   const wordmarkRef = useRef(null)
   const taglineRef  = useRef(null)
   const cueRef      = useRef(null)
+  const coverRef    = useRef(null)
   const captionRefs = useRef([])
 
   useEffect(() => {
@@ -106,9 +107,10 @@ export default function FilmSection() {
       tl.to([wordmarkRef.current, taglineRef.current], { opacity: 0, y: -40, duration: 10 }, 4)
       tl.to(cueRef.current, { opacity: 0, duration: 6 }, 3)
 
-      // Letterbox bars slide open
+      // Letterbox bars slide open + dark cover fades out (hides green yuv frame at t=0)
       tl.to('.film-bar--top',    { yPercent: -100, duration: 14 }, 2)
       tl.to('.film-bar--bottom', { yPercent:  100, duration: 14 }, 2)
+      tl.to(coverRef.current,    { opacity: 0, duration: 10 }, 2)
 
       // Staged captions — in/out sequenced on the same timeline
       const stages = [
@@ -147,6 +149,7 @@ export default function FilmSection() {
         />
         <div className="film-bar film-bar--top" />
         <div className="film-bar film-bar--bottom" />
+        <div className="film-video-cover" ref={coverRef} />
         <div className="vignette" />
 
         <div className="hero-overlay">
