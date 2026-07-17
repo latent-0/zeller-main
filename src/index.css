@@ -1002,11 +1002,53 @@ footer {
   box-shadow: -18px 0 50px rgba(0, 0, 0, 0.10);
 }
 
+/* Product selector — three stacked cards at the top of the panel */
+.config-panel__products {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.4rem 1.4rem 0.6rem;
+}
+.config-product-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.18rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba(165, 205, 234, 0.25);
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.25s, border-color 0.25s;
+}
+.config-product-btn:hover {
+  background: rgba(165, 205, 234, 0.10);
+}
+.config-product-btn.is-active {
+  background: rgba(165, 205, 234, 0.22);
+  border-color: rgba(165, 205, 234, 0.6);
+}
+.config-product-btn__name {
+  font-family: var(--font-display);
+  font-size: 0.80rem;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #e0e8f0;
+}
+.config-product-btn__sub {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: #8898a8;
+  letter-spacing: 0.04em;
+}
+
 .config-panel__tabs {
   display: flex;
   justify-content: center;
   gap: 0.6rem;
-  padding: 1.6rem 1.6rem 1.2rem;
+  padding: 1.2rem 1.6rem 1.0rem;
 }
 .config-panel__tabs button {
   border: none;

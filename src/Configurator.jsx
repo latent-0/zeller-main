@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 
-// ── Crystal palettes ──
+// ── Palettes ──────────────────────────────────────────────────────────────────
 const PASTELS = [
   { name: 'Clear Quartz', hex: '#eef1f5' },
   { name: 'Rose Quartz',  hex: '#f4c6d7' },
@@ -25,28 +25,53 @@ const FINISHES = [
   { id: 'frosted',  name: 'Frosted',    desc: 'Soft satin surface, diffused glow' },
   { id: 'aurora',   name: 'Aurora',     desc: 'Iridescent film, shifting hues' },
 ]
-const PRESETS = [
-  { id: 'blush',    name: 'Blush',    statue: '#eef1f5', lotus: '#f4c6d7' },
-  { id: 'amethyst', name: 'Amethyst', statue: '#eef1f5', lotus: '#7c4fa8' },
-  { id: 'pure',     name: 'Pure',     statue: '#eef1f5', lotus: '#eef1f5' },
-  { id: 'peridot',  name: 'Peridot',  statue: '#eef1f5', lotus: '#ccd996' },
-  { id: 'sky',      name: 'Sky',      statue: '#eef1f5', lotus: '#a9ddef' },
-]
 const FINISH_PROPS = {
   polished: { roughness: 0.02, transmission: 1,    iridescence: 0 },
   frosted:  { roughness: 0.45, transmission: 0.65, iridescence: 0 },
   aurora:   { roughness: 0.04, transmission: 0.95, iridescence: 1 },
 }
+const PRODUCTS = [
+  { id: 'ganesha', name: 'Ganesha Lotus',  subtitle: 'Sacred crystal figurine' },
+  { id: 'bloom',   name: 'Crystal Bloom',  subtitle: 'Faceted crystal flower'   },
+  { id: 'oyster',  name: 'Pearl Oyster',   subtitle: 'Crystal clam with pearl'  },
+]
+const PEARL_COLORS = [
+  { name: 'Ivory',     hex: '#f0e8d5' },
+  { name: 'Champagne', hex: '#d4b896' },
+  { name: 'Rose',      hex: '#e8c4bc' },
+  { name: 'Silver',    hex: '#d4d8dc' },
+]
 
-// glass reads transparent when the surface stays near-white and the hue
-// comes from absorption; deeper colors need shorter absorption distance
+// ── Material helpers ──────────────────────────────────────────────────────────
 const applyCrystalColor = (mat, hex) => {
   const c = new THREE.Color(hex)
-  mat.color.copy(c).lerp(new THREE.Color('#ffffff'), 0.8)
+  mat.color.copy(c).lerp(new THREE.Color('#ffffff'), 0.78)
   mat.attenuationColor.copy(c)
   const { l } = c.getHSL({})
-  mat.attenuationDistance = 0.35 + l * 2.4
+  mat.attenuationDistance = 0.3 + l * 2.6
 }
+
+const mkCrystal = (hex) => {
+  const mat = new THREE.MeshPhysicalMaterial({
+    metalness: 0, roughness: 0.02,
+    transmission: 1, thickness: 1.4, ior: 1.56,
+    dispersion: 0.38,
+    clearcoat: 1, clearcoatRoughness: 0.02,
+    specularIntensity: 1.5, envMapIntensity: 2.5,
+    iridescenceIOR: 1.7, flatShading: true,
+  })
+  applyCrystalColor(mat, hex)
+  return mat
+}
+
+const mkPearl = (hex = '#f0e8d5') => new THREE.MeshPhysicalMaterial({
+  color: new THREE.Color(hex),
+  roughness: 0.07, metalness: 0.04,
+  transmission: 0.08, thickness: 0.3, ior: 1.45,
+  iridescence: 0.55, iridescenceIOR: 1.32,
+  clearcoat: 0.85, clearcoatRoughness: 0.04,
+  flatShading: false,
+})
 
 const swatchStyle = (hex) => ({
   background: `linear-gradient(150deg,
@@ -55,103 +80,342 @@ const swatchStyle = (hex) => ({
     color-mix(in srgb, ${hex} 72%, black) 100%)`,
 })
 
-// ── Procedural faceted-crystal showpiece ──
-function buildShowpiece() {
-  const mkCrystal = (hex) => {
-    const mat = new THREE.MeshPhysicalMaterial({
-      metalness: 0, roughness: 0.04,
-      transmission: 1, thickness: 1.3, ior: 1.55,
-      dispersion: 0.3,                    // chromatic fire at facet edges
-      clearcoat: 1, clearcoatRoughness: 0.04,
-      specularIntensity: 1.4, envMapIntensity: 2.2,
-      iridescenceIOR: 1.7, flatShading: true,
-    })
-    applyCrystalColor(mat, hex)
-    return mat
-  }
-  const statueMat = mkCrystal('#eef1f5')
-  const lotusMat  = mkCrystal('#f4c6d7')
-
-  const group = new THREE.Group()
-  const add = (geo, mat, { p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1], parent = group } = {}) => {
+// mesh helper used inside all builders
+function makeAdder(group) {
+  return function add(geo, mat, { p = [0,0,0], r = [0,0,0], s = [1,1,1], parent = group } = {}) {
     const m = new THREE.Mesh(geo, mat)
     m.position.set(...p); m.rotation.set(...r); m.scale.set(...s)
     m.castShadow = true
     parent.add(m)
     return m
   }
+}
 
-  // base disc
-  add(new THREE.CylinderGeometry(1.12, 1.22, 0.14, 12, 1), lotusMat, { p: [0, 0.07, 0] })
+// ── GANESHA LOTUS ─────────────────────────────────────────────────────────────
+function buildGanesha() {
+  const statueMat = mkCrystal('#eef1f5')
+  const lotusMat  = mkCrystal('#f4c6d7')
+  const eyeMat    = new THREE.MeshStandardMaterial({
+    color: '#c8101e', emissive: '#800010', emissiveIntensity: 0.7, roughness: 0.3
+  })
 
-  // lotus petals — two rings of faceted diamonds
-  const petalGeo = new THREE.OctahedronGeometry(1, 1)
-  for (let i = 0; i < 9; i++) {
-    const a = (i / 9) * Math.PI * 2
-    const holder = new THREE.Group()
-    holder.rotation.y = a
-    add(petalGeo, lotusMat, {
-      p: [0.88, 0.28, 0], r: [0, 0, -1.32], s: [0.62, 0.11, 0.34], parent: holder,
+  const group = new THREE.Group()
+  const add   = makeAdder(group)
+
+  // ── Lotus base ──────────────────────────────────────────────────────────────
+  // Ground platform
+  add(new THREE.CylinderGeometry(1.28, 1.40, 0.1, 20), lotusMat, { p: [0, 0.05, 0] })
+
+  // Outer ring — 16 long flat petals, near-horizontal
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * Math.PI * 2
+    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
+    add(new THREE.OctahedronGeometry(1, 1), lotusMat, {
+      p: [1.02, 0.16, 0], r: [0, 0, -1.20], s: [0.60, 0.085, 0.26], parent: g
     })
-    group.add(holder)
   }
-  for (let i = 0; i < 7; i++) {
-    const a = (i / 7) * Math.PI * 2 + 0.4
-    const holder = new THREE.Group()
-    holder.rotation.y = a
-    add(petalGeo, lotusMat, {
-      p: [0.55, 0.44, 0], r: [0, 0, -0.85], s: [0.48, 0.1, 0.22], parent: holder,
+  // Middle ring — 12 petals, angled upward
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2 + (Math.PI / 12)
+    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
+    add(new THREE.OctahedronGeometry(1, 1), lotusMat, {
+      p: [0.70, 0.38, 0], r: [0, 0, -0.78], s: [0.44, 0.082, 0.22], parent: g
     })
-    group.add(holder)
+  }
+  // Inner ring — 8 petals, upright
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2 + (Math.PI / 8)
+    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
+    add(new THREE.OctahedronGeometry(1, 1), lotusMat, {
+      p: [0.44, 0.56, 0], r: [0, 0, -0.42], s: [0.32, 0.078, 0.16], parent: g
+    })
   }
 
-  // faceted orb the statue sits on
-  add(new THREE.IcosahedronGeometry(0.38, 1), lotusMat, { p: [0, 0.64, 0] })
+  // Lotus centre orb (Ganesha sits on this)
+  add(new THREE.IcosahedronGeometry(0.40, 2), lotusMat, { p: [0, 0.70, 0] })
 
-  // ── stylised statue ──
+  // ── Ganesha statue ──────────────────────────────────────────────────────────
   const statue = new THREE.Group()
-  statue.position.y = 1.02
+  statue.position.y = 1.10
   group.add(statue)
 
-  // body + legs
-  add(new THREE.IcosahedronGeometry(0.42, 1), statueMat, { p: [0, 0.32, 0], s: [1, 1.1, 0.82], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.2, 1),  statueMat, { p: [-0.3, 0.06, 0.16], s: [1.2, 0.7, 1], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.2, 1),  statueMat, { p: [0.3, 0.06, 0.16],  s: [1.2, 0.7, 1], parent: statue })
-  // head
-  add(new THREE.IcosahedronGeometry(0.27, 1), statueMat, { p: [0, 0.92, 0.02], parent: statue })
-  // ears
-  add(new THREE.IcosahedronGeometry(0.2, 1), statueMat, { p: [-0.32, 0.95, -0.02], r: [0, 0.35, 0], s: [0.55, 0.9, 0.18], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.2, 1), statueMat, { p: [0.32, 0.95, -0.02],  r: [0, -0.35, 0], s: [0.55, 0.9, 0.18], parent: statue })
-  // trunk — curled tube
-  const trunkCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 0.92, 0.24),
-    new THREE.Vector3(0, 0.74, 0.34),
-    new THREE.Vector3(0.09, 0.58, 0.32),
-    new THREE.Vector3(0.14, 0.5, 0.2),
-  ])
-  add(new THREE.TubeGeometry(trunkCurve, 10, 0.06, 6, false), statueMat, { parent: statue })
-  // crown
-  add(new THREE.ConeGeometry(0.15, 0.26, 8), statueMat, { p: [0, 1.22, 0], parent: statue })
-  add(new THREE.IcosahedronGeometry(0.05, 0), statueMat, { p: [0, 1.38, 0], parent: statue })
-  // bindi — the one non-crystal accent
-  const bindiMat = new THREE.MeshStandardMaterial({ color: '#c01f2e', roughness: 0.35 })
-  add(new THREE.SphereGeometry(0.04, 12, 12), bindiMat, { p: [0, 1.08, 0.25], parent: statue })
+  // Seated crossed-leg base
+  add(new THREE.IcosahedronGeometry(0.54, 2), statueMat, {
+    p: [0, -0.06, 0.06], s: [1.35, 0.42, 1.12], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.22, 2), statueMat, {
+    p: [-0.34, 0.02, 0.32], s: [1.1, 0.55, 1.4], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.22, 2), statueMat, {
+    p: [0.34, 0.02, 0.32], s: [1.1, 0.55, 1.4], parent: statue
+  })
+
+  // Pot belly torso (Lambodara)
+  add(new THREE.IcosahedronGeometry(0.50, 3), statueMat, {
+    p: [0, 0.30, 0.02], s: [1.08, 1.05, 0.92], parent: statue
+  })
+
+  // Belly jewel / navel
+  add(new THREE.IcosahedronGeometry(0.07, 1), lotusMat, {
+    p: [0, 0.25, 0.46], parent: statue
+  })
+
+  // Neck — wide and short
+  add(new THREE.CylinderGeometry(0.17, 0.22, 0.16, 8), statueMat, {
+    p: [0, 0.76, 0.02], parent: statue
+  })
+
+  // Necklace ring
+  add(new THREE.TorusGeometry(0.20, 0.022, 6, 18), lotusMat, {
+    p: [0, 0.72, 0.04], r: [Math.PI / 2 - 0.2, 0, 0], parent: statue
+  })
+
+  // ── Head — elephant skull, domed and wide ──
+  add(new THREE.IcosahedronGeometry(0.40, 3), statueMat, {
+    p: [0, 1.02, 0.0], s: [1.20, 1.10, 1.00], parent: statue
+  })
+  // Forehead dome (characteristic of elephant head)
+  add(new THREE.IcosahedronGeometry(0.24, 2), statueMat, {
+    p: [0, 1.18, 0.14], s: [1.10, 0.88, 0.78], parent: statue
+  })
+  // Chin/muzzle area (elephant has a projecting lower face)
+  add(new THREE.IcosahedronGeometry(0.22, 2), statueMat, {
+    p: [0, 0.90, 0.26], s: [0.9, 0.7, 0.75], parent: statue
+  })
+
+  // ── EARS — large fan flaps, the most distinctive Ganesha feature ──
+  // Left ear (viewer's right)
+  add(new THREE.IcosahedronGeometry(0.42, 2), statueMat, {
+    p: [-0.58, 1.04, -0.06], r: [0.08, 0.15, 0.04], s: [0.90, 1.22, 0.11], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.28, 2), statueMat, {
+    p: [-0.80, 0.90, 0.06], r: [0.05, 0.12, 0.14], s: [0.70, 0.95, 0.10], parent: statue
+  })
+  // Ear lobe detail
+  add(new THREE.IcosahedronGeometry(0.16, 1), statueMat, {
+    p: [-0.60, 0.70, 0.06], s: [0.9, 0.6, 0.12], parent: statue
+  })
+
+  // Right ear
+  add(new THREE.IcosahedronGeometry(0.42, 2), statueMat, {
+    p: [0.58, 1.04, -0.06], r: [0.08, -0.15, -0.04], s: [0.90, 1.22, 0.11], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.28, 2), statueMat, {
+    p: [0.80, 0.90, 0.06], r: [0.05, -0.12, -0.14], s: [0.70, 0.95, 0.10], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.16, 1), statueMat, {
+    p: [0.60, 0.70, 0.06], s: [0.9, 0.6, 0.12], parent: statue
+  })
+
+  // ── TRUNK — long, curled to the right (auspicious) ──
+  const trunkPts = [
+    new THREE.Vector3(0.04, 0.88, 0.32),
+    new THREE.Vector3(0.06, 0.76, 0.46),
+    new THREE.Vector3(0.10, 0.63, 0.46),
+    new THREE.Vector3(0.16, 0.52, 0.40),
+    new THREE.Vector3(0.22, 0.44, 0.28),
+    new THREE.Vector3(0.26, 0.38, 0.14),
+    new THREE.Vector3(0.28, 0.34, 0.06),
+  ]
+  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(trunkPts), 18, 0.068, 7, false),
+    statueMat, { parent: statue })
+  // Trunk tip
+  add(new THREE.SphereGeometry(0.07, 10, 8), statueMat, { p: [0.28, 0.33, 0.05], parent: statue })
+
+  // ── TUSKS ──
+  // Right tusk (longer, intact)
+  const tusk1pts = [
+    new THREE.Vector3(0.18, 0.87, 0.30),
+    new THREE.Vector3(0.30, 0.78, 0.40),
+    new THREE.Vector3(0.42, 0.68, 0.36),
+    new THREE.Vector3(0.50, 0.57, 0.24),
+  ]
+  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(tusk1pts), 10, 0.042, 5, false),
+    statueMat, { parent: statue })
+  add(new THREE.ConeGeometry(0.042, 0.10, 5), statueMat, {
+    p: [0.515, 0.53, 0.22], r: [0.55, 0.35, 0.45], parent: statue
+  })
+
+  // Left tusk (shorter — Ganesha's broken tusk)
+  const tusk2pts = [
+    new THREE.Vector3(-0.18, 0.87, 0.30),
+    new THREE.Vector3(-0.28, 0.78, 0.38),
+    new THREE.Vector3(-0.36, 0.70, 0.33),
+  ]
+  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(tusk2pts), 8, 0.042, 5, false),
+    statueMat, { parent: statue })
+  // Broken end
+  add(new THREE.IcosahedronGeometry(0.044, 0), statueMat, { p: [-0.36, 0.70, 0.33], parent: statue })
+
+  // ── CROWN (Mukut) — multi-tiered ──
+  // Crown base ring
+  add(new THREE.TorusGeometry(0.20, 0.030, 6, 18), statueMat, {
+    p: [0, 1.32, 0], r: [Math.PI / 2, 0, 0], parent: statue
+  })
+  // Second crown ring
+  add(new THREE.TorusGeometry(0.14, 0.022, 5, 14), statueMat, {
+    p: [0, 1.40, 0], r: [Math.PI / 2, 0, 0], parent: statue
+  })
+  // Crown spires (5)
+  for (let i = 0; i < 5; i++) {
+    const a = (i / 5) * Math.PI * 2
+    const cx = Math.cos(a) * 0.18, cz = Math.sin(a) * 0.18
+    add(new THREE.ConeGeometry(0.045, 0.16, 6), statueMat, {
+      p: [cx, 1.44, cz],
+      r: [cz * 0.28, 0, -cx * 0.28],
+      parent: statue,
+    })
+  }
+  // Crown crest orb
+  add(new THREE.IcosahedronGeometry(0.07, 2), lotusMat, { p: [0, 1.60, 0], parent: statue })
+
+  // ── FOUR ARMS ──
+  // Upper-right arm — raised, holds ankusha (hook)
+  add(new THREE.CylinderGeometry(0.058, 0.064, 0.34, 7), statueMat, {
+    p: [0.46, 0.66, 0.04], r: [0.1, 0, -0.82], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.085, 2), statueMat, { p: [0.67, 0.49, 0.06], parent: statue })
+  // Ankusha hook
+  add(new THREE.TorusGeometry(0.06, 0.016, 5, 10, Math.PI * 1.2), statueMat, {
+    p: [0.72, 0.42, 0.06], r: [0, 0, -1.4], parent: statue
+  })
+
+  // Upper-left arm — holds lotus bud
+  add(new THREE.CylinderGeometry(0.058, 0.064, 0.34, 7), statueMat, {
+    p: [-0.46, 0.66, 0.04], r: [0.1, 0, 0.82], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.085, 2), statueMat, { p: [-0.67, 0.49, 0.06], parent: statue })
+  // Lotus bud in hand
+  add(new THREE.IcosahedronGeometry(0.09, 1), lotusMat, { p: [-0.72, 0.42, 0.06], parent: statue })
+
+  // Lower-right arm — gesture (abhaya mudra), slightly forward
+  add(new THREE.CylinderGeometry(0.052, 0.058, 0.28, 7), statueMat, {
+    p: [0.40, 0.36, 0.22], r: [-0.55, 0.18, -0.52], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.076, 2), statueMat, { p: [0.54, 0.20, 0.36], parent: statue })
+
+  // Lower-left arm — holds modak (sweet dumpling)
+  add(new THREE.CylinderGeometry(0.052, 0.058, 0.28, 7), statueMat, {
+    p: [-0.40, 0.36, 0.22], r: [-0.55, -0.18, 0.52], parent: statue
+  })
+  add(new THREE.IcosahedronGeometry(0.076, 2), statueMat, { p: [-0.54, 0.20, 0.36], parent: statue })
+  // Modak
+  add(new THREE.IcosahedronGeometry(0.10, 1), statueMat, {
+    p: [-0.58, 0.13, 0.38], s: [1, 1.18, 1], parent: statue
+  })
+
+  // ── Red jewel eyes ──
+  add(new THREE.SphereGeometry(0.042, 12, 10), eyeMat, { p: [-0.12, 1.05, 0.33], parent: statue })
+  add(new THREE.SphereGeometry(0.042, 12, 10), eyeMat, { p: [ 0.12, 1.05, 0.33], parent: statue })
 
   return { group, statueMat, lotusMat }
 }
 
-export default function Configurator() {
-  const mountRef = useRef(null)
-  const threeRef = useRef(null)
+// ── CRYSTAL BLOOM ─────────────────────────────────────────────────────────────
+function buildBloom() {
+  const bloomMat  = mkCrystal('#f4c6d7')
+  const centerMat = mkCrystal('#eef1f5')
 
-  const [part, setPart] = useState('statue')       // statue | lotus
-  const [mode, setMode] = useState('crystal')      // crystal | finish | presets
-  const [config, setConfig] = useState({
-    statue: { color: '#eef1f5', finish: 'polished' },
-    lotus:  { color: '#f4c6d7', finish: 'polished' },
+  const group = new THREE.Group()
+  const add   = makeAdder(group)
+
+  // Thin base disc
+  add(new THREE.CylinderGeometry(0.62, 0.68, 0.08, 12), bloomMat, { p: [0, 0.04, 0] })
+
+  // Outer petals — 6 large rounded faceted drops
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2
+    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
+    add(new THREE.IcosahedronGeometry(0.8, 2), bloomMat, {
+      p: [0.60, 0.28, 0], r: [0, 0, -1.35], s: [0.72, 0.115, 0.46], parent: g
+    })
+  }
+
+  // Inner accent petals — 6 smaller, upright
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2 + (Math.PI / 6)
+    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
+    add(new THREE.IcosahedronGeometry(0.55, 2), bloomMat, {
+      p: [0.36, 0.42, 0], r: [0, 0, -0.70], s: [0.52, 0.10, 0.32], parent: g
+    })
+  }
+
+  // Faceted centre orb (the clear crystal bead at the heart)
+  add(new THREE.IcosahedronGeometry(0.32, 3), centerMat, { p: [0, 0.38, 0] })
+
+  return { group, bloomMat, centerMat }
+}
+
+// ── PEARL OYSTER ──────────────────────────────────────────────────────────────
+function buildOyster() {
+  const shellMat = mkCrystal('#eef1f5')
+  const pearlMat = mkPearl('#f0e8d5')
+
+  const group = new THREE.Group()
+  const add   = makeAdder(group)
+
+  // Low display base
+  add(new THREE.CylinderGeometry(0.36, 0.40, 0.06, 14), shellMat, { p: [0, 0.03, 0] })
+
+  // ── Lower shell — wide, flat, faceted ──
+  // Main body of the lower shell
+  add(new THREE.IcosahedronGeometry(1.10, 3), shellMat, {
+    p: [0, 0.24, 0.04], s: [1.28, 0.30, 1.05]
+  })
+  // Shell rim / lip (thicker at edge)
+  add(new THREE.IcosahedronGeometry(1.0, 2), shellMat, {
+    p: [0, 0.14, 0.10], s: [1.20, 0.115, 0.96]
+  })
+  // Hinge ridge at back
+  add(new THREE.IcosahedronGeometry(0.35, 1), shellMat, {
+    p: [0, 0.20, -0.72], s: [0.9, 0.40, 0.40]
+  })
+  // Shell ribbing — subtle ridges
+  for (let i = -1; i <= 1; i++) {
+    add(new THREE.IcosahedronGeometry(0.8, 2), shellMat, {
+      p: [i * 0.38, 0.20, 0.08], s: [0.18, 0.22, 0.90]
+    })
+  }
+
+  // ── Upper shell — smaller, angled back (open clam position) ──
+  add(new THREE.IcosahedronGeometry(0.90, 3), shellMat, {
+    p: [0, 0.42, -0.52], r: [-0.90, 0, 0], s: [1.12, 0.24, 0.88]
+  })
+  // Upper shell lip
+  add(new THREE.IcosahedronGeometry(0.82, 2), shellMat, {
+    p: [0, 0.36, -0.30], r: [-0.90, 0, 0], s: [1.00, 0.10, 0.80]
   })
 
-  // ── Build scene once ──
+  // ── Pearl — sits nestled in the lower shell ──
+  add(new THREE.SphereGeometry(0.26, 36, 28), pearlMat, { p: [0, 0.44, 0.16] })
+
+  return { group, shellMat, pearlMat }
+}
+
+// ── Configurator component ────────────────────────────────────────────────────
+export default function Configurator() {
+  const mountRef  = useRef(null)
+  const threeRef  = useRef(null)
+
+  const [product, setProduct] = useState('ganesha')
+  const [part,    setPart]    = useState('statue')   // per-product active part
+  const [mode,    setMode]    = useState('crystal')
+  const [config,  setConfig]  = useState({
+    ganesha: {
+      statue: { color: '#eef1f5', finish: 'polished' },
+      lotus:  { color: '#f4c6d7', finish: 'polished' },
+    },
+    bloom: {
+      bloom:  { color: '#f4c6d7', finish: 'polished' },
+      center: { color: '#eef1f5', finish: 'polished' },
+    },
+    oyster: {
+      shell: { color: '#eef1f5', finish: 'polished' },
+      pearl: { color: '#f0e8d5', finish: 'polished' },
+    },
+  })
+
+  // ── Build scene once ──────────────────────────────────────────────────────
   useEffect(() => {
     const mount = mountRef.current
     if (!mount) return
@@ -160,7 +424,7 @@ export default function Configurator() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setSize(mount.clientWidth, mount.clientHeight)
     renderer.toneMapping = THREE.ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.05
+    renderer.toneMappingExposure = 1.1
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
     mount.appendChild(renderer.domElement)
@@ -175,40 +439,44 @@ export default function Configurator() {
     const pmrem = new THREE.PMREMGenerator(renderer)
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
 
-    const key = new THREE.DirectionalLight('#ffffff', 2.2)
-    key.position.set(3, 6, 4)
+    const key = new THREE.DirectionalLight('#ffffff', 2.4)
+    key.position.set(3, 7, 4)
     key.castShadow = true
-    key.shadow.mapSize.set(1024, 1024)
-    key.shadow.camera.left = -3; key.shadow.camera.right = 3
-    key.shadow.camera.top = 3;   key.shadow.camera.bottom = -3
-    key.shadow.radius = 8
+    key.shadow.mapSize.set(2048, 2048)
+    key.shadow.camera.left = -4; key.shadow.camera.right = 4
+    key.shadow.camera.top  =  4; key.shadow.camera.bottom = -4
+    key.shadow.radius = 10
     scene.add(key)
-    scene.add(new THREE.AmbientLight('#ffffff', 0.25))
-    // rim sparkle — cool and warm accents behind the piece
-    const rimA = new THREE.PointLight('#bcd4ff', 45, 25)
-    rimA.position.set(-4, 3, -3)
-    scene.add(rimA)
-    const rimB = new THREE.PointLight('#ffe1b8', 30, 25)
-    rimB.position.set(4, 1.5, -2.5)
-    scene.add(rimB)
+    scene.add(new THREE.AmbientLight('#ffffff', 0.3))
+    const rimA = new THREE.PointLight('#bcd4ff', 50, 25)
+    rimA.position.set(-4, 3, -3); scene.add(rimA)
+    const rimB = new THREE.PointLight('#ffe1b8', 35, 25)
+    rimB.position.set(4, 1.5, -2.5); scene.add(rimB)
+    // Top sparkle
+    const top = new THREE.PointLight('#ffffff', 18, 20)
+    top.position.set(0, 8, 0); scene.add(top)
 
-    // dark velvet stage — crystal edges need contrast to read
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(40, 40),
-      new THREE.MeshStandardMaterial({ color: '#1a1a1e', roughness: 0.95 })
+      new THREE.MeshStandardMaterial({ color: '#1a1a1e', roughness: 0.95, envMapIntensity: 0.12 })
     )
-    ground.material.envMapIntensity = 0.12
     ground.rotation.x = -Math.PI / 2
     ground.receiveShadow = true
     scene.add(ground)
 
-    const { group, statueMat, lotusMat } = buildShowpiece()
-    scene.add(group)
+    const ganesha = buildGanesha()
+    const bloom   = buildBloom()
+    const oyster  = buildOyster()
 
-    // shift the projection so the model centres in the strip left of the panel
+    bloom.group.visible  = false
+    oyster.group.visible = false
+
+    scene.add(ganesha.group)
+    scene.add(bloom.group)
+    scene.add(oyster.group)
+
     const applyViewOffset = () => {
-      const w = mount.clientWidth
-      const h = mount.clientHeight
+      const w = mount.clientWidth, h = mount.clientHeight
       const panelW = Math.min(440, w * 0.92)
       camera.setViewOffset(w, h, w > 768 ? panelW / 2 : 0, 0, w, h)
     }
@@ -219,71 +487,102 @@ export default function Configurator() {
     controls.enableDamping = true
     controls.dampingFactor = 0.06
     controls.minDistance = 2.4
-    controls.maxDistance = 8
-    controls.maxPolarAngle = Math.PI / 2 - 0.05
+    controls.maxDistance = 9
+    controls.maxPolarAngle = Math.PI / 2 - 0.04
     controls.autoRotate = true
-    controls.autoRotateSpeed = 0.8
+    controls.autoRotateSpeed = 0.7
 
     let raf
-    const loop = () => {
-      controls.update()
-      renderer.render(scene, camera)
-      raf = requestAnimationFrame(loop)
-    }
+    const loop = () => { controls.update(); renderer.render(scene, camera); raf = requestAnimationFrame(loop) }
     loop()
 
     const onResize = () => {
       camera.aspect = mount.clientWidth / mount.clientHeight
-      applyViewOffset()
-      camera.updateProjectionMatrix()
+      applyViewOffset(); camera.updateProjectionMatrix()
       renderer.setSize(mount.clientWidth, mount.clientHeight)
     }
     window.addEventListener('resize', onResize)
 
-    threeRef.current = { renderer, scene, camera, statueMat, lotusMat }
+    threeRef.current = { renderer, scene, camera, controls, pmrem, ganesha, bloom, oyster }
 
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
-      controls.dispose()
-      pmrem.dispose()
-      renderer.dispose()
+      controls.dispose(); pmrem.dispose(); renderer.dispose()
       mount.removeChild(renderer.domElement)
       threeRef.current = null
     }
   }, [])
 
-  // ── Apply config to materials ──
+  // ── Switch product ────────────────────────────────────────────────────────
   useEffect(() => {
     const t = threeRef.current
     if (!t) return
-    const apply = (mat, { color, finish }) => {
-      applyCrystalColor(mat, color)
-      Object.assign(mat, FINISH_PROPS[finish])
-    }
-    apply(t.statueMat, config.statue)
-    apply(t.lotusMat, config.lotus)
-  }, [config])
+    t.ganesha.group.visible = product === 'ganesha'
+    t.bloom.group.visible   = product === 'bloom'
+    t.oyster.group.visible  = product === 'oyster'
 
-  const setColor  = (hex) => setConfig((c) => ({ ...c, [part]: { ...c[part], color: hex } }))
-  const setFinish = (id)  => setConfig((c) => ({ ...c, [part]: { ...c[part], finish: id } }))
-  const applyPreset = (p) => setConfig((c) => ({
-    statue: { ...c.statue, color: p.statue },
-    lotus:  { ...c.lotus,  color: p.lotus },
-  }))
+    // Adjust camera target & position per product
+    const targets   = { ganesha: [0, 0.95, 0], bloom: [0, 0.32, 0], oyster: [0, 0.36, 0] }
+    const positions = { ganesha: [3.2, 2.0, 6.0], bloom: [1.8, 1.0, 4.0], oyster: [2.4, 1.2, 5.0] }
+    t.controls.target.set(...targets[product])
+    t.camera.position.set(...positions[product])
+    t.controls.update()
+  }, [product])
 
-  const snapshot = () => {
+  // ── Apply config to materials ─────────────────────────────────────────────
+  useEffect(() => {
     const t = threeRef.current
     if (!t) return
+
+    const applyMat = (mat, { color, finish }) => {
+      applyCrystalColor(mat, color)
+      Object.assign(mat, FINISH_PROPS[finish])
+      mat.needsUpdate = true
+    }
+
+    if (product === 'ganesha') {
+      applyMat(t.ganesha.statueMat, config.ganesha.statue)
+      applyMat(t.ganesha.lotusMat,  config.ganesha.lotus)
+    }
+    if (product === 'bloom') {
+      applyMat(t.bloom.bloomMat,  config.bloom.bloom)
+      applyMat(t.bloom.centerMat, config.bloom.center)
+    }
+    if (product === 'oyster') {
+      applyMat(t.oyster.shellMat, config.oyster.shell)
+      // Pearl uses a different material type — just recolor it
+      const c = new THREE.Color(config.oyster.pearl.color)
+      t.oyster.pearlMat.color.copy(c)
+      t.oyster.pearlMat.needsUpdate = true
+    }
+  }, [config, product])
+
+  const setColor  = (hex) =>
+    setConfig(c => ({ ...c, [product]: { ...c[product], [part]: { ...c[product][part], color: hex } } }))
+  const setFinish = (id) =>
+    setConfig(c => ({ ...c, [product]: { ...c[product], [part]: { ...c[product][part], finish: id } } }))
+
+  const snapshot = () => {
+    const t = threeRef.current; if (!t) return
     t.renderer.render(t.scene, t.camera)
     const a = document.createElement('a')
     a.href = t.renderer.domElement.toDataURL('image/png')
-    a.download = 'zeller-showpiece.png'
-    a.click()
+    a.download = `zeller-${product}.png`; a.click()
   }
 
-  const activeColor  = config[part].color
-  const activeFinish = config[part].finish
+  // Parts available per product
+  const PARTS = {
+    ganesha: [{ id: 'statue', label: 'Statue' }, { id: 'lotus',  label: 'Lotus'  }],
+    bloom:   [{ id: 'bloom',  label: 'Bloom'  }, { id: 'center', label: 'Centre' }],
+    oyster:  [{ id: 'shell',  label: 'Shell'  }, { id: 'pearl',  label: 'Pearl'  }],
+  }
+
+  const activeParts   = PARTS[product]
+  const activeConfig  = config[product][part] ?? config[product][activeParts[0].id]
+  const activePart    = activeParts.find(p => p.id === part) ? part : activeParts[0].id
+
+  const isOysterPearl = product === 'oyster' && activePart === 'pearl'
 
   const SwatchGroup = ({ title, colors }) => (
     <div className="config-group">
@@ -292,7 +591,7 @@ export default function Configurator() {
         {colors.map(({ name, hex }) => (
           <button
             key={name}
-            className={`config-swatch ${activeColor === hex ? 'is-active' : ''}`}
+            className={`config-swatch ${activeConfig.color === hex ? 'is-active' : ''}`}
             onClick={() => setColor(hex)}
           >
             <span className="config-swatch__chip" style={swatchStyle(hex)} />
@@ -303,6 +602,8 @@ export default function Configurator() {
     </div>
   )
 
+  const currentProduct = PRODUCTS.find(p => p.id === product)
+
   return (
     <div className="config-page">
       <div className="config-viewport" ref={mountRef} />
@@ -310,10 +611,10 @@ export default function Configurator() {
       {/* left chrome */}
       <a className="config-brand" href="#">
         <span className="config-brand__mark">ZELLER</span>
-        <span className="config-brand__model">Ganesha Lotus</span>
+        <span className="config-brand__model">{currentProduct.name}</span>
       </a>
       <div className="config-actions">
-        <a className="config-enquire" href="mailto:support@zellercrystals.com?subject=Zeller%20Showpiece%20Enquiry">
+        <a className="config-enquire" href={`mailto:support@zellercrystals.com?subject=Zeller%20${encodeURIComponent(currentProduct.name)}%20Enquiry`}>
           Enquire
         </a>
         <button className="config-iconbtn" title="Save image" onClick={snapshot}>
@@ -331,16 +632,31 @@ export default function Configurator() {
 
       {/* right panel */}
       <aside className="config-panel">
+
+        {/* Product selector */}
+        <div className="config-panel__products">
+          {PRODUCTS.map(p => (
+            <button
+              key={p.id}
+              className={`config-product-btn ${product === p.id ? 'is-active' : ''}`}
+              onClick={() => { setProduct(p.id); setPart(PARTS[p.id][0].id) }}
+            >
+              <span className="config-product-btn__name">{p.name}</span>
+              <span className="config-product-btn__sub">{p.subtitle}</span>
+            </button>
+          ))}
+        </div>
+
         <div className="config-panel__tabs">
-          {['statue', 'lotus'].map((p) => (
-            <button key={p} className={part === p ? 'is-active' : ''} onClick={() => setPart(p)}>
-              {p === 'statue' ? 'Statue' : 'Lotus'}
+          {activeParts.map(({ id, label }) => (
+            <button key={id} className={activePart === id ? 'is-active' : ''} onClick={() => setPart(id)}>
+              {label}
             </button>
           ))}
         </div>
 
         <div className="config-panel__mode">
-          {[['crystal', 'Crystal'], ['finish', 'Finish'], ['presets', 'Presets']].map(([id, label]) => (
+          {[['crystal', 'Crystal'], ['finish', 'Finish']].map(([id, label]) => (
             <button key={id} className={mode === id ? 'is-active' : ''} onClick={() => setMode(id)}>
               {label}
             </button>
@@ -349,20 +665,24 @@ export default function Configurator() {
 
         <div className="config-panel__body">
           {mode === 'crystal' && (
-            <>
-              <SwatchGroup title="Pastel Crystals" colors={PASTELS} />
-              <SwatchGroup title="Precious Crystals" colors={PRECIOUS} />
-            </>
+            isOysterPearl ? (
+              <SwatchGroup title="Pearl Tones" colors={PEARL_COLORS} />
+            ) : (
+              <>
+                <SwatchGroup title="Pastel Crystals"   colors={PASTELS}  />
+                <SwatchGroup title="Precious Crystals" colors={PRECIOUS} />
+              </>
+            )
           )}
 
-          {mode === 'finish' && (
+          {mode === 'finish' && !isOysterPearl && (
             <div className="config-group">
-              <h4>Surface Finish — {part === 'statue' ? 'Statue' : 'Lotus'}</h4>
+              <h4>Surface Finish</h4>
               <div className="config-finishes">
                 {FINISHES.map((f) => (
                   <button
                     key={f.id}
-                    className={`config-finish ${activeFinish === f.id ? 'is-active' : ''}`}
+                    className={`config-finish ${activeConfig.finish === f.id ? 'is-active' : ''}`}
                     onClick={() => setFinish(f.id)}
                   >
                     <span className="config-finish__name">{f.name}</span>
@@ -373,24 +693,11 @@ export default function Configurator() {
             </div>
           )}
 
-          {mode === 'presets' && (
+          {mode === 'finish' && isOysterPearl && (
             <div className="config-group">
-              <h4>Signature Pairings</h4>
-              <div className="config-swatches">
-                {PRESETS.map((p) => (
-                  <button
-                    key={p.id}
-                    className={`config-swatch ${config.lotus.color === p.lotus && config.statue.color === p.statue ? 'is-active' : ''}`}
-                    onClick={() => applyPreset(p)}
-                  >
-                    <span className="config-swatch__chip config-swatch__chip--duo">
-                      <span style={swatchStyle(p.statue)} />
-                      <span style={swatchStyle(p.lotus)} />
-                    </span>
-                    <span className="config-swatch__label">{p.name}</span>
-                  </button>
-                ))}
-              </div>
+              <p style={{ color: 'var(--config-muted, #888)', fontSize: '0.78rem', lineHeight: 1.5 }}>
+                Pearl surface is naturally satin with iridescent overtones —<br />no finish options for pearl.
+              </p>
             </div>
           )}
         </div>
