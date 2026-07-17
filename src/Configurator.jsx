@@ -95,218 +95,57 @@ function makeAdder(group) {
 function buildGanesha() {
   const statueMat = mkCrystal('#eef1f5')
   const lotusMat  = mkCrystal('#f4c6d7')
-  const eyeMat    = new THREE.MeshStandardMaterial({
-    color: '#c8101e', emissive: '#800010', emissiveIntensity: 0.7, roughness: 0.3
-  })
 
   const group = new THREE.Group()
   const add   = makeAdder(group)
 
-  // ── Lotus base ──────────────────────────────────────────────────────────────
-  // Ground platform
-  add(new THREE.CylinderGeometry(1.28, 1.40, 0.1, 20), lotusMat, { p: [0, 0.05, 0] })
+  // base disc
+  add(new THREE.CylinderGeometry(1.12, 1.22, 0.14, 12, 1), lotusMat, { p: [0, 0.07, 0] })
 
-  // Outer ring — 16 long flat petals, near-horizontal
-  for (let i = 0; i < 16; i++) {
-    const a = (i / 16) * Math.PI * 2
-    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
-    add(new THREE.OctahedronGeometry(1, 1), lotusMat, {
-      p: [1.02, 0.16, 0], r: [0, 0, -1.20], s: [0.60, 0.085, 0.26], parent: g
-    })
+  // lotus petals — two rings of faceted diamonds
+  const petalGeo = new THREE.OctahedronGeometry(1, 1)
+  for (let i = 0; i < 9; i++) {
+    const a = (i / 9) * Math.PI * 2
+    const holder = new THREE.Group(); holder.rotation.y = a; group.add(holder)
+    add(petalGeo, lotusMat, { p: [0.88, 0.28, 0], r: [0, 0, -1.32], s: [0.62, 0.11, 0.34], parent: holder })
   }
-  // Middle ring — 12 petals, angled upward
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2 + (Math.PI / 12)
-    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
-    add(new THREE.OctahedronGeometry(1, 1), lotusMat, {
-      p: [0.70, 0.38, 0], r: [0, 0, -0.78], s: [0.44, 0.082, 0.22], parent: g
-    })
-  }
-  // Inner ring — 8 petals, upright
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2 + (Math.PI / 8)
-    const g = new THREE.Group(); g.rotation.y = a; group.add(g)
-    add(new THREE.OctahedronGeometry(1, 1), lotusMat, {
-      p: [0.44, 0.56, 0], r: [0, 0, -0.42], s: [0.32, 0.078, 0.16], parent: g
-    })
+  for (let i = 0; i < 7; i++) {
+    const a = (i / 7) * Math.PI * 2 + 0.4
+    const holder = new THREE.Group(); holder.rotation.y = a; group.add(holder)
+    add(petalGeo, lotusMat, { p: [0.55, 0.44, 0], r: [0, 0, -0.85], s: [0.48, 0.1, 0.22], parent: holder })
   }
 
-  // Lotus centre orb (Ganesha sits on this)
-  add(new THREE.IcosahedronGeometry(0.40, 2), lotusMat, { p: [0, 0.70, 0] })
+  // faceted orb the statue sits on
+  add(new THREE.IcosahedronGeometry(0.38, 1), lotusMat, { p: [0, 0.64, 0] })
 
-  // ── Ganesha statue ──────────────────────────────────────────────────────────
+  // ── stylised statue ──
   const statue = new THREE.Group()
-  statue.position.y = 1.10
+  statue.position.y = 1.02
   group.add(statue)
 
-  // Seated crossed-leg base
-  add(new THREE.IcosahedronGeometry(0.54, 2), statueMat, {
-    p: [0, -0.06, 0.06], s: [1.35, 0.42, 1.12], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.22, 2), statueMat, {
-    p: [-0.34, 0.02, 0.32], s: [1.1, 0.55, 1.4], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.22, 2), statueMat, {
-    p: [0.34, 0.02, 0.32], s: [1.1, 0.55, 1.4], parent: statue
-  })
-
-  // Pot belly torso (Lambodara)
-  add(new THREE.IcosahedronGeometry(0.50, 3), statueMat, {
-    p: [0, 0.30, 0.02], s: [1.08, 1.05, 0.92], parent: statue
-  })
-
-  // Belly jewel / navel
-  add(new THREE.IcosahedronGeometry(0.07, 1), lotusMat, {
-    p: [0, 0.25, 0.46], parent: statue
-  })
-
-  // Neck — wide and short
-  add(new THREE.CylinderGeometry(0.17, 0.22, 0.16, 8), statueMat, {
-    p: [0, 0.76, 0.02], parent: statue
-  })
-
-  // Necklace ring
-  add(new THREE.TorusGeometry(0.20, 0.022, 6, 18), lotusMat, {
-    p: [0, 0.72, 0.04], r: [Math.PI / 2 - 0.2, 0, 0], parent: statue
-  })
-
-  // ── Head — elephant skull, domed and wide ──
-  add(new THREE.IcosahedronGeometry(0.40, 3), statueMat, {
-    p: [0, 1.02, 0.0], s: [1.20, 1.10, 1.00], parent: statue
-  })
-  // Forehead dome (characteristic of elephant head)
-  add(new THREE.IcosahedronGeometry(0.24, 2), statueMat, {
-    p: [0, 1.18, 0.14], s: [1.10, 0.88, 0.78], parent: statue
-  })
-  // Chin/muzzle area (elephant has a projecting lower face)
-  add(new THREE.IcosahedronGeometry(0.22, 2), statueMat, {
-    p: [0, 0.90, 0.26], s: [0.9, 0.7, 0.75], parent: statue
-  })
-
-  // ── EARS — large fan flaps, the most distinctive Ganesha feature ──
-  // Left ear (viewer's right)
-  add(new THREE.IcosahedronGeometry(0.42, 2), statueMat, {
-    p: [-0.58, 1.04, -0.06], r: [0.08, 0.15, 0.04], s: [0.90, 1.22, 0.11], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.28, 2), statueMat, {
-    p: [-0.80, 0.90, 0.06], r: [0.05, 0.12, 0.14], s: [0.70, 0.95, 0.10], parent: statue
-  })
-  // Ear lobe detail
-  add(new THREE.IcosahedronGeometry(0.16, 1), statueMat, {
-    p: [-0.60, 0.70, 0.06], s: [0.9, 0.6, 0.12], parent: statue
-  })
-
-  // Right ear
-  add(new THREE.IcosahedronGeometry(0.42, 2), statueMat, {
-    p: [0.58, 1.04, -0.06], r: [0.08, -0.15, -0.04], s: [0.90, 1.22, 0.11], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.28, 2), statueMat, {
-    p: [0.80, 0.90, 0.06], r: [0.05, -0.12, -0.14], s: [0.70, 0.95, 0.10], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.16, 1), statueMat, {
-    p: [0.60, 0.70, 0.06], s: [0.9, 0.6, 0.12], parent: statue
-  })
-
-  // ── TRUNK — long, curled to the right (auspicious) ──
-  const trunkPts = [
-    new THREE.Vector3(0.04, 0.88, 0.32),
-    new THREE.Vector3(0.06, 0.76, 0.46),
-    new THREE.Vector3(0.10, 0.63, 0.46),
-    new THREE.Vector3(0.16, 0.52, 0.40),
-    new THREE.Vector3(0.22, 0.44, 0.28),
-    new THREE.Vector3(0.26, 0.38, 0.14),
-    new THREE.Vector3(0.28, 0.34, 0.06),
-  ]
-  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(trunkPts), 18, 0.068, 7, false),
-    statueMat, { parent: statue })
-  // Trunk tip
-  add(new THREE.SphereGeometry(0.07, 10, 8), statueMat, { p: [0.28, 0.33, 0.05], parent: statue })
-
-  // ── TUSKS ──
-  // Right tusk (longer, intact)
-  const tusk1pts = [
-    new THREE.Vector3(0.18, 0.87, 0.30),
-    new THREE.Vector3(0.30, 0.78, 0.40),
-    new THREE.Vector3(0.42, 0.68, 0.36),
-    new THREE.Vector3(0.50, 0.57, 0.24),
-  ]
-  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(tusk1pts), 10, 0.042, 5, false),
-    statueMat, { parent: statue })
-  add(new THREE.ConeGeometry(0.042, 0.10, 5), statueMat, {
-    p: [0.515, 0.53, 0.22], r: [0.55, 0.35, 0.45], parent: statue
-  })
-
-  // Left tusk (shorter — Ganesha's broken tusk)
-  const tusk2pts = [
-    new THREE.Vector3(-0.18, 0.87, 0.30),
-    new THREE.Vector3(-0.28, 0.78, 0.38),
-    new THREE.Vector3(-0.36, 0.70, 0.33),
-  ]
-  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(tusk2pts), 8, 0.042, 5, false),
-    statueMat, { parent: statue })
-  // Broken end
-  add(new THREE.IcosahedronGeometry(0.044, 0), statueMat, { p: [-0.36, 0.70, 0.33], parent: statue })
-
-  // ── CROWN (Mukut) — multi-tiered ──
-  // Crown base ring
-  add(new THREE.TorusGeometry(0.20, 0.030, 6, 18), statueMat, {
-    p: [0, 1.32, 0], r: [Math.PI / 2, 0, 0], parent: statue
-  })
-  // Second crown ring
-  add(new THREE.TorusGeometry(0.14, 0.022, 5, 14), statueMat, {
-    p: [0, 1.40, 0], r: [Math.PI / 2, 0, 0], parent: statue
-  })
-  // Crown spires (5)
-  for (let i = 0; i < 5; i++) {
-    const a = (i / 5) * Math.PI * 2
-    const cx = Math.cos(a) * 0.18, cz = Math.sin(a) * 0.18
-    add(new THREE.ConeGeometry(0.045, 0.16, 6), statueMat, {
-      p: [cx, 1.44, cz],
-      r: [cz * 0.28, 0, -cx * 0.28],
-      parent: statue,
-    })
-  }
-  // Crown crest orb
-  add(new THREE.IcosahedronGeometry(0.07, 2), lotusMat, { p: [0, 1.60, 0], parent: statue })
-
-  // ── FOUR ARMS ──
-  // Upper-right arm — raised, holds ankusha (hook)
-  add(new THREE.CylinderGeometry(0.058, 0.064, 0.34, 7), statueMat, {
-    p: [0.46, 0.66, 0.04], r: [0.1, 0, -0.82], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.085, 2), statueMat, { p: [0.67, 0.49, 0.06], parent: statue })
-  // Ankusha hook
-  add(new THREE.TorusGeometry(0.06, 0.016, 5, 10, Math.PI * 1.2), statueMat, {
-    p: [0.72, 0.42, 0.06], r: [0, 0, -1.4], parent: statue
-  })
-
-  // Upper-left arm — holds lotus bud
-  add(new THREE.CylinderGeometry(0.058, 0.064, 0.34, 7), statueMat, {
-    p: [-0.46, 0.66, 0.04], r: [0.1, 0, 0.82], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.085, 2), statueMat, { p: [-0.67, 0.49, 0.06], parent: statue })
-  // Lotus bud in hand
-  add(new THREE.IcosahedronGeometry(0.09, 1), lotusMat, { p: [-0.72, 0.42, 0.06], parent: statue })
-
-  // Lower-right arm — gesture (abhaya mudra), slightly forward
-  add(new THREE.CylinderGeometry(0.052, 0.058, 0.28, 7), statueMat, {
-    p: [0.40, 0.36, 0.22], r: [-0.55, 0.18, -0.52], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.076, 2), statueMat, { p: [0.54, 0.20, 0.36], parent: statue })
-
-  // Lower-left arm — holds modak (sweet dumpling)
-  add(new THREE.CylinderGeometry(0.052, 0.058, 0.28, 7), statueMat, {
-    p: [-0.40, 0.36, 0.22], r: [-0.55, -0.18, 0.52], parent: statue
-  })
-  add(new THREE.IcosahedronGeometry(0.076, 2), statueMat, { p: [-0.54, 0.20, 0.36], parent: statue })
-  // Modak
-  add(new THREE.IcosahedronGeometry(0.10, 1), statueMat, {
-    p: [-0.58, 0.13, 0.38], s: [1, 1.18, 1], parent: statue
-  })
-
-  // ── Red jewel eyes ──
-  add(new THREE.SphereGeometry(0.042, 12, 10), eyeMat, { p: [-0.12, 1.05, 0.33], parent: statue })
-  add(new THREE.SphereGeometry(0.042, 12, 10), eyeMat, { p: [ 0.12, 1.05, 0.33], parent: statue })
+  // body + legs
+  add(new THREE.IcosahedronGeometry(0.42, 1), statueMat, { p: [0, 0.32, 0], s: [1, 1.1, 0.82], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.2, 1),  statueMat, { p: [-0.3, 0.06, 0.16], s: [1.2, 0.7, 1], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.2, 1),  statueMat, { p: [0.3, 0.06, 0.16],  s: [1.2, 0.7, 1], parent: statue })
+  // head
+  add(new THREE.IcosahedronGeometry(0.27, 1), statueMat, { p: [0, 0.92, 0.02], parent: statue })
+  // ears
+  add(new THREE.IcosahedronGeometry(0.2, 1), statueMat, { p: [-0.32, 0.95, -0.02], r: [0, 0.35, 0], s: [0.55, 0.9, 0.18], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.2, 1), statueMat, { p: [0.32, 0.95, -0.02],  r: [0, -0.35, 0], s: [0.55, 0.9, 0.18], parent: statue })
+  // trunk — curled tube
+  const trunkCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0.92, 0.24),
+    new THREE.Vector3(0, 0.74, 0.34),
+    new THREE.Vector3(0.09, 0.58, 0.32),
+    new THREE.Vector3(0.14, 0.5, 0.2),
+  ])
+  add(new THREE.TubeGeometry(trunkCurve, 10, 0.06, 6, false), statueMat, { parent: statue })
+  // crown
+  add(new THREE.ConeGeometry(0.15, 0.26, 8), statueMat, { p: [0, 1.22, 0], parent: statue })
+  add(new THREE.IcosahedronGeometry(0.05, 0), statueMat, { p: [0, 1.38, 0], parent: statue })
+  // bindi — the one non-crystal accent
+  const bindiMat = new THREE.MeshStandardMaterial({ color: '#c01f2e', roughness: 0.35 })
+  add(new THREE.SphereGeometry(0.04, 12, 12), bindiMat, { p: [0, 1.08, 0.25], parent: statue })
 
   return { group, statueMat, lotusMat }
 }
