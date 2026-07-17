@@ -42,21 +42,18 @@ export default function FilmSection() {
       gsap.to(cueRef.current, { opacity: 1, duration: 1.4, delay: 1.6, ease: 'power2.out' })
 
       // ── Scrub video playback with scroll ──
-      // Custom smoothing instead of ScrollTrigger's scrub: an exponential
-      // decay toward the scroll target never terminates abruptly, so the
-      // video drifts to rest instead of snapping when scrolling stops.
-      // Seeks are throttled on 'seeked' so at most one is in flight.
+      // Exponential decay smoothing toward the scroll target so the video
+      // drifts to rest rather than snapping. No seekBusy lock — the browser
+      // cancels in-flight seeks when a new currentTime is assigned, so we
+      // just write on every tick. This is critical for smooth reverse scrub:
+      // backward H.264 seeks are slow (need prior keyframe), and a lock
+      // would freeze the video until the slow seek completes.
       const buildScrub = () => {
         const duration = video.duration || 1
-        const FRAME = 1 / 24              // source is 24fps
-        const SMOOTH = 0.4                // drift time-constant, seconds
+        const FRAME  = 1 / 24    // source is 24 fps
+        const SMOOTH = 0.25      // time-constant; lower = snappier reverse
         let target   = 0
         let smoothed = 0
-        let seekBusy = false
-        let seekAt   = 0
-
-        video.addEventListener('seeked', () => { seekBusy = false })
-        video.addEventListener('error',  () => { seekBusy = false })
 
         ScrollTrigger.create({
           trigger: sec,
@@ -65,13 +62,10 @@ export default function FilmSection() {
           onUpdate: (self) => { target = self.progress * duration },
         })
 
-        const tick = (time, deltaMs) => {
+        const tick = (_time, deltaMs) => {
           smoothed += (target - smoothed) * (1 - Math.exp(-(deltaMs / 1000) / SMOOTH))
           if (Math.abs(target - smoothed) < FRAME / 4) smoothed = target
-          if (seekBusy && time - seekAt > 0.25) seekBusy = false // stuck-seek watchdog
-          if (!seekBusy && Math.abs(video.currentTime - smoothed) >= FRAME / 2) {
-            seekBusy = true
-            seekAt = time
+          if (Math.abs(video.currentTime - smoothed) >= FRAME / 2) {
             video.currentTime = smoothed
           }
         }
