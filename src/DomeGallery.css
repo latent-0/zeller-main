@@ -123,6 +123,12 @@ main.sphere-main {
   aspect-ratio: 1;
   border-radius: var(--enlarge-radius, 32px);
   display: flex;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  /* reference element for overlay positioning — never visible */
+  pointer-events: none;
 }
 
 @media (max-aspect-ratio: 1/1) {

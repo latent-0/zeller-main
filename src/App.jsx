@@ -369,7 +369,7 @@ export default function App() {
 
       {/* ── Dome Gallery — chandelier collection ── */}
       <section id="gallery" className="dome-gallery-section">
-        <div className="section dome-gallery-header">
+        <div className="dome-gallery-header">
           <BlurText text="The Collection" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
           <BlurText text="Chandeliers in Every Facet" as="h2" animateBy="words" delay={110} stepDuration={0.45} />
           <p className="reveal dome-gallery-hint">Drag to explore — tap any piece to illuminate it.</p>
