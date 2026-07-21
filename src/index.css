@@ -131,24 +131,21 @@ p {
 }
 
 .hero-star-mark .zs {
-  width:  clamp(1.6rem, 3.8vw, 3.4rem) !important;
-  height: clamp(1.6rem, 3.8vw, 3.4rem) !important;
+  width:  clamp(1.4rem, 3.4vw, 3rem) !important;
+  height: auto !important;
 }
 
-/* Left star draws in first, right star 0.25s after */
+/* Left mark draws first, right mark 0.3s later */
 .hero-star-mark--l .zs-path {
   animation:
-    zs-draw 1.3s cubic-bezier(0.4, 0, 0.15, 1) 1.9s forwards,
-    zs-fill 0.5s ease-in-out 3.0s forwards;
+    zs-draw 1.6s cubic-bezier(0.4, 0, 0.15, 1) 1.8s forwards,
+    zs-fill 0.55s ease-in-out 3.2s forwards;
 }
 .hero-star-mark--r .zs-path {
   animation:
-    zs-draw 1.3s cubic-bezier(0.4, 0, 0.15, 1) 2.15s forwards,
-    zs-fill 0.5s ease-in-out 3.25s forwards;
+    zs-draw 1.6s cubic-bezier(0.4, 0, 0.15, 1) 2.1s forwards,
+    zs-fill 0.55s ease-in-out 3.5s forwards;
 }
-
-.hero-star-mark--l .zs { animation: zs-spin 100s linear 3.4s infinite; }
-.hero-star-mark--r .zs { animation: zs-spin 100s linear 3.65s infinite; }
 
 .hero-wordmark {
   font-family: var(--font-brand);
@@ -247,34 +244,32 @@ nav {
   text-decoration: none;
 }
 
-/* ── Zeller Star Mark ── */
+/* ── Zeller Mark ── */
 .zs-wrap {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.4s ease;
 }
-.zs-wrap:hover { transform: scale(1.13); }
+.zs-wrap:hover { transform: scale(1.1); }
+.zs-wrap:hover .zs-path {
+  filter: drop-shadow(0 0 10px rgba(201, 170, 98, 0.6));
+}
 
 .zs {
   display: block;
-  transform-origin: center;
   overflow: visible;
-  animation: zs-spin 100s linear 2.3s infinite;
 }
-.zs-wrap:hover .zs { animation-play-state: paused; }
 
 .zs-path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  filter: drop-shadow(0 0 5px rgba(201, 170, 98, 0.3));
+  filter: drop-shadow(0 0 4px rgba(201, 170, 98, 0.25));
   animation:
-    zs-draw 1.5s cubic-bezier(0.4, 0, 0.15, 1) 0.25s forwards,
-    zs-fill 0.55s ease-in-out 1.6s forwards;
-}
-.zs-wrap:hover .zs-path {
-  filter: drop-shadow(0 0 14px rgba(201, 170, 98, 0.65));
+    zs-draw 2s cubic-bezier(0.4, 0, 0.15, 1) 0.2s forwards,
+    zs-fill 0.6s ease-in-out 2.0s forwards;
   transition: filter 0.4s ease;
 }
 
@@ -285,12 +280,8 @@ nav {
 
 @keyframes zs-fill {
   0%   { fill: transparent; stroke-opacity: 1; }
-  60%  { fill: var(--clr-accent); stroke-opacity: 0.2; }
+  55%  { fill: var(--clr-accent); stroke-opacity: 0.15; }
   100% { fill: var(--clr-accent); stroke-opacity: 0; }
-}
-
-@keyframes zs-spin {
-  to { transform: rotate(360deg); }
 }
 
 /* ® superscript — used in nav, footer brand text */
