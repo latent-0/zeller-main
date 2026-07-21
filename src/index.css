@@ -1728,82 +1728,67 @@ footer {
   color: rgba(240, 235, 224, 0.45);
 }
 
-/* Instagram embed grid — 3 posts per row */
-.ig-embeds-grid {
+/* Clean gallery grid — 3 columns of square tiles */
+.ig-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.9rem;
+  gap: 0.5rem;
   max-width: 1100px;
   margin: 0 auto 2.8rem;
 }
 
 @media (max-width: 900px) {
-  .ig-embeds-grid { grid-template-columns: repeat(2, 1fr); }
+  .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 560px) {
-  .ig-embeds-grid { grid-template-columns: 1fr; }
+  .ig-grid { grid-template-columns: 1fr; }
 }
 
-/*
-  Crop technique — hides Instagram's header chrome and footer buttons.
-  The iframe slides up by ~72px (the header height) via negative margin,
-  and the cell clips to a square window showing only the photo/video.
-  ::before and ::after strips seal the cut edges with the cell background.
-*/
-.ig-embed-cell {
+.ig-tile {
   position: relative;
   overflow: hidden;
   aspect-ratio: 1;
-  min-width: 0;
-  background: #111;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.ig-embed-cell:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
-}
-
-/* Top strip — seals the header cut */
-.ig-embed-cell::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: #111;
-  z-index: 10;
-  pointer-events: none;
-}
-
-/* Bottom gradient — fades out any footer bleed */
-.ig-embed-cell::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 55px;
-  background: linear-gradient(to bottom, transparent 0%, #111 100%);
-  z-index: 10;
-  pointer-events: none;
-}
-
-/* Strip Instagram's own styles from the blockquote wrapper */
-.ig-embed-cell .instagram-media {
-  min-width: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  border: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
-
-/* Slide the rendered iframe up to hide Instagram's header */
-.ig-embed-cell iframe {
-  margin-top: -72px !important;
   display: block;
 }
+
+.ig-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s ease;
+  filter: brightness(0.9) saturate(0.85);
+}
+
+.ig-tile:hover img {
+  transform: scale(1.06);
+  filter: brightness(1) saturate(1);
+}
+
+.ig-tile__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 8, 4, 0);
+  transition: background 0.4s ease;
+}
+
+.ig-tile:hover .ig-tile__overlay {
+  background: rgba(10, 8, 4, 0.35);
+}
+
+.ig-icon {
+  width: 30px;
+  height: 30px;
+  color: #f0ebe0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.ig-tile:hover .ig-icon { opacity: 1; }
 
 .ig-cta-wrap {
   display: flex;
