@@ -67,6 +67,18 @@ export default function App() {
   const hTrackRef    = useRef(null)
 
   const [isAtelier, setIsAtelier] = useState(() => window.location.hash === '#atelier')
+
+  // Load Instagram embed.js once for post embeds
+  useEffect(() => {
+    if (isAtelier) return
+    if (window.instgrm) { window.instgrm.Embeds.process(); return }
+    const s = document.createElement('script')
+    s.src = '//www.instagram.com/embed.js'
+    s.async = true
+    s.onload = () => window.instgrm?.Embeds.process()
+    document.body.appendChild(s)
+  }, [isAtelier])
+
   useEffect(() => {
     const onHash = () => {
       const atelier = window.location.hash === '#atelier'
@@ -452,31 +464,24 @@ export default function App() {
           </h2>
           <p className="reveal ig-intro">Behind the craft, the cosmos, and the creation — follow our story on Instagram.</p>
         </div>
-        <div className="ig-grid">
+        <div className="ig-embeds-grid">
           {[
-            { src: '/gallery/chandelier-cubes.jpg',    alt: 'Geometric crystal chandelier' },
-            { src: '/gallery/chandelier-dome.jpg',     alt: 'Dome chandelier ceiling' },
-            { src: '/gallery/chandelier-glasswork.jpg',alt: 'Glasswork chandelier arms' },
-            { src: '/gallery/chandelier-crystal.jpg',  alt: 'Crystal prism close-up' },
-            { src: '/gallery/chandelier-butterfly.jpg',alt: 'Butterfly crystal piece' },
-            { src: '/gallery/chandelier-rings.webp',   alt: 'Crystal ring chandelier' },
-          ].map(({ src, alt }, i) => (
-            <a
-              key={i}
-              href="https://www.instagram.com/thecrystalguy_/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`ig-tile ig-tile--${i + 1}`}
-            >
-              <img src={src} alt={alt} />
-              <div className="ig-tile__overlay">
-                <svg className="ig-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.5"/>
-                  <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5"/>
-                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-                </svg>
-              </div>
-            </a>
+            'https://www.instagram.com/p/Da77CCDlKKP/',
+            'https://www.instagram.com/p/Da0K5_BDcsQ/',
+            'https://www.instagram.com/p/DaxomIXth5q/',
+            'https://www.instagram.com/p/DanRRoBTBV7/',
+            'https://www.instagram.com/p/DadAO-7t8MT/',
+            'https://www.instagram.com/p/DY1_eM1tt19/',
+          ].map((url) => (
+            <div key={url} className="ig-embed-cell">
+              <blockquote
+                className="instagram-media"
+                data-instgrm-permalink={url}
+                data-instgrm-version="14"
+              >
+                <a href={url} target="_blank" rel="noopener noreferrer">View on Instagram</a>
+              </blockquote>
+            </div>
           ))}
         </div>
         <div className="ig-cta-wrap">

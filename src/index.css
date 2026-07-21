@@ -1725,68 +1725,35 @@ footer {
   margin: 0 auto;
 }
 
-/* Asymmetric grid: tile 1 is tall (spans 2 rows), tiles 2-6 standard */
-.ig-grid {
+/* Instagram embed grid — 3 real post embeds per row */
+.ig-embeds-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto;
-  gap: 0.55rem;
-  max-width: 1080px;
+  gap: 1.25rem;
+  max-width: 1100px;
   margin: 0 auto 2.8rem;
 }
 
-.ig-tile--1 { grid-row: span 2; }
-
-@media (max-width: 640px) {
-  .ig-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .ig-tile--1 { grid-row: span 1; }
+@media (max-width: 900px) {
+  .ig-embeds-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-.ig-tile {
-  position: relative;
-  overflow: hidden;
-  display: block;
-  aspect-ratio: 1;
-  background: var(--clr-surface);
+@media (max-width: 560px) {
+  .ig-embeds-grid { grid-template-columns: 1fr; }
 }
 
-.ig-tile--1 { aspect-ratio: auto; }
-
-.ig-tile img {
+.ig-embed-cell {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.7s ease;
+  min-width: 0;
 }
 
-.ig-tile:hover img { transform: scale(1.07); }
-
-.ig-tile__overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(10, 8, 4, 0);
-  transition: background 0.4s ease;
+/* Override Instagram's min-width so embeds fill the grid column */
+.ig-embed-cell .instagram-media {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
 }
-
-.ig-tile:hover .ig-tile__overlay {
-  background: rgba(10, 8, 4, 0.42);
-}
-
-.ig-icon {
-  width: 28px;
-  height: 28px;
-  color: #f0ebe0;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.ig-tile:hover .ig-icon { opacity: 1; }
 
 .ig-cta-wrap {
   display: flex;
