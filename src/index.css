@@ -116,6 +116,40 @@ p {
   pointer-events: none;
 }
 
+/* Star + wordmark + star lockup */
+.hero-lockup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.6rem, 3.5vw, 3.8rem);
+}
+
+/* Star instances in hero — size and delayed timing */
+.hero-star-mark {
+  pointer-events: auto;
+  flex-shrink: 0;
+}
+
+.hero-star-mark .zs {
+  width:  clamp(1.6rem, 3.8vw, 3.4rem) !important;
+  height: clamp(1.6rem, 3.8vw, 3.4rem) !important;
+}
+
+/* Left star draws in first, right star 0.25s after */
+.hero-star-mark--l .zs-path {
+  animation:
+    zs-draw 1.3s cubic-bezier(0.4, 0, 0.15, 1) 1.9s forwards,
+    zs-fill 0.5s ease-in-out 3.0s forwards;
+}
+.hero-star-mark--r .zs-path {
+  animation:
+    zs-draw 1.3s cubic-bezier(0.4, 0, 0.15, 1) 2.15s forwards,
+    zs-fill 0.5s ease-in-out 3.25s forwards;
+}
+
+.hero-star-mark--l .zs { animation: zs-spin 100s linear 3.4s infinite; }
+.hero-star-mark--r .zs { animation: zs-spin 100s linear 3.65s infinite; }
+
 .hero-wordmark {
   font-family: var(--font-brand);
   font-size: clamp(3rem, 10vw, 9rem);

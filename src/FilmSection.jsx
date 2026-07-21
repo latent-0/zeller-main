@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import ZellerStar from './ZellerStar'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -147,14 +148,18 @@ export default function FilmSection() {
         <div className="vignette" />
 
         <div className="hero-overlay">
-          <h1 ref={wordmarkRef} className="hero-wordmark">
-            {'ZELLER'.split('').map((ch, i) => (
-              <span key={i} className="hw">
-                {ch}
-                {i === 5 && <span className="hero-reg">®</span>}
-              </span>
-            ))}
-          </h1>
+          <div className="hero-lockup">
+            <ZellerStar className="hero-star-mark hero-star-mark--l" />
+            <h1 ref={wordmarkRef} className="hero-wordmark">
+              {'ZELLER'.split('').map((ch, i) => (
+                <span key={i} className="hw">
+                  {ch}
+                  {i === 5 && <span className="hero-reg">®</span>}
+                </span>
+              ))}
+            </h1>
+            <ZellerStar className="hero-star-mark hero-star-mark--r" />
+          </div>
           <p ref={taglineRef} className="hero-tagline">Celebrate You</p>
         </div>
 
