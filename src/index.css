@@ -124,7 +124,21 @@ p {
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: #f5f0e8;
+  position: relative;
   /* spans start hidden — GSAP blurs them in */
+}
+
+.hero-reg {
+  font-family: var(--font-brand);
+  font-variation-settings: 'opsz' 96;
+  font-weight: 400;
+  font-size: 0.22em;
+  vertical-align: super;
+  letter-spacing: 0;
+  margin-left: 0.06em;
+  opacity: 0.6;
+  position: relative;
+  top: 0.1em;
 }
 
 .hero-tagline {
@@ -186,6 +200,15 @@ nav {
   align-items: center;
   justify-content: space-between;
   padding: 1.6rem 4vw;
+  transition: background 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease;
+  border-bottom: 1px solid transparent;
+}
+
+nav.is-scrolled {
+  background: rgba(8, 6, 4, 0.84);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  border-bottom-color: rgba(201, 170, 98, 0.1);
 }
 
 .nav-logo {
@@ -1302,12 +1325,12 @@ footer {
   padding-block: 0;
 }
 
-/* Cream → dark hard cut at top */
+/* Dark → dark seamless join */
 .dome-gallery-section::before {
   content: '';
   display: block;
   height: 20px;
-  background: linear-gradient(to bottom, #f5f0e8 0%, #f5f0e8 30%, #0f0b1a 100%);
+  background: linear-gradient(to bottom, #0a0806 0%, #0f0b1a 100%);
 }
 
 .dome-gallery-header {

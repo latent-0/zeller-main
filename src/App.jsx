@@ -68,6 +68,16 @@ export default function App() {
 
   const [isAtelier, setIsAtelier] = useState(() => window.location.hash === '#atelier')
 
+  // Navbar scroll background
+  useEffect(() => {
+    const nav = document.querySelector('nav')
+    if (!nav) return
+    const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   // Load Instagram embed.js for real post embeds
   useEffect(() => {
     if (isAtelier) return

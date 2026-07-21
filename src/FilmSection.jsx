@@ -149,6 +149,7 @@ export default function FilmSection() {
         <div className="hero-overlay">
           <h1 ref={wordmarkRef} className="hero-wordmark">
             {'ZELLER'.split('').map((ch, i) => <span key={i} className="hw">{ch}</span>)}
+            <sup className="hero-reg">®</sup>
           </h1>
           <p ref={taglineRef} className="hero-tagline">Celebrate You</p>
         </div>
