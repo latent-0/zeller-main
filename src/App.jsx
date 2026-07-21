@@ -374,6 +374,37 @@ export default function App() {
         <cite>— Zeller Brand Ethos</cite>
       </div>
 
+      {/* ── Crystal Duality — image treatment showcase ── */}
+      <section className="crystal-duality-section">
+        <div className="cdual-panel cdual-panel--left">
+          <div className="cdual-image-wrap">
+            <img src="/gallery/chandelier-crystal.jpg" alt="Crystal chandelier in natural light" />
+          </div>
+          <div className="cdual-overlay" />
+          <div className="cdual-text">
+            <span className="cdual-label">Light &amp; Form</span>
+            <h3 className="reveal">Every prism<br/>a portal</h3>
+            <p className="reveal">Our crystals are precision instruments of wonder — each facet angled to fracture light into spectral poetry, turning ambient glow into something celestial.</p>
+          </div>
+          <div className="cdual-blur-badge">Clear</div>
+        </div>
+        <div className="cdual-panel cdual-panel--right">
+          <div className="cdual-image-wrap cdual-image-wrap--blurred">
+            <img src="/gallery/chandelier-butterfly.jpg" alt="Crystal butterfly chandelier detail" />
+          </div>
+          <div className="cdual-overlay cdual-overlay--dark" />
+          <div className="cdual-frosted-card">
+            <span className="cdual-label cdual-label--light">Form &amp; Fantasy</span>
+            <blockquote className="cdual-quote">
+              "Each wing, each arm — sculpted with reverence for nature's geometry."
+            </blockquote>
+            <div className="cdual-divider" />
+            <p className="cdual-card-body">Wear the cosmos. Live with the cosmos.</p>
+          </div>
+          <div className="cdual-blur-badge cdual-blur-badge--right">Gaussian Blur</div>
+        </div>
+      </section>
+
       {/* ── Dome Gallery — chandelier collection ── */}
       <section id="gallery" className="dome-gallery-section">
         <div className="dome-gallery-header">
@@ -395,6 +426,54 @@ export default function App() {
             fit={0.52}
             dragDampening={1.6}
           />
+        </div>
+      </section>
+
+      {/* ── Brand Statement — typographic manifesto ── */}
+      <section className="brand-statement-section grain-section">
+        <div className="brand-statement-sunburst" aria-hidden="true">
+          <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+            {Array.from({ length: 40 }, (_, i) => {
+              const angle = (i / 40) * Math.PI * 2 - Math.PI / 2
+              const t = i % 4
+              const r1 = t === 0 ? 105 : t === 2 ? 118 : 130
+              const r2 = t === 0 ? 220 : t === 2 ? 198 : 180
+              const sw = t === 0 ? 1.1 : 0.55
+              const op = t === 0 ? 0.55 : 0.25
+              return (
+                <line
+                  key={i}
+                  x1={250 + Math.cos(angle) * r1}
+                  y1={250 + Math.sin(angle) * r1}
+                  x2={250 + Math.cos(angle) * r2}
+                  y2={250 + Math.sin(angle) * r2}
+                  stroke="#c9aa62"
+                  strokeWidth={sw}
+                  opacity={op}
+                />
+              )
+            })}
+            <circle cx="250" cy="250" r="100" fill="none" stroke="#c9aa62" strokeWidth="0.5" opacity="0.2" />
+            <circle cx="250" cy="250" r="3.5" fill="#c9aa62" opacity="0.5" />
+          </svg>
+        </div>
+        <div className="brand-statement-content">
+          <span className="section-label brand-statement-eyebrow">Our Manifesto</span>
+          <h2 className="brand-statement-heading reveal">
+            <span className="word-duo__bold">Crys</span><span className="word-duo__serif">tal</span>
+            <br />
+            Couture
+          </h2>
+          <div className="brand-statement-rule" />
+          <p className="brand-statement-body reveal">
+            Where ancient craft meets celestial vision — each facet cut with intention,<br />
+            each reflection a story written in light.
+          </p>
+          <p className="brand-statement-sub">India's first crystal couture house</p>
+        </div>
+        <div className="brand-statement-type-specimen" aria-hidden="true">
+          <span className="bsts-letter bsts-letter--1">C</span>
+          <span className="bsts-letter bsts-letter--2">Z</span>
         </div>
       </section>
 
@@ -426,6 +505,57 @@ export default function App() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Instagram — follow the light ── */}
+      <section className="instagram-section grain-section">
+        <div className="ig-header">
+          <BlurText text="Follow the Light" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
+          <h2 className="reveal" style={{ marginBottom: '0.6rem' }}>
+            <span className="word-duo__bold">@the</span><span className="word-duo__serif">crystalguy_</span>
+          </h2>
+          <p className="reveal ig-intro">Behind the craft, the cosmos, and the creation — follow our story on Instagram.</p>
+        </div>
+        <div className="ig-grid">
+          {[
+            { src: '/gallery/chandelier-cubes.jpg',    alt: 'Geometric crystal chandelier' },
+            { src: '/gallery/chandelier-dome.jpg',     alt: 'Dome chandelier ceiling' },
+            { src: '/gallery/chandelier-glasswork.jpg',alt: 'Glasswork chandelier arms' },
+            { src: '/gallery/chandelier-crystal.jpg',  alt: 'Crystal prism close-up' },
+            { src: '/gallery/chandelier-butterfly.jpg',alt: 'Butterfly crystal piece' },
+            { src: '/gallery/chandelier-rings.webp',   alt: 'Crystal ring chandelier' },
+          ].map(({ src, alt }, i) => (
+            <a
+              key={i}
+              href="https://www.instagram.com/thecrystalguy_/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`ig-tile ig-tile--${i + 1}`}
+            >
+              <img src={src} alt={alt} />
+              <div className="ig-tile__overlay">
+                <svg className="ig-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.5"/>
+                  <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+        <div className="ig-cta-wrap">
+          <a
+            href="https://www.instagram.com/thecrystalguy_/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ig-cta"
+          >
+            <span>Follow @thecrystalguy_</span>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
         </div>
       </section>
 

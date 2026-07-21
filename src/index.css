@@ -1418,3 +1418,417 @@ footer {
 .fragment-section.grain-section::after {
   opacity: 0.35;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CRYSTAL DUALITY — image treatment showcase
+   ══════════════════════════════════════════════════════════════════════════ */
+.crystal-duality-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 88vh;
+}
+
+@media (max-width: 768px) {
+  .crystal-duality-section { grid-template-columns: 1fr; }
+}
+
+.cdual-panel {
+  position: relative;
+  overflow: hidden;
+  min-height: 55vh;
+}
+
+.cdual-image-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.cdual-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s ease;
+}
+
+.cdual-panel:hover .cdual-image-wrap img { transform: scale(1.04); }
+
+.cdual-image-wrap--blurred img {
+  filter: blur(12px) saturate(1.2);
+  transform: scale(1.06);
+}
+
+.cdual-panel:hover .cdual-image-wrap--blurred img {
+  filter: blur(8px) saturate(1.2);
+  transform: scale(1.08);
+}
+
+.cdual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 8, 4, 0.04) 0%,
+    rgba(10, 8, 4, 0.5) 55%,
+    rgba(10, 8, 4, 0.88) 100%
+  );
+  z-index: 1;
+}
+
+.cdual-overlay--dark {
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 8, 4, 0.18) 0%,
+    rgba(10, 8, 4, 0.45) 40%,
+    rgba(10, 8, 4, 0.75) 100%
+  );
+}
+
+/* Text block at bottom of left panel */
+.cdual-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3rem 2.8rem;
+  z-index: 2;
+}
+
+.cdual-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--clr-accent-light);
+  margin-bottom: 0.9rem;
+}
+
+.cdual-label--light { color: rgba(201, 170, 98, 0.8); }
+
+.cdual-text h3 {
+  color: #f0ebe0;
+  font-weight: 200;
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.cdual-text p {
+  color: rgba(240, 235, 224, 0.6);
+  max-width: 340px;
+  font-size: 0.88rem;
+}
+
+/* Frosted glass card on right panel */
+.cdual-frosted-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 2.8rem;
+  z-index: 2;
+}
+
+.cdual-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.1rem, 2.2vw, 1.55rem);
+  line-height: 1.55;
+  color: rgba(240, 235, 224, 0.92);
+  border: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  max-width: 380px;
+  background: rgba(20, 16, 10, 0.35);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  border: 1px solid rgba(201, 170, 98, 0.18);
+  padding: 1.8rem 2rem;
+}
+
+.cdual-divider {
+  width: 32px;
+  height: 1px;
+  background: var(--clr-accent);
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.cdual-card-body {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(201, 170, 98, 0.7);
+}
+
+/* Corner badge indicating treatment type */
+.cdual-blur-badge {
+  position: absolute;
+  top: 1.4rem;
+  left: 1.4rem;
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(201, 170, 98, 0.6);
+  background: rgba(10, 8, 4, 0.5);
+  backdrop-filter: blur(8px);
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(201, 170, 98, 0.18);
+  z-index: 3;
+}
+
+.cdual-blur-badge--right { left: auto; right: 1.4rem; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BRAND STATEMENT — typographic manifesto
+   ══════════════════════════════════════════════════════════════════════════ */
+.brand-statement-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 92vh;
+  background: #13100c;
+  overflow: hidden;
+  padding: 8rem 5vw;
+  text-align: center;
+}
+
+/* Decorative sunburst — centered behind the text */
+.brand-statement-sunburst {
+  position: absolute;
+  width: min(640px, 88vw);
+  height: min(640px, 88vw);
+  opacity: 0.9;
+  pointer-events: none;
+  animation: bss-rotate 80s linear infinite;
+}
+
+@keyframes bss-rotate {
+  to { transform: rotate(360deg); }
+}
+
+.brand-statement-sunburst svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Ghost letters behind content */
+.brand-statement-type-specimen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2vw;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bsts-letter {
+  font-family: var(--font-brand);
+  font-variation-settings: 'opsz' 96;
+  font-weight: 400;
+  font-size: clamp(14rem, 26vw, 22rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201, 170, 98, 0.08);
+  user-select: none;
+}
+
+.bsts-letter--2 {
+  -webkit-text-stroke: 1px rgba(201, 170, 98, 0.06);
+  margin-left: auto;
+}
+
+/* Main content stack */
+.brand-statement-content {
+  position: relative;
+  z-index: 2;
+}
+
+.brand-statement-eyebrow {
+  color: var(--clr-accent-light) !important;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.brand-statement-heading {
+  color: #f0ebe0;
+  font-size: clamp(4rem, 10vw, 9rem);
+  line-height: 0.95;
+  letter-spacing: 0.06em;
+  margin-bottom: 0;
+}
+
+.brand-statement-heading .word-duo__bold {
+  color: #f0ebe0;
+  font-weight: 500;
+}
+
+.brand-statement-heading .word-duo__serif {
+  color: var(--clr-accent-light);
+}
+
+.brand-statement-rule {
+  width: 48px;
+  height: 1px;
+  background: var(--clr-accent);
+  opacity: 0.45;
+  margin: 2.5rem auto;
+}
+
+.brand-statement-body {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  line-height: 1.75;
+  color: rgba(240, 235, 224, 0.62);
+  max-width: 580px;
+  margin: 0 auto 1.5rem;
+}
+
+.brand-statement-sub {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(201, 170, 98, 0.4);
+}
+
+/* Grain sits on top */
+.brand-statement-section.grain-section::after {
+  opacity: 0.6;
+  z-index: 3;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   INSTAGRAM SECTION — follow the light
+   ══════════════════════════════════════════════════════════════════════════ */
+.instagram-section {
+  padding: 7rem 5vw 6rem;
+  background: var(--clr-surface);
+}
+
+.ig-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 3.5rem;
+}
+
+.ig-header h2 {
+  margin: 0.8rem 0 0.6rem;
+  font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+}
+
+.ig-intro {
+  color: var(--clr-muted);
+  font-size: 0.9rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Asymmetric grid: tile 1 is tall (spans 2 rows), tiles 2-6 standard */
+.ig-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+  gap: 0.55rem;
+  max-width: 1080px;
+  margin: 0 auto 2.8rem;
+}
+
+.ig-tile--1 { grid-row: span 2; }
+
+@media (max-width: 640px) {
+  .ig-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ig-tile--1 { grid-row: span 1; }
+}
+
+.ig-tile {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  aspect-ratio: 1;
+  background: var(--clr-surface);
+}
+
+.ig-tile--1 { aspect-ratio: auto; }
+
+.ig-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s ease;
+}
+
+.ig-tile:hover img { transform: scale(1.07); }
+
+.ig-tile__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 8, 4, 0);
+  transition: background 0.4s ease;
+}
+
+.ig-tile:hover .ig-tile__overlay {
+  background: rgba(10, 8, 4, 0.42);
+}
+
+.ig-icon {
+  width: 28px;
+  height: 28px;
+  color: #f0ebe0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.ig-tile:hover .ig-icon { opacity: 1; }
+
+.ig-cta-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.ig-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 2.2rem;
+  border: 1px solid var(--clr-accent);
+  color: var(--clr-accent);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.ig-cta svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.ig-cta:hover {
+  background: var(--clr-accent);
+  color: var(--clr-bg);
+}
+
+.ig-cta:hover svg { transform: translateX(3px); }
