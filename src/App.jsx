@@ -195,16 +195,6 @@ export default function App() {
       })
     }
 
-    // ── Quote — soft blur reveal ──
-    gsap.fromTo('.quote-section blockquote, .quote-section cite',
-      { opacity: 0, y: 28, filter: 'blur(10px)' },
-      {
-        opacity: 1, y: 0, filter: 'blur(0px)',
-        duration: 1.1, stagger: 0.25, ease: 'power3.out',
-        scrollTrigger: { trigger: '.quote-section', start: 'top 75%' },
-      }
-    )
-
     // ── À la carte cards — rise with a settling tilt ──
     gsap.utils.toArray('.alacarte-card').forEach((card, i) => {
       gsap.fromTo(card,
@@ -366,13 +356,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── Cosmic quote ── */}
-      <div className="quote-section grain-section">
-        <blockquote>
-          &ldquo;Indulge in Crystal Couture. Celebrate the universe within you.&rdquo;
-        </blockquote>
-        <cite>— Zeller Brand Ethos</cite>
-      </div>
+      {/* ── Spacer — breathing room between collection and image treatment ── */}
+      <div className="section-spacer" />
 
       {/* ── Crystal Duality — image treatment showcase ── */}
       <section className="crystal-duality-section">

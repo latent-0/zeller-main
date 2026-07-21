@@ -213,6 +213,18 @@ export default function LoadingScreen({ onComplete }) {
         ctx.restore()
       }
 
+      // ® superscript — fades in with the last letter
+      if (letterAlpha[5] > 0) {
+        const regSize = fontSize * 0.24
+        ctx.save()
+        ctx.font = `400 ${regSize}px "Bodoni Moda", serif`
+        ctx.textBaseline = 'alphabetic'
+        ctx.globalAlpha = letterAlpha[5] * 0.65
+        ctx.fillStyle = '#f0ece4'
+        ctx.fillText('®', charPos[5].x + charPos[5].w + regSize * 0.15, baseY - fontSize * 0.68)
+        ctx.restore()
+      }
+
       // Final ambient glow once all letters visible
       const allIn = letterAlpha.every(a => a >= 0.95)
       if (allIn && progress > 0.8) {
