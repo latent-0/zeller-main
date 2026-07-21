@@ -1568,18 +1568,13 @@ footer {
   text-align: center;
 }
 
-/* Decorative sunburst — centered behind the text */
+/* Decorative sunburst — centered, static, very subtle */
 .brand-statement-sunburst {
   position: absolute;
-  width: min(640px, 88vw);
-  height: min(640px, 88vw);
-  opacity: 0.9;
+  width: min(340px, 52vw);
+  height: min(340px, 52vw);
+  opacity: 0.22;
   pointer-events: none;
-  animation: bss-rotate 80s linear infinite;
-}
-
-@keyframes bss-rotate {
-  to { transform: rotate(360deg); }
 }
 
 .brand-statement-sunburst svg {
@@ -1629,10 +1624,11 @@ footer {
 
 .brand-statement-heading {
   color: #f0ebe0;
-  font-size: clamp(4rem, 10vw, 9rem);
+  font-size: clamp(2.6rem, 6vw, 5.5rem);
   line-height: 0.95;
   letter-spacing: 0.06em;
   margin-bottom: 0;
+  text-align: center;
 }
 
 .brand-statement-heading .word-duo__bold {
@@ -1663,12 +1659,38 @@ footer {
   margin: 0 auto 1.5rem;
 }
 
-.brand-statement-sub {
-  font-family: var(--font-display);
-  font-size: 0.6rem;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: rgba(201, 170, 98, 0.4);
+/* Diagonal image panels — top-left and bottom-right */
+.bss-panel {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bss-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.45) saturate(0.6);
+  display: block;
+}
+
+.bss-panel--tl {
+  width: clamp(200px, 24vw, 320px);
+  height: clamp(280px, 36vw, 460px);
+  top: -6%;
+  left: -4%;
+  transform: rotate(-17deg);
+  transform-origin: center center;
+}
+
+.bss-panel--br {
+  width: clamp(180px, 21vw, 290px);
+  height: clamp(260px, 33vw, 420px);
+  bottom: -8%;
+  right: -3%;
+  transform: rotate(-16deg);
+  transform-origin: center center;
 }
 
 /* Grain sits on top */

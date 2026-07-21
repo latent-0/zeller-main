@@ -414,6 +414,14 @@ export default function App() {
 
       {/* ── Brand Statement — typographic manifesto ── */}
       <section className="brand-statement-section grain-section">
+        {/* Angled image panels — corners */}
+        <div className="bss-panel bss-panel--tl" aria-hidden="true">
+          <img src="/gallery/chandelier-dome.jpg" alt="" />
+        </div>
+        <div className="bss-panel bss-panel--br" aria-hidden="true">
+          <img src="/gallery/chandelier-spiral.webp" alt="" />
+        </div>
+
         <div className="brand-statement-sunburst" aria-hidden="true">
           <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
             {Array.from({ length: 40 }, (_, i) => {
@@ -421,8 +429,7 @@ export default function App() {
               const t = i % 4
               const r1 = t === 0 ? 105 : t === 2 ? 118 : 130
               const r2 = t === 0 ? 220 : t === 2 ? 198 : 180
-              const sw = t === 0 ? 1.1 : 0.55
-              const op = t === 0 ? 0.55 : 0.25
+              const sw = t === 0 ? 1.0 : 0.5
               return (
                 <line
                   key={i}
@@ -432,14 +439,15 @@ export default function App() {
                   y2={250 + Math.sin(angle) * r2}
                   stroke="#c9aa62"
                   strokeWidth={sw}
-                  opacity={op}
+                  opacity="1"
                 />
               )
             })}
-            <circle cx="250" cy="250" r="100" fill="none" stroke="#c9aa62" strokeWidth="0.5" opacity="0.2" />
-            <circle cx="250" cy="250" r="3.5" fill="#c9aa62" opacity="0.5" />
+            <circle cx="250" cy="250" r="100" fill="none" stroke="#c9aa62" strokeWidth="0.6" opacity="1" />
+            <circle cx="250" cy="250" r="3" fill="#c9aa62" opacity="1" />
           </svg>
         </div>
+
         <div className="brand-statement-content">
           <span className="section-label brand-statement-eyebrow">Our Manifesto</span>
           <h2 className="brand-statement-heading reveal">
@@ -452,11 +460,6 @@ export default function App() {
             Where ancient craft meets celestial vision — each facet cut with intention,<br />
             each reflection a story written in light.
           </p>
-          <p className="brand-statement-sub">India's first crystal couture house</p>
-        </div>
-        <div className="brand-statement-type-specimen" aria-hidden="true">
-          <span className="bsts-letter bsts-letter--1">C</span>
-          <span className="bsts-letter bsts-letter--2">Z</span>
         </div>
       </section>
 
