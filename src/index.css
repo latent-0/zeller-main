@@ -133,7 +133,7 @@ p {
 }
 
 .hero-star-mark .zs {
-  height: clamp(4.4rem, 14.4vw, 13rem) !important;
+  height: clamp(8rem, 32vw, 28rem) !important;
   width:  auto !important;
 }
 
