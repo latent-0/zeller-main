@@ -18,6 +18,7 @@ export default function FilmSection() {
   const taglineRef  = useRef(null)
   const cueRef      = useRef(null)
   const coverRef    = useRef(null)
+  const starRef     = useRef(null)
   const captionRefs = useRef([])
 
   useEffect(() => {
@@ -98,8 +99,8 @@ export default function FilmSection() {
       })
       tl.to({}, { duration: 100 }, 0) // pad to full length
 
-      // Wordmark + tagline + cue fade out as scroll begins
-      tl.to([wordmarkRef.current, taglineRef.current], { opacity: 0, y: -40, duration: 10 }, 4)
+      // Wordmark + logo mark + tagline fade out together as scroll begins
+      tl.to([starRef.current, wordmarkRef.current, taglineRef.current], { opacity: 0, y: -40, duration: 10 }, 4)
       tl.to(cueRef.current, { opacity: 0, duration: 6 }, 3)
 
       // Letterbox bars slide open + dark cover fades out (hides green yuv frame at t=0)
@@ -149,7 +150,9 @@ export default function FilmSection() {
 
         <div className="hero-overlay">
           <div className="hero-lockup">
-            <ZellerStar className="hero-star-mark" />
+            <div ref={starRef}>
+              <ZellerStar className="hero-star-mark" />
+            </div>
             <h1 ref={wordmarkRef} className="hero-wordmark">
               {'ZELLER'.split('').map((ch, i) => (
                 <span key={i} className="hw">

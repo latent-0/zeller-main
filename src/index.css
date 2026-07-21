@@ -121,7 +121,7 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(1rem, 2.2vw, 2.2rem);
+  gap: clamp(0.4rem, 0.9vw, 0.9rem);
 }
 
 /* Mark sized to the cap height of the Z (~72% of em) */
