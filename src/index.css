@@ -1338,7 +1338,7 @@ footer {
 
 .word-duo__bold {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.05em;
   /* inherits text-transform: uppercase from h2 */
 }
@@ -1346,8 +1346,8 @@ footer {
 .word-duo__serif {
   font-family: var(--font-serif);
   font-style: italic;
-  font-weight: 400;
-  font-size: 1.08em; /* cap-height match */
+  font-weight: 300;
+  font-size: 1.13em; /* cap-height match — Cormorant sits ~13% shorter per em */
   letter-spacing: 0.02em;
   /* inherits text-transform: uppercase from h2 */
 }
