@@ -1325,3 +1325,101 @@ footer {
   height: 20px;
   background: linear-gradient(to bottom, #0f0b1a 0%, #0f0b1a 30%, #f5f0e8 100%);
 }
+
+/* ── Two-tone heading — bold sans + italic serif split ───────────────────── */
+h2.heading-duo {
+  font-size: clamp(1.8rem, 4vw, 3.5rem);
+  line-height: 1.15;
+  /* Reset h2 globals so each half picks its own font */
+  font-family: inherit;
+  font-weight: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.28em;
+}
+
+/* Bold half — heavy Josefin Sans, all-caps */
+.h-duo__bold {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--clr-text);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em;
+}
+
+/* Italic serif half — Cormorant Garamond, normal case */
+.h-duo__serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.07em; /* cap height compensation */
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--clr-text);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em;
+}
+
+/* Dark-bg overrides (dome gallery section) */
+.dome-gallery-section .h-duo__bold,
+.dome-gallery-section .h-duo__serif { color: #f0ebe0; }
+
+/* ── Section grain overlay ────────────────────────────────────────────────── */
+.grain-section {
+  position: relative;
+}
+
+.grain-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  /* SVG fractal noise tiled, ultra-subtle */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='gn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23gn)' opacity='0.22'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+}
+
+/* ── Quote section — gaussian-blurred backdrop glow ─────────────────────── */
+.quote-section {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Blurred radial haze behind the quote text */
+.quote-section::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 90%;
+  background: radial-gradient(ellipse at center,
+    rgba(201, 170, 98, 0.10) 0%,
+    rgba(201, 170, 98, 0.04) 40%,
+    transparent 70%
+  );
+  filter: blur(48px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Lift quote text above the blur */
+.quote-section blockquote,
+.quote-section cite { position: relative; z-index: 1; }
+
+/* ── Fragment section grain ───────────────────────────────────────────────── */
+.fragment-section.grain-section::after {
+  opacity: 0.35; /* lighter on the light story section */
+}

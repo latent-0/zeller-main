@@ -276,10 +276,13 @@ export default function App() {
       */}
 
       {/* ── Fragment of the Cosmos — diagonal frames ── */}
-      <section id="story" className="fragment-section">
+      <section id="story" className="fragment-section grain-section">
         <div className="fragment-text">
           <BlurText text="Who We Are" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
-          <BlurText text="India's Crystal Couture Entourage" as="h2" animateBy="words" delay={100} stepDuration={0.45} />
+          <h2 className="heading-duo">
+            <BlurText text="India's Crystal" as="span" className="h-duo__bold" animateBy="words" delay={100} stepDuration={0.45} />
+            <BlurText text="Couture Entourage" as="span" className="h-duo__serif" animateBy="words" delay={200} stepDuration={0.45} />
+          </h2>
           <div className="divider" />
           <p className="reveal">
             A saga reminiscent of a glimpse of the ethereal beyond — sculpting dreams, cosmos &amp; everything in between. A poetic dance of stardust &amp; aspirations, unfurling into a souvenir of indulgent celebrations.
@@ -306,7 +309,7 @@ export default function App() {
       </section>
 
       {/* ── Stats ── */}
-      <div className="stats-row">
+      <div className="stats-row grain-section">
         {[
           { num: '1st',  unit: '',   label: 'In India' },
           { num: '100',  unit: '%',  label: 'Handcrafted' },
@@ -321,7 +324,7 @@ export default function App() {
       </div>
 
       {/* ── Horizontal scroll — what sets us apart ── */}
-      <div className="h-scroll-wrapper" ref={hScrollRef}>
+      <div className="h-scroll-wrapper grain-section" ref={hScrollRef}>
         <div className="h-scroll-track" ref={hTrackRef}>
           {DIFFERENTIATORS.map((d) => (
             <div className="h-panel" key={d.num}>
@@ -343,7 +346,10 @@ export default function App() {
       <section id="collection">
         <div className="section">
           <BlurText text="Product Range" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
-          <BlurText text="Our Offerings" as="h2" animateBy="words" delay={110} stepDuration={0.45} style={{ marginBottom: '3rem' }} />
+          <h2 className="heading-duo" style={{ marginBottom: '3rem' }}>
+            <BlurText text="Our" as="span" className="h-duo__bold" animateBy="words" delay={110} stepDuration={0.45} />
+            <BlurText text="Offerings" as="span" className="h-duo__serif" animateBy="words" delay={210} stepDuration={0.45} />
+          </h2>
         </div>
         <div className="product-grid product-grid--2">
           {PRODUCTS.map(({ n, label, title, desc, img }) => (
@@ -360,7 +366,7 @@ export default function App() {
       </section>
 
       {/* ── Cosmic quote ── */}
-      <div className="quote-section">
+      <div className="quote-section grain-section">
         <blockquote>
           &ldquo;Indulge in Crystal Couture. Celebrate the universe within you.&rdquo;
         </blockquote>
@@ -371,7 +377,10 @@ export default function App() {
       <section id="gallery" className="dome-gallery-section">
         <div className="dome-gallery-header">
           <BlurText text="The Collection" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
-          <BlurText text="Chandeliers in Every Facet" as="h2" animateBy="words" delay={110} stepDuration={0.45} />
+          <h2 className="heading-duo">
+            <BlurText text="Chandeliers" as="span" className="h-duo__bold" animateBy="words" delay={110} stepDuration={0.45} />
+            <BlurText text="in Every Facet" as="span" className="h-duo__serif" animateBy="words" delay={210} stepDuration={0.45} />
+          </h2>
           <p className="reveal dome-gallery-hint">Drag to explore — tap any piece to illuminate it.</p>
         </div>
         <div className="dome-gallery-canvas">
@@ -394,7 +403,10 @@ export default function App() {
           <div className="section-intro">
             <div>
               <BlurText text="À La Carte" as="span" className="section-label" stagger={0.04} />
-              <h2><BlurText text="Bespoke Services" wordLevel stagger={0.12} /></h2>
+              <h2 className="heading-duo">
+                <BlurText text="Bespoke" as="span" className="h-duo__bold" animateBy="words" delay={100} stepDuration={0.45} />
+                <BlurText text="Services" as="span" className="h-duo__serif" animateBy="words" delay={190} stepDuration={0.45} />
+              </h2>
               <div className="divider" />
               <p className="reveal">
                 With artisanal craftsmanship as our celestial wand, we immerse you in the avant-garde experience of Crystal Couture — paving way for a new revelation in India.

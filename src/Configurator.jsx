@@ -44,12 +44,9 @@ const PEARL_COLORS = [
   { name: 'Silver',    hex: '#d4d8dc' },
 ]
 
-// FBX file mappings — both Ganesha tabs use the full lotus+figure model
-const GANESHA_FILE = {
-  statue: '/models/C4_Lotus_w_Ganesh_Fixed1.fbx',
-  lotus:  '/models/C4_Lotus_w_Ganesh_Fixed1.fbx',
-}
+// FBX file per product (all lotus files; Ganesha figure is added procedurally)
 const PRODUCT_FILE = {
+  ganesha: '/models/C4_Lotus_w_Ganesh_Fixed1.fbx',
   bloom:   '/models/C4_Lotus_w_Ganesh_Fixed1.fbx',
   hanging: '/models/C2_Fixed.fbx',
 }
@@ -100,6 +97,40 @@ function makeAdder(group) {
     parent.add(m)
     return m
   }
+}
+
+// ── GANESHA FIGURE (procedural, placed on top of lotus FBX) ──────────────────
+function buildGaneshStatue(mat) {
+  const group = new THREE.Group()
+  const add = makeAdder(group)
+  add(new THREE.IcosahedronGeometry(0.44, 1), mat, { p: [0, -0.04, 0.06], s: [1.55, 0.40, 1.15] })
+  add(new THREE.IcosahedronGeometry(0.50, 1), mat, { p: [0, 0.32, 0], s: [1.05, 1.0, 0.90] })
+  add(new THREE.IcosahedronGeometry(0.32, 1), mat, { p: [0, 0.32, 0.35], s: [1.0, 0.88, 0.72] })
+  add(new THREE.IcosahedronGeometry(0.17, 0), mat, { p: [-0.52, 0.46, 0.02], s: [0.80, 0.55, 0.60] })
+  add(new THREE.IcosahedronGeometry(0.17, 0), mat, { p: [0.52, 0.46, 0.02], s: [0.80, 0.55, 0.60] })
+  add(new THREE.IcosahedronGeometry(0.12, 0), mat, { p: [-0.48, 0.18, 0.22] })
+  add(new THREE.IcosahedronGeometry(0.12, 0), mat, { p: [0.48, 0.18, 0.22] })
+  add(new THREE.IcosahedronGeometry(0.16, 0), mat, { p: [0, 0.65, 0.02], s: [0.70, 0.60, 0.58] })
+  add(new THREE.IcosahedronGeometry(0.36, 1), mat, { p: [0, 0.90, 0], s: [1.10, 1.05, 0.95] })
+  add(new THREE.IcosahedronGeometry(0.26, 1), mat, { p: [0, 0.80, 0.34], s: [0.88, 0.80, 0.78] })
+  const earGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.10, 10)
+  add(earGeo, mat, { p: [-0.62, 0.92, 0.06], r: [Math.PI / 2, 0, 0.08], s: [0.90, 1.0, 1.22] })
+  add(earGeo, mat, { p: [0.62, 0.92, 0.06], r: [Math.PI / 2, 0, -0.08], s: [0.90, 1.0, 1.22] })
+  const trunkCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.00, 0.80, 0.52),
+    new THREE.Vector3(0.02, 0.66, 0.60),
+    new THREE.Vector3(0.08, 0.52, 0.56),
+    new THREE.Vector3(0.14, 0.38, 0.44),
+    new THREE.Vector3(0.16, 0.24, 0.28),
+  ])
+  add(new THREE.TubeGeometry(trunkCurve, 14, 0.09, 7, false), mat)
+  add(new THREE.CylinderGeometry(0.22, 0.26, 0.10, 10), mat, { p: [0, 1.26, 0] })
+  add(new THREE.CylinderGeometry(0.16, 0.20, 0.09, 9), mat, { p: [0, 1.36, 0] })
+  add(new THREE.CylinderGeometry(0.10, 0.14, 0.08, 8), mat, { p: [0, 1.45, 0] })
+  add(new THREE.IcosahedronGeometry(0.07, 0), mat, { p: [0, 1.55, 0] })
+  const bindiMat = new THREE.MeshStandardMaterial({ color: '#c01f2e', roughness: 0.35 })
+  add(new THREE.SphereGeometry(0.04, 12, 12), bindiMat, { p: [0, 0.97, 0.40] })
+  return group
 }
 
 // ── PEARL OYSTER (still procedural) ───────────────────────────────────────────
@@ -278,10 +309,9 @@ export default function Configurator() {
     let filePath, targetGroup, assignMat
 
     if (product === 'ganesha') {
-      filePath    = GANESHA_FILE[part] ?? GANESHA_FILE.statue
+      filePath    = PRODUCT_FILE.ganesha
       targetGroup = t.ganesha.group
-      const mat   = part === 'lotus' ? t.ganesha.lotusMat : t.ganesha.statueMat
-      assignMat   = () => mat
+      assignMat   = () => t.ganesha.lotusMat   // FBX is always the lotus
     } else if (product === 'bloom') {
       filePath    = PRODUCT_FILE.bloom
       targetGroup = t.bloom.group
@@ -313,11 +343,8 @@ export default function Configurator() {
     loader.load(filePath, (obj) => {
       if (cancelled) return
 
-      // C4 contains multiple parts (lotus + Ganesha figure) — keep all children.
-      // C2/C3 may be catalog-layout files with duplicate instances — keep only the first.
-      if (!filePath.includes('C4')) {
-        obj.children.slice(1).forEach(c => obj.remove(c))
-      }
+      // All FBX files are catalog-layout exports — keep only the first instance
+      obj.children.slice(1).forEach(c => obj.remove(c))
 
       // Auto-normalise: fit into ~3 units, sit at y=0, centre x/z
       const box    = new THREE.Box3().setFromObject(obj)
@@ -339,6 +366,16 @@ export default function Configurator() {
         const mb = new THREE.Box3().setFromObject(child)
         child.material = assignMat((mb.min.y + mb.max.y) / 2, midY)
       })
+
+      // For ganesha product, add a procedural figure on top of the lotus FBX
+      if (product === 'ganesha') {
+        const lotusObjHeight = box.max.y - box.min.y
+        const ganeshLocalScale = (lotusObjHeight * 1.4) / 1.65
+        const statue = buildGaneshStatue(t.ganesha.statueMat)
+        statue.scale.setScalar(ganeshLocalScale)
+        statue.position.y = box.max.y
+        wrapper.add(statue)
+      }
 
       cache[cacheKey] = wrapper
       targetGroup.add(wrapper)
