@@ -1338,8 +1338,9 @@ footer {
 
 .word-duo__bold {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 300;
   letter-spacing: 0.05em;
+  filter: blur(1.8px);
   /* inherits text-transform: uppercase from h2 */
 }
 

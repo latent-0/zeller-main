@@ -386,7 +386,6 @@ export default function App() {
             <h3 className="reveal">Every prism<br/>a portal</h3>
             <p className="reveal">Our crystals are precision instruments of wonder — each facet angled to fracture light into spectral poetry, turning ambient glow into something celestial.</p>
           </div>
-          <div className="cdual-blur-badge">Clear</div>
         </div>
         <div className="cdual-panel cdual-panel--right">
           <div className="cdual-image-wrap cdual-image-wrap--blurred">
@@ -401,7 +400,6 @@ export default function App() {
             <div className="cdual-divider" />
             <p className="cdual-card-body">Wear the cosmos. Live with the cosmos.</p>
           </div>
-          <div className="cdual-blur-badge cdual-blur-badge--right">Gaussian Blur</div>
         </div>
       </section>
 
