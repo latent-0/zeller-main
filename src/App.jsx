@@ -279,9 +279,10 @@ export default function App() {
       <section id="story" className="fragment-section grain-section">
         <div className="fragment-text">
           <BlurText text="Who We Are" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
-          <h2 className="heading-duo">
-            <BlurText text="India's Crystal" as="span" className="h-duo__bold" animateBy="words" delay={100} stepDuration={0.45} />
-            <BlurText text="Couture Entourage" as="span" className="h-duo__serif" animateBy="words" delay={200} stepDuration={0.45} />
+          <h2 className="reveal">
+            India's Crystal{' '}
+            <span className="word-duo__bold">Cout</span><span className="word-duo__serif">ure</span>
+            {' '}Entourage
           </h2>
           <div className="divider" />
           <p className="reveal">
@@ -346,9 +347,9 @@ export default function App() {
       <section id="collection">
         <div className="section">
           <BlurText text="Product Range" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
-          <h2 className="heading-duo" style={{ marginBottom: '3rem' }}>
-            <BlurText text="Our" as="span" className="h-duo__bold" animateBy="words" delay={110} stepDuration={0.45} />
-            <BlurText text="Offerings" as="span" className="h-duo__serif" animateBy="words" delay={210} stepDuration={0.45} />
+          <h2 className="reveal" style={{ marginBottom: '3rem' }}>
+            Our{' '}
+            <span className="word-duo__bold">Offer</span><span className="word-duo__serif">ings</span>
           </h2>
         </div>
         <div className="product-grid product-grid--2">
@@ -377,9 +378,9 @@ export default function App() {
       <section id="gallery" className="dome-gallery-section">
         <div className="dome-gallery-header">
           <BlurText text="The Collection" as="span" className="section-label" animateBy="words" delay={80} stepDuration={0.4} />
-          <h2 className="heading-duo">
-            <BlurText text="Chandeliers" as="span" className="h-duo__bold" animateBy="words" delay={110} stepDuration={0.45} />
-            <BlurText text="in Every Facet" as="span" className="h-duo__serif" animateBy="words" delay={210} stepDuration={0.45} />
+          <h2 className="reveal">
+            <span className="word-duo__bold">Chand</span><span className="word-duo__serif">eliers</span>
+            {' '}in Every Facet
           </h2>
           <p className="reveal dome-gallery-hint">Drag to explore — tap any piece to illuminate it.</p>
         </div>
@@ -403,9 +404,9 @@ export default function App() {
           <div className="section-intro">
             <div>
               <BlurText text="À La Carte" as="span" className="section-label" stagger={0.04} />
-              <h2 className="heading-duo">
-                <BlurText text="Bespoke" as="span" className="h-duo__bold" animateBy="words" delay={100} stepDuration={0.45} />
-                <BlurText text="Services" as="span" className="h-duo__serif" animateBy="words" delay={190} stepDuration={0.45} />
+              <h2 className="reveal">
+                <span className="word-duo__bold">Bes</span><span className="word-duo__serif">poke</span>
+                {' '}Services
               </h2>
               <div className="divider" />
               <p className="reveal">

@@ -120,6 +120,7 @@ p {
   font-family: var(--font-brand);
   font-size: clamp(3rem, 10vw, 9rem);
   font-weight: 400;
+  font-variation-settings: 'opsz' 96;
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: #f5f0e8;
@@ -190,7 +191,8 @@ nav {
 .nav-logo {
   font-family: var(--font-brand);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 96;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--clr-text);
@@ -375,6 +377,7 @@ footer {
   font-family: var(--font-brand);
   font-size: 0.75rem;
   font-weight: 400;
+  font-variation-settings: 'opsz' 96;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--clr-muted);
@@ -940,6 +943,7 @@ footer {
   font-family: var(--font-brand);
   font-size: 1.5rem;
   font-weight: 400;
+  font-variation-settings: 'opsz' 96;
   letter-spacing: 0.32em;
   text-transform: uppercase;
 }
@@ -1329,50 +1333,28 @@ footer {
   background: linear-gradient(to bottom, #0f0b1a 0%, #0f0b1a 30%, #f5f0e8 100%);
 }
 
-/* ── Two-tone heading — bold sans + italic serif split ───────────────────── */
-h2.heading-duo {
-  font-size: clamp(1.8rem, 4vw, 3.5rem);
-  line-height: 1.15;
-  /* Reset h2 globals so each half picks its own font */
-  font-family: inherit;
-  font-weight: inherit;
-  letter-spacing: normal;
-  text-transform: none;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 0.28em;
-}
+/* ── Two-tone word — one word split mid-word (bold sans | italic serif) ──── */
+/* Usage: <span class="word-duo"><span class="word-duo__bold">CRYS</span><span class="word-duo__serif">TAL</span></span> */
 
-/* Bold half — heavy Josefin Sans, all-caps */
-.h-duo__bold {
+.word-duo__bold {
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--clr-text);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2em;
+  /* inherits text-transform: uppercase from h2 */
 }
 
-/* Italic serif half — Cormorant Garamond, normal case */
-.h-duo__serif {
+.word-duo__serif {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;
-  font-size: 1.07em; /* cap height compensation */
+  font-size: 1.08em; /* cap-height match */
   letter-spacing: 0.02em;
-  text-transform: none;
-  color: var(--clr-text);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2em;
+  /* inherits text-transform: uppercase from h2 */
 }
 
-/* Dark-bg overrides (dome gallery section) */
-.dome-gallery-section .h-duo__bold,
-.dome-gallery-section .h-duo__serif { color: #f0ebe0; }
+/* Dark-bg overrides */
+.dome-gallery-section .word-duo__bold,
+.dome-gallery-section .word-duo__serif { color: #f0ebe0; }
 
 /* ── Section grain overlay ────────────────────────────────────────────────── */
 .grain-section {
