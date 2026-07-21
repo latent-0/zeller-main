@@ -213,6 +213,52 @@ nav {
   text-decoration: none;
 }
 
+/* ── Zeller Star Mark ── */
+.zs-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.zs-wrap:hover { transform: scale(1.13); }
+
+.zs {
+  display: block;
+  transform-origin: center;
+  overflow: visible;
+  animation: zs-spin 100s linear 2.3s infinite;
+}
+.zs-wrap:hover .zs { animation-play-state: paused; }
+
+.zs-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 5px rgba(201, 170, 98, 0.3));
+  animation:
+    zs-draw 1.5s cubic-bezier(0.4, 0, 0.15, 1) 0.25s forwards,
+    zs-fill 0.55s ease-in-out 1.6s forwards;
+}
+.zs-wrap:hover .zs-path {
+  filter: drop-shadow(0 0 14px rgba(201, 170, 98, 0.65));
+  transition: filter 0.4s ease;
+}
+
+@keyframes zs-draw {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes zs-fill {
+  0%   { fill: transparent; stroke-opacity: 1; }
+  60%  { fill: var(--clr-accent); stroke-opacity: 0.2; }
+  100% { fill: var(--clr-accent); stroke-opacity: 0; }
+}
+
+@keyframes zs-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ® superscript — used in nav, footer brand text */
 .brand-reg {
   font-family: var(--font-brand);
