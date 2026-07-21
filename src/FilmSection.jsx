@@ -149,7 +149,7 @@ export default function FilmSection() {
 
         <div className="hero-overlay">
           <div className="hero-lockup">
-            <ZellerStar className="hero-star-mark hero-star-mark--l" />
+            <ZellerStar className="hero-star-mark" />
             <h1 ref={wordmarkRef} className="hero-wordmark">
               {'ZELLER'.split('').map((ch, i) => (
                 <span key={i} className="hw">
@@ -158,7 +158,6 @@ export default function FilmSection() {
                 </span>
               ))}
             </h1>
-            <ZellerStar className="hero-star-mark hero-star-mark--r" />
           </div>
           <p ref={taglineRef} className="hero-tagline">Celebrate You</p>
         </div>
