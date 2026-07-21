@@ -12,6 +12,7 @@
   --clr-text:         #18120a;
   --clr-muted:        #786858;
 
+  --font-brand:   'Bodoni Moda', serif;
   --font-display: 'Josefin Sans', sans-serif;
   --font-serif:   'Cormorant Garamond', serif;
   --font-body:    'Libre Franklin', sans-serif;
@@ -116,9 +117,9 @@ p {
 }
 
 .hero-wordmark {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: clamp(3rem, 10vw, 9rem);
-  font-weight: 100;
+  font-weight: 400;
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: #f5f0e8;
@@ -187,10 +188,10 @@ nav {
 }
 
 .nav-logo {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: 1rem;
-  font-weight: 200;
-  letter-spacing: 0.42em;
+  font-weight: 500;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--clr-text);
   text-decoration: none;
@@ -371,8 +372,10 @@ footer {
 }
 
 .footer-brand {
-  font-size: 0.7rem;
-  letter-spacing: 0.35em;
+  font-family: var(--font-brand);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--clr-muted);
 }
@@ -406,9 +409,9 @@ footer {
 }
 
 .loading-wordmark {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: clamp(2rem, 8vw, 5rem);
-  font-weight: 100;
+  font-weight: 400;
   letter-spacing: 0.45em;
   color: var(--clr-text);
 }
@@ -934,10 +937,10 @@ footer {
   color: #f0f0f2;
 }
 .config-brand__mark {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: 1.5rem;
-  font-weight: 200;
-  letter-spacing: 0.42em;
+  font-weight: 400;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
 }
 .config-brand__model {

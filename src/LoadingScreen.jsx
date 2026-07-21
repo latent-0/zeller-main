@@ -13,10 +13,14 @@ export default function LoadingScreen({ onComplete }) {
     const W = canvas.width
     const H = canvas.height
 
+    // Ensure Bodoni Moda is loaded before measuring / drawing
+    let cancelled = false
+    document.fonts.load(`400 ${Math.min(W * 0.115, 108)}px "Bodoni Moda"`).catch(() => {})
+
     const fontSize      = Math.min(W * 0.115, 108)
     const letterSpacing = fontSize * 0.36
 
-    ctx.font = `200 ${fontSize}px Inter, system-ui, sans-serif`
+    ctx.font = `400 ${fontSize}px "Bodoni Moda", serif`
 
     // Measure each character for exact positioning
     const CHARS = 'ZELLER'.split('')
@@ -194,7 +198,7 @@ export default function LoadingScreen({ onComplete }) {
       }
 
       // Draw text letters
-      ctx.font = `200 ${fontSize}px Inter, system-ui, sans-serif`
+      ctx.font = `400 ${fontSize}px "Bodoni Moda", serif`
       ctx.textBaseline = 'alphabetic'
       for (let i = 0; i < 6; i++) {
         if (letterAlpha[i] <= 0) continue
@@ -215,7 +219,7 @@ export default function LoadingScreen({ onComplete }) {
         const gT = Math.min((progress - 0.8) / 0.12, 1)
         ctx.save()
         ctx.globalAlpha  = gT * 0.28
-        ctx.font = `200 ${fontSize}px Inter, system-ui, sans-serif`
+        ctx.font = `400 ${fontSize}px "Bodoni Moda", serif`
         ctx.textBaseline = 'alphabetic'
         ctx.shadowColor  = '#EAB308'
         ctx.shadowBlur   = 50
@@ -257,7 +261,7 @@ export default function LoadingScreen({ onComplete }) {
     }
 
     rafId = requestAnimationFrame(frame)
-    return () => { if (rafId) cancelAnimationFrame(rafId) }
+    return () => { cancelled = true; if (rafId) cancelAnimationFrame(rafId) }
   }, [onComplete])
 
   return (
