@@ -110,8 +110,8 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 8vh;
+  justify-content: center;
+  gap: 1.8rem;
   text-align: center;
   pointer-events: none;
 }
@@ -121,7 +121,7 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5vw;
+  gap: 0.1vw;
 }
 
 /* Mark sized to the cap height of the Z (~72% of em) */
@@ -153,6 +153,8 @@ p {
   text-transform: uppercase;
   color: #f5f0e8;
   position: relative;
+  /* Cancel trailing letter-spacing so the lockup centers on glyphs not whitespace */
+  margin-right: -0.38em;
   /* spans start hidden — GSAP blurs them in */
 }
 
