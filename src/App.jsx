@@ -499,6 +499,64 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── Stories — brand storytelling cards ── */}
+      <section className="stories-section grain-section">
+        <p className="stories-label">Stories</p>
+        <div className="stories-grid">
+
+          {/* Card 1: Full-bleed image + ticker */}
+          <div className="story-card story-card--img">
+            <img src="/gallery/chandelier-butterfly.jpg" alt="" className="sc-bg" />
+            <div className="sc-grad" />
+            <div className="sc-body">
+              <p className="sc-main-text">PURE<br /><em>Crystal</em></p>
+            </div>
+            <div className="sc-ticker">
+              <span>{'ZELLER · ZELLER · ZELLER · ZELLER · ZELLER · ZELLER · '}</span>
+            </div>
+          </div>
+
+          {/* Card 2: Dark colour block + inset image */}
+          <div className="story-card story-card--color">
+            <p className="sc-eyebrow">Celebrate You</p>
+            <div className="sc-headline">
+              <span className="sc-hl-bold">LIGHT</span>
+              <em className="sc-hl-serif">and</em>
+              <span className="sc-hl-bold">CRYSTAL</span>
+            </div>
+            <div className="sc-inset">
+              <img src="/gallery/chandelier-rings.webp" alt="" />
+            </div>
+            <p className="sc-byline">Zeller — Celebrate You</p>
+          </div>
+
+          {/* Card 3: Watermark text + oval image */}
+          <div className="story-card story-card--wm">
+            <div className="sc-wm-text" aria-hidden="true">
+              {'CELEBRATE · ZELLER · CELEBRATE · ZELLER · '.repeat(12)}
+            </div>
+            <div className="sc-oval">
+              <img src="/gallery/chandelier-dome.jpg" alt="" />
+            </div>
+          </div>
+
+          {/* Card 4: Split dark quote + image */}
+          <div className="story-card story-card--quote">
+            <div className="sc-dark">
+              <p className="sc-brand-lbl">ZELLER</p>
+              <p className="sc-quote">
+                MAKE US A<br />PART OF<br />YOUR SPECIAL<br /><em>MOM<span>ents</span></em>
+              </p>
+              <p className="sc-quote-lbl">Quote of the day</p>
+            </div>
+            <div className="sc-img-half">
+              <img src="/gallery/chandelier-glasswork.jpg" alt="" />
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       {/* ── Footer ── */}
       <footer id="contact">
         <div>

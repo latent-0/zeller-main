@@ -458,6 +458,285 @@ nav {
   display: block;
 }
 
+/* ── Stories Section ── */
+.stories-section {
+  background: var(--clr-bg);
+  padding: 5rem 5vw 6rem;
+}
+
+.stories-label {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--clr-muted);
+  margin-bottom: 3rem;
+}
+
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+/* ── Base card ── */
+.story-card {
+  aspect-ratio: 9 / 16;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(24,18,10,0.08);
+}
+
+/* ── Card 1: Full-bleed image ── */
+.story-card--img { background: #1a100a; }
+
+.sc-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.78) sepia(0.22);
+}
+
+.sc-grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(18, 10, 4, 0.9) 0%,
+    rgba(18, 10, 4, 0.15) 52%,
+    transparent 100%);
+}
+
+.sc-body {
+  position: absolute;
+  bottom: 3rem;
+  left: 1.1rem;
+  right: 1.1rem;
+}
+
+.sc-main-text {
+  font-family: var(--font-brand);
+  font-variation-settings: 'opsz' 96;
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  font-weight: 400;
+  color: #f5f0e8;
+  line-height: 0.95;
+  letter-spacing: 0.03em;
+}
+
+.sc-main-text em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.sc-ticker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.42rem 0;
+  background: rgba(245, 240, 232, 0.96);
+  font-family: var(--font-display);
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--clr-text);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sc-ticker span {
+  display: inline-block;
+  animation: sc-tick 16s linear infinite;
+}
+
+@keyframes sc-tick {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── Card 2: Colour block ── */
+.story-card--color {
+  background: #111827;
+  display: flex;
+  flex-direction: column;
+  padding: 1.3rem 1.1rem 1.1rem;
+}
+
+.sc-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.48rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(201,170,98,0.6);
+  align-self: flex-end;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-bottom: auto;
+}
+
+.sc-headline {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+  padding-block: 0.8rem;
+}
+
+.sc-hl-bold {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  font-weight: 200;
+  letter-spacing: 0.05em;
+  color: #f5f0e8;
+}
+
+.sc-hl-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.8rem, 3.6vw, 2.9rem);
+  font-weight: 400;
+  color: var(--clr-accent-light);
+  margin-left: 0.3em;
+}
+
+.sc-inset {
+  border-radius: 0.2rem;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  flex-shrink: 0;
+}
+
+.sc-inset img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sc-byline {
+  font-family: var(--font-display);
+  font-size: 0.46rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(201,170,98,0.4);
+  margin-top: 0.75rem;
+}
+
+/* ── Card 3: Watermark + oval ── */
+.story-card--wm {
+  background: var(--clr-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sc-wm-text {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-brand);
+  font-variation-settings: 'opsz' 96;
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--clr-text);
+  opacity: 0.06;
+  overflow: hidden;
+  word-break: break-all;
+  line-height: 1.5;
+  padding: 0.8rem;
+  pointer-events: none;
+}
+
+.sc-oval {
+  position: relative;
+  z-index: 1;
+  width: 74%;
+  aspect-ratio: 3 / 4;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(154,125,58,0.25);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+}
+
+.sc-oval img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Card 4: Split dark + image ── */
+.story-card--quote {
+  display: flex;
+  flex-direction: column;
+}
+
+.sc-dark {
+  flex: 0 0 60%;
+  background: #161210;
+  padding: 1.3rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sc-brand-lbl {
+  font-family: var(--font-display);
+  font-size: 0.5rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--clr-accent-light);
+}
+
+.sc-quote {
+  font-family: var(--font-brand);
+  font-variation-settings: 'opsz' 96;
+  font-size: clamp(1rem, 2vw, 1.6rem);
+  font-weight: 400;
+  color: #f0ece4;
+  line-height: 1.25;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sc-quote em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--clr-accent-light);
+  font-size: 1.15em;
+}
+
+.sc-quote em span {
+  font-size: 0.78em;
+  font-style: italic;
+}
+
+.sc-quote-lbl {
+  font-family: var(--font-display);
+  font-size: 0.46rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(201,170,98,0.38);
+}
+
+.sc-img-half {
+  flex: 1;
+  overflow: hidden;
+}
+
+.sc-img-half img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* ── Footer ── */
 footer {
   padding: 4rem 6vw 2.5rem;
