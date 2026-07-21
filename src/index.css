@@ -1248,9 +1248,10 @@ footer {
 .film-bar--top    { top: 0; }
 .film-bar--bottom { bottom: 0; }
 
-/* keep wordmark + tagline clear of the bottom letterbox bar */
+/* symmetric padding matches letterbox bar height so justify-content:center
+   lands in the true visual centre between the bars */
 .film-sticky .hero-overlay {
-  padding-bottom: 16vh;
+  padding: 11vh 0;
 }
 
 .film-caption {
